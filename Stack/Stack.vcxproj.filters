@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="FX">
+      <UniqueIdentifier>{24a30d46-6773-41b4-b8c3-029d020809d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CameraClass.cpp">
@@ -65,10 +68,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps">
-      <Filter>소스 파일</Filter>
+      <Filter>FX</Filter>
     </None>
     <None Include="color.vs">
-      <Filter>소스 파일</Filter>
+      <Filter>FX</Filter>
     </None>
   </ItemGroup>
 </Project>
