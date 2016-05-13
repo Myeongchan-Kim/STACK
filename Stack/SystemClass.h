@@ -2,7 +2,13 @@
 
 #include <windows.h>
 #include "InputClass.h"
-#include "GraphicsClass.h"
+#include "Renderer.h"
+#include "MyTime.h"
+
+const bool FULL_SCREEN = false;
+const bool VSYNC_ENABLED = true;
+const float SCREEN_DEPTH = 1000.0f;
+const float SCREEN_NEAR = 0.1f;
 
 class SystemClass
 {
@@ -26,7 +32,9 @@ private:
 	HWND m_hwnd;
 
 	InputClass* m_Input;
-	GraphicsClass* m_Graphics;
+	Renderer* m_Graphics;
+	CMyTime m_timer;
+	
 };
 
 

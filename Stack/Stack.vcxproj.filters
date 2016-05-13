@@ -19,6 +19,9 @@
     <Filter Include="소스 파일\Graphic">
       <UniqueIdentifier>{532daaaa-37c8-4a70-8b8a-e664ab15bf11}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\FX">
+      <UniqueIdentifier>{1b3fdc39-9cf3-4180-969a-da8309a84c57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputClass.cpp">
@@ -30,6 +33,12 @@
     <ClCompile Include="WinMain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="MyTime.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>소스 파일\Graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputClass.h">
@@ -38,5 +47,19 @@
     <ClInclude Include="SystemClass.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="MyTime.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>소스 파일\Graphic</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="MyShader.fx">
+      <Filter>소스 파일\FX</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

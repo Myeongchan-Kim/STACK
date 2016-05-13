@@ -2,6 +2,7 @@
 
 SystemClass::SystemClass()
 {
+
 	m_Input = nullptr;
 	m_Graphics = nullptr;
 }
@@ -10,6 +11,7 @@ bool SystemClass::Initialize()
 {
 	int screenWidth, screenHeight;
 	bool result;
+	m_timer.Init();
 
 
 	// Initialize the width and height of the screen to zero before sending the variables into the function.
@@ -30,7 +32,7 @@ bool SystemClass::Initialize()
 	m_Input->Initialize();
 
 	// Create the graphics object.  This object will handle rendering all the graphics for this application.
-	m_Graphics = new GraphicsClass();
+	m_Graphics = new Renderer();
 	if (!m_Graphics)
 	{
 		return false;
@@ -57,7 +59,7 @@ void SystemClass::Shutdown()
 	// Release the graphics object.
 	if (m_Graphics)
 	{
-		m_Graphics->Shutdown();
+		m_Graphics->ShutDown();
 		delete m_Graphics;
 		m_Graphics = nullptr;
 	}
@@ -137,7 +139,10 @@ bool SystemClass::Frame()
 	}
 
 	// Do the frame processing for the graphics object.
-	result = m_Graphics->Frame();
+	m_timer.ProcessTime();
+	static float totalElapsedTime = 0;
+	totalElapsedTime += m_timer.GetElapsedTime();
+	result = m_Graphics->Frame(totalElapsedTime);
 	
 	return result;
 }
