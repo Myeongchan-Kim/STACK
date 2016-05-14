@@ -6,8 +6,9 @@
 #include "WICTextureLoader.h"
 
 
-ModelClass::ModelClass() :m_indexBuffer(nullptr), m_vertexBuffer(nullptr)
+ModelClass::ModelClass(float x, float y, float z) :m_indexBuffer(nullptr), m_vertexBuffer(nullptr)
 {
+	SetPosition(x, y, z);
 }
 
 
@@ -27,6 +28,10 @@ HRESULT ModelClass::CreateVertexBuffer(ID3D11Device* device)
 
 	D3D11_SUBRESOURCE_DATA	initData;
 	ZeroMemory(&initData, sizeof(initData));
+	if (m_vertices.empty())
+	{
+		assert("Model is not initailized. no vertices in model.");
+	}
 	initData.pSysMem = &m_vertices[0];				//초기화하기 위한 버퍼 배열 포인터
 
 	return device->CreateBuffer(&bd,			//생성할 버퍼의 정보를 담은 구조체
@@ -127,11 +132,15 @@ void ModelClass::SetToCube(float widthX, float height, float widthZ)
 		UINT right = i / 4;	//right or left
 		UINT upper = (i / 2 )%2;	//upper or lower
 		UINT back = i % 2; //front or back	
-		pos[i] = XMFLOAT3(m_xPos - widthX / 2 + right*widthX, m_yPos - height / 2 + upper*height, m_zPos - widthZ / 2 + back*widthZ);
+		pos[i] = XMFLOAT3(
+			0 - widthX / 2 + right*widthX,
+			0 - height / 2 + upper*height,
+			0 - widthZ / 2 + back*widthZ
+		);
 	}
 	
 	//color
-	XMFLOAT4 rgba = { 0.4f, 0.4f, 0.7f, 1.0f }; //gray color with little blue
+	XMFLOAT4 rgba = { 0.8f, 0.8f, 0.8f, 1.0f }; //gray color with little blue
 	
 	//normal vector
 	XMFLOAT3 left	= { -0.33f, +0.00f, +0.00f };

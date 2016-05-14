@@ -32,7 +32,7 @@ private:
 	HWND m_hwnd;
 
 	InputClass* m_Input;
-	Renderer* m_Graphics;
+	Renderer* m_renderer;
 	CMyTime m_timer;
 	
 };
