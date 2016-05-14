@@ -26,7 +26,9 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	CreateShader();
 	for (auto model : m_modelList)
 	{
-		model->SetSample();
+		//model->SetSample();
+		model->SetToCube(4, 2, 1);
+		assert(model->indexSize() == 36);
 		model->CreateVertexBuffer(m_device);
 		model->CreateIndexBuffer(m_device);
 	}
@@ -218,9 +220,15 @@ void   Renderer::CreateConstantBuffer()
 void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)
 {
 	// 박스를 회전시키기 위한 연산.    위치, 크기를 변경하고자 한다면 SRT를 기억할 것.      
+
+	XMFLOAT3 rot = model->GetRotation(); 
 	XMFLOAT3 pos = model->GetPosition();
-	XMMATRIX mat = XMMatrixTranslation(pos.x, pos.y, pos.z);
-	XMMATRIX world = mat;
+
+	XMMATRIX scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	XMMATRIX rotation = XMMatrixRotationX(rot.x) *XMMatrixRotationY(rot.y) *XMMatrixRotationZ(rot.z);
+	XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+	XMMATRIX world = scale * rotation * trans;
 	XMMATRIX wvp = world * m_view * m_projection;
 
 	m_wvp->SetMatrix((float*)&wvp);
@@ -315,9 +323,8 @@ bool Renderer::Frame(float deltaTime)
 	for (auto model : m_modelList)
 	{
 		model->SetPosition(sinf(deltaTime * 3), 0.0f, cosf(deltaTime * 3));
+		model->SetRotation(sinf(deltaTime), cosf(deltaTime *2), sinf(deltaTime *0.5));
 	}
-
-
 
 	float ClearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, ClearColor);

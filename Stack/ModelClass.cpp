@@ -1,5 +1,6 @@
 #include <dxgi.h>
 #include <d3dcompiler.h>
+#include <algorithm>
 #include "ModelClass.h"
 #include "MyVertex.h"
 #include "WICTextureLoader.h"
@@ -114,9 +115,111 @@ void ModelClass::SetSample()
 	}
 }
 
+void ModelClass::SetToCube(float widthX, float height, float widthZ)
+{
+	m_vertices.clear();
+	m_indices.clear();
+
+	//position of vertecis
+	XMFLOAT3 pos[8];
+	for (int i = 0; i < 8; i++)
+	{
+		UINT right = i / 4;	//right or left
+		UINT upper = (i / 2 )%2;	//upper or lower
+		UINT back = i % 2; //front or back	
+		pos[i] = XMFLOAT3(m_xPos - widthX / 2 + right*widthX, m_yPos - height / 2 + upper*height, m_zPos - widthZ / 2 + back*widthZ);
+	}
+	
+	//color
+	XMFLOAT4 rgba = { 0.5f, 0.4f, 0.6f, 1.0f }; //gray color with little blue
+	
+	//normal vector
+	XMFLOAT3 left	= { -0.33f, +0.00f, +0.00f };
+	XMFLOAT3 right	= { +0.33f, +0.00f, +0.00f };
+	XMFLOAT3 up		= { +0.00f, +0.33f, +0.00f };
+	XMFLOAT3 down	= { +0.00f, -0.33f, +0.00f };
+	XMFLOAT3 front	= { +0.00f, +0.00f, -0.33f };
+	XMFLOAT3 back	= { +0.00f, +0.00f, +0.33f };
+
+	//top area
+	auto v1 = MyVertex({ pos[0 + 2 + 1] , rgba, up,{ 0.0f, 0.0f } });
+	auto v2 = MyVertex({ pos[4 + 2 + 1] , rgba, up,{ 1.0f, 0.0f } });
+	auto v3 = MyVertex({ pos[4 + 2 + 0] , rgba, up,{ 1.0f, 1.0f } });
+	auto v4 = MyVertex({ pos[0 + 2 + 0] , rgba, up,{ 0.0f, 1.0f } });
+	AddRectangle(v1, v2, v3, v4);
+
+	//bottom area
+	v1 = MyVertex({ pos[0 + 0 + 0] , rgba, down,{ 0.0f, 0.0f } });
+	v2 = MyVertex({ pos[4 + 0 + 0] , rgba, down,{ 1.0f, 0.0f } });
+	v3 = MyVertex({ pos[4 + 0 + 1] , rgba, down,{ 1.0f, 1.0f } });
+	v4 = MyVertex({ pos[0 + 0 + 1] , rgba, down,{ 0.0f, 1.0f } });
+	AddRectangle(v1, v2, v3, v4);
+
+	//right area
+	v1 = MyVertex({ pos[4 + 2 + 0] , rgba, right,{ 0.0f, 0.0f } });
+	v2 = MyVertex({ pos[4 + 2 + 1] , rgba, right,{ 1.0f, 0.0f } });
+	v3 = MyVertex({ pos[4 + 0 + 1] , rgba, right,{ 1.0f, 1.0f } });
+	v4 = MyVertex({ pos[4 + 0 + 0] , rgba, right,{ 0.0f, 1.0f } });
+	AddRectangle(v1, v2, v3, v4);
+
+	//left area
+	v1 = MyVertex({ pos[0 + 2 + 1] , rgba, left,{ 0.0f, 0.0f } });
+	v2 = MyVertex({ pos[0 + 2 + 0] , rgba, left,{ 1.0f, 0.0f } });
+	v3 = MyVertex({ pos[0 + 0 + 0] , rgba, left,{ 1.0f, 1.0f } });
+	v4 = MyVertex({ pos[0 + 0 + 1] , rgba, left,{ 0.0f, 1.0f } });
+	AddRectangle(v1, v2, v3, v4);
+
+	//front area
+	v1 = MyVertex({ pos[0 + 2 + 0] , rgba, front,{ 0.0f, 0.0f } });
+	v2 = MyVertex({ pos[4 + 2 + 0] , rgba, front,{ 1.0f, 0.0f } });
+	v3 = MyVertex({ pos[4 + 0 + 0] , rgba, front,{ 1.0f, 1.0f } });
+	v4 = MyVertex({ pos[0 + 0 + 0] , rgba, front,{ 0.0f, 1.0f } });
+	AddRectangle(v1, v2, v3, v4);
+
+	//back area
+	v1 = MyVertex({ pos[4 + 2 + 1] , rgba, back,{ 0.0f, 0.0f } });
+	v2 = MyVertex({ pos[0 + 2 + 1] , rgba, back,{ 1.0f, 0.0f } });
+	v3 = MyVertex({ pos[0 + 0 + 1] , rgba, back,{ 1.0f, 1.0f } });
+	v4 = MyVertex({ pos[4 + 0 + 1] , rgba, back,{ 0.0f, 1.0f } });
+	AddRectangle(v1, v2, v3, v4);
+}
+
+void ModelClass::AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4)
+{
+	UINT square[4];
+	auto GetIndex = [&](UINT& polygon, MyVertex& v) {
+		auto iter = std::find(m_vertices.begin(), m_vertices.end(), v);
+		if (iter != m_vertices.end())
+			polygon = iter - m_vertices.begin();
+		else
+		{
+			polygon = m_vertices.size();
+			m_vertices.push_back(v);
+		}
+	};
+	GetIndex(square[0], v1);
+	GetIndex(square[1], v2);
+	GetIndex(square[2], v3);
+	GetIndex(square[3], v4);
+
+	//up triangle
+	m_indices.push_back(square[0]);
+	m_indices.push_back(square[1]);
+	m_indices.push_back(square[2]);
+	//down triangle
+	m_indices.push_back(square[2]);
+	m_indices.push_back(square[3]);
+	m_indices.push_back(square[0]);
+}
+
 XMFLOAT3 ModelClass::GetPosition()
 {
-	return XMFLOAT3({m_xPos, m_yPos, m_zPos});
+	return DirectX::XMFLOAT3({m_xPos, m_yPos, m_zPos});
+}
+
+DirectX::XMFLOAT3 ModelClass::GetRotation()
+{
+	return DirectX::XMFLOAT3({m_xRot, m_yRot, m_zRot});
 }
 
 void ModelClass::SetPosition(float x, float y, float z)
@@ -124,4 +227,11 @@ void ModelClass::SetPosition(float x, float y, float z)
 	m_xPos = x;
 	m_yPos = y;
 	m_zPos = z;
+}
+
+void ModelClass::SetRotation(float x, float y, float z)
+{
+	m_xRot = x;
+	m_yRot = y;
+	m_zRot = z;
 }
