@@ -23,7 +23,7 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	InitDevice(hwnd);
 
 	CreateShader();
-	InitMatrix();
+	InitCamera();
 	LoadTexture(ConstVars::CONCREAT_TEX_FILE);
 	LoadTexture(ConstVars::FEBRIC_TEX_FILE);
 	LoadTexture(ConstVars::PLANE_TEX_FILE);
@@ -209,19 +209,39 @@ void Renderer::CreateShader()
 }
 
 
-void Renderer::InitMatrix()
+void Renderer::InitCamera()
 {
-	
-	// View 青纺 备己
-	XMVECTOR 	pos = XMVectorSet(-10.0f, 15.0f, -10.0f, 1.0f);
-	XMVECTOR 	target = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-	XMVECTOR 	up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	m_pos = { -10.0f, 15.0f, -10.0f, 1.0f };
+	m_target = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_up = { 0.0f, 1.0f, 0.0f, 0.0f };
+
+	SetCamera();
+}
+
+void Renderer::MoveCamera(float x, float y, float z)
+{
+	m_pos.x += x;
+	m_pos.y += y;
+	m_pos.z += z;
+
+	m_target.x += x;
+	m_target.y += y;
+	m_target.z += z;
+
+	SetCamera();
+}
+
+void Renderer::SetCamera()
+{
+	auto pos = XMVectorSet(m_pos.x, m_pos.y, m_pos.z, m_pos.w);
+	auto target = XMVectorSet(m_target.x, m_target.y, m_target.z, m_target.w);
+	auto up = XMVectorSet(m_up.x, m_up.y, m_up.z, m_up.w);
 	m_view = XMMatrixLookAtLH(pos, target, up);
 
 	// Projection 青纺
-	m_projection = XMMatrixOrthographicLH((float)m_width/100, (float)m_height/100, 0.1f, 1000.0f);  	// near plane, far plane
-
+	m_projection = XMMatrixOrthographicLH((float)m_width / 100, (float)m_height / 100, 0.1f, 1000.0f);  	// near plane, far plane
 }
+
 
 
 void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)

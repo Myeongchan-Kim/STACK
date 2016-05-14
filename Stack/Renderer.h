@@ -16,15 +16,15 @@ public:
 	void AddModel(ModelClass* model);
 	bool Frame(float deltaTime);
 	void ShutDown();
+	void MoveCamera(float x, float y, float z);
 
 private:
 
 
 	HRESULT InitDevice(HWND hwnd);
 	void CreateShader();
-	//HRESULT CreateVertexBuffer();
-	//HRESULT CreateIndexBuffer();
-	void InitMatrix();
+	void InitCamera();
+	void SetCamera();
 	void CalculateMatrixForBox(float deltaTime, ModelClass* model);
 	void CreateDepthStencilTexture();
 	HRESULT LoadTexture(WCHAR* fileName);
@@ -40,10 +40,21 @@ private:
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)
 	};
 
+	XMFLOAT4 			m_pos;
+	XMFLOAT4 			m_target;
+	XMFLOAT4 			m_up;
+
+	XMMATRIX			m_world2;
+	XMMATRIX			m_view;
+	XMMATRIX			m_projection;
+
+	int					m_width;
+	int					m_height;
+
 	IDXGISwapChain*					m_swapChain = nullptr; //DC 바꾸기
 	ID3D11Device*					m_device = nullptr;
 	ID3D11DeviceContext*			m_immediateContext = nullptr; //Dx용 DC
-	ID3D11RenderTargetView*			m_renderTargetView = nullptr;
+	ID3D11RenderTargetView*			m_renderTargetView = nullptr;	
 	D3D_FEATURE_LEVEL						m_featureLevel = D3D_FEATURE_LEVEL_11_0;
 	ID3D11Texture2D*						m_depthStencil = nullptr;
 	ID3D11DepthStencilView*					m_depthStencilView = nullptr;
@@ -68,15 +79,6 @@ private:
 	std::map<WCHAR*, ID3D11ShaderResourceView*>	m_textureRVList;
 	ID3D11Resource*							m_texture = nullptr;
 	ID3D11SamplerState*						m_samplerLinear = nullptr;
-
-
-	//XMMATRIX								m_world;
-	XMMATRIX								m_world2;
-	XMMATRIX								m_view;
-	XMMATRIX								m_projection;
-
-	int										m_width;
-	int										m_height;
 
 	std::vector<ModelClass*>				m_modelList;
 };

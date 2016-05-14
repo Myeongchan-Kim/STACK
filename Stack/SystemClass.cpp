@@ -146,10 +146,12 @@ bool SystemClass::Frame()
 	static float count = 0;
 	if (m_Input->IsKeyDown(VK_SPACE))
 	{
+		float dy = 1.0f;
 		ModelClass* model = new ModelClass(0, count, 0);
 		model->SetToCube(2, 1, 2);
 		m_renderer->AddModel(model);
-		count += 1.0;
+		count += dy;
+		m_renderer->MoveCamera(0.0f, dy, 0.0f);
 	}
 	m_Input->KeyUp(VK_SPACE);
 	result = m_renderer->Frame(totalElapsedTime);
