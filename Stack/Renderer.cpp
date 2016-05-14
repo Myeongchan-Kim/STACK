@@ -26,6 +26,9 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	CreateShader();
 	for (auto model : m_modelList)
 	{
+		//model->SetSample();
+		model->SetToCube(4, 2, 1);
+		assert(model->indexSize() == 36);
 		model->CreateVertexBuffer(m_device);
 		model->CreateIndexBuffer(m_device);
 	}
@@ -214,19 +217,22 @@ void   Renderer::CreateConstantBuffer()
 	m_device->CreateBuffer(&cbd, NULL, &m_constantBuffer);
 }
 
-void Renderer::CalculateMatrixForBox(float deltaTime)
+void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)
 {
 	// 박스를 회전시키기 위한 연산.    위치, 크기를 변경하고자 한다면 SRT를 기억할 것.      
-	XMMATRIX mat = XMMatrixTranslation(sinf(deltaTime*5), 0.0f, cosf(deltaTime * 5));
-	XMMATRIX world = mat;
 
+	XMFLOAT3 rot = model->GetRotation(); 
+	XMFLOAT3 pos = model->GetPosition();
+
+	XMMATRIX scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	XMMATRIX rotation = XMMatrixRotationX(rot.x) *XMMatrixRotationY(rot.y) *XMMatrixRotationZ(rot.z);
+	XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+	XMMATRIX world = scale * rotation * trans;
 	XMMATRIX wvp = world * m_view * m_projection;
 
 	m_wvp->SetMatrix((float*)&wvp);
 	m_world->SetMatrix((float*)&world);
-	m_lightDir->SetFloatVector((float*)&lightDirection);
-	m_lightColor->SetFloatVector((float*)&lightColor);
-
 }
 
 void Renderer::CalculateMatrixForBox2(float deltaTime)
@@ -313,6 +319,13 @@ HRESULT Renderer::LoadTexture()
 
 bool Renderer::Frame(float deltaTime)
 {
+	//model position 계산
+	for (auto model : m_modelList)
+	{
+		model->SetPosition(sinf(deltaTime * 3), 0.0f, cosf(deltaTime * 3));
+		model->SetRotation(sinf(deltaTime), cosf(deltaTime *2), sinf(deltaTime *0.5));
+	}
+
 	float ClearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 	m_immediateContext->ClearDepthStencilView(
@@ -334,7 +347,11 @@ bool Renderer::Frame(float deltaTime)
 		m_texDiffuse->SetResource(m_textureRV);
 		m_samLinear->SetSampler(0, m_samplerLinear);
 		// 계산 및 그리기
-		CalculateMatrixForBox(deltaTime);
+		CalculateMatrixForBox(deltaTime, model);
+
+		//빛 계산
+		m_lightDir->SetFloatVector((float*)&lightDirection);
+		m_lightColor->SetFloatVector((float*)&lightColor);
 
 		D3DX11_TECHNIQUE_DESC techDesc;
 		m_tech->GetDesc(&techDesc);
@@ -342,7 +359,7 @@ bool Renderer::Frame(float deltaTime)
 		{
 			m_tech->GetPassByIndex(p)->Apply(0, m_immediateContext);
 
-			m_immediateContext->DrawIndexed(36, 0, 0);
+			m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
 		}
 	}
 	

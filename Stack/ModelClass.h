@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d11.h>
+#include <DirectXMath.h>
 #include <vector>
 
 class MyVertex;
@@ -14,12 +15,28 @@ public:
 	ID3D11Buffer*& GetIB() { return m_indexBuffer; };
 	void ReleaseVB();
 	void ReleaseIB();
+	UINT indexSize() { return m_indices.size(); };
 
-	void SetSampleVertices();
+	void SetSample();
+	void SetToCube(float widthX, float height, float widthZ);
+	void SetPosition(float x, float y, float z);
+	void SetRotation(float x, float y, float z);
+	DirectX::XMFLOAT3 GetPosition();
+	DirectX::XMFLOAT3 GetRotation();
 
 private:
+	void AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4);
+
 	ID3D11Buffer*		m_vertexBuffer = nullptr;
 	ID3D11Buffer*		m_indexBuffer = nullptr;
 	std::vector<MyVertex>	m_vertices;
+	std::vector<WORD>	m_indices;
+	float				m_xPos = 0.0f;
+	float				m_yPos = 0.0f;
+	float				m_zPos = 0.0f;
+
+	float				m_xRot = 0.0f;
+	float				m_yRot = 0.0f;
+	float				m_zRot = 0.0f;
 };
 

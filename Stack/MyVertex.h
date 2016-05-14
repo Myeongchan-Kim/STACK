@@ -9,4 +9,6 @@ struct MyVertex
 
 	XMFLOAT3	normal;
 	XMFLOAT2	tex;
+
+	bool operator==(const MyVertex& rv);
 };
