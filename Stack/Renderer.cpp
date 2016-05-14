@@ -22,9 +22,8 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	InitDevice(hwnd);
 
 	CreateShader();
-	CreateConstantBuffer();
 	InitMatrix();
-	//LoadTexture(L"texture/febric.jpg");
+	LoadTexture(L"texture/febric.jpg");
 	LoadTexture(L"texture/concrete.jpg");
 
 	return true;
@@ -206,16 +205,6 @@ void Renderer::InitMatrix()
 
 }
 
-void   Renderer::CreateConstantBuffer()
-{
-	D3D11_BUFFER_DESC 	cbd;
-	ZeroMemory(&cbd, sizeof(cbd));
-	cbd.Usage = D3D11_USAGE_DEFAULT;
-	cbd.ByteWidth = sizeof(ConstantBuffer);
-	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbd.CPUAccessFlags = 0;
-	m_device->CreateBuffer(&cbd, NULL, &m_constantBuffer);
-}
 
 void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)
 {

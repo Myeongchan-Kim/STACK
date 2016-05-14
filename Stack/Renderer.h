@@ -24,7 +24,6 @@ private:
 	//HRESULT CreateVertexBuffer();
 	//HRESULT CreateIndexBuffer();
 	void InitMatrix();
-	void CreateConstantBuffer();
 	void CalculateMatrixForBox(float deltaTime, ModelClass* model);
 	void CreateDepthStencilTexture();
 	HRESULT LoadTexture(WCHAR* fileName);
@@ -77,15 +76,5 @@ private:
 	int										m_height;
 
 	std::vector<ModelClass*>				m_modelList;
-
-	struct	 ConstantBuffer
-	{
-		XMMATRIX wvp;
-		XMMATRIX world;
-
-		XMFLOAT4 lightDir;
-		XMFLOAT4 lightColor;
-	};
-
 };
 
