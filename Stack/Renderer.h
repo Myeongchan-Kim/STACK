@@ -1,9 +1,10 @@
 #pragma once
 #include <d3d11.h>
 #include <directxmath.h>
+#include <memory>
+#include "ModelClass.h"
 #include "Common\d3dx11effect.h"
 using namespace DirectX;
-
 
 class Renderer
 {
@@ -19,8 +20,8 @@ private:
 
 	HRESULT InitDevice(HWND hwnd);
 	void CreateShader();
-	HRESULT CreateVertexBuffer();
-	HRESULT CreateIndexBuffer();
+	//HRESULT CreateVertexBuffer();
+	//HRESULT CreateIndexBuffer();
 	void InitMatrix();
 	void CreateConstantBuffer();
 	void CalculateMatrixForBox(float deltaTime);
@@ -52,9 +53,7 @@ private:
 	ID3D11InputLayout*						m_inputLayout = nullptr;
 	ID3D11PixelShader*						m_pixelShader = nullptr;
 	ID3D11Buffer*							m_constantBuffer = nullptr;
-	ID3D11Buffer*							m_vertexBuffer = nullptr;
-	ID3D11Buffer*							m_indexBuffer = nullptr;
-
+	
 	ID3D11RasterizerState*					m_solidRS = nullptr;
 	ID3D11RasterizerState*					m_wireFrameRS = nullptr;
 
@@ -70,7 +69,6 @@ private:
 	ID3DX11EffectVectorVariable*			m_lightDir;
 	ID3DX11EffectVectorVariable*			m_lightColor;
 
-
 	//XMMATRIX								m_world;
 	XMMATRIX								m_world2;
 	XMMATRIX								m_view;
@@ -79,6 +77,7 @@ private:
 	int										m_width;
 	int										m_height;
 
+	std::vector<ModelClass*>				m_modelList;
 
 	struct	 ConstantBuffer
 	{
