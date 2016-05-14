@@ -24,7 +24,7 @@ private:
 	//HRESULT CreateIndexBuffer();
 	void InitMatrix();
 	void CreateConstantBuffer();
-	void CalculateMatrixForBox(float deltaTime);
+	void CalculateMatrixForBox(float deltaTime, ModelClass* model);
 	void CalculateMatrixForBox2(float deltaTime);
 	void CreateDepthStencilTexture();
 	HRESULT LoadTexture();
