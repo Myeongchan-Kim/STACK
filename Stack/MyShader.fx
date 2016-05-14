@@ -41,18 +41,18 @@ VertexOut VS(VertexIn vIn)
 	return vOut;
 };
 
-float4 PS(VertexOut vOut) : SV_TARGET
+float4 PS(VertexOut vOut, uniform int alphaLevel) : SV_TARGET
 {
 	float4 finalColor = 0;
 	float bright = saturate(dot((float4) - lightDir, vOut.normal) * 0.5 + 0.5);
 
 	finalColor = bright * vOut.color;
-
+	finalColor = finalColor - float4(0,0,0, alphaLevel * 0.1f);
 	float4 texColor = texDiffuse.Sample(samLinear, vOut.tex);
-	float alpha = 0.5f;
 
 	return finalColor;
 };
+
 
 
 RasterizerState WireframeRS
@@ -68,9 +68,37 @@ technique11 ColorTech
 	pass P0
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
-		SetPixelShader(CompileShader(ps_5_0, PS()));
+		SetPixelShader(CompileShader(ps_5_0, PS(0)));
 
-		//SetRasterizerState(WireframeRS);
+	}
+	pass P1
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetPixelShader(CompileShader(ps_5_0, PS(1)));
+
+	}
+	pass P2
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetPixelShader(CompileShader(ps_5_0, PS(2)));
+
+	}
+	pass P3
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetPixelShader(CompileShader(ps_5_0, PS(3)));
+
+	}
+	pass P4
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetPixelShader(CompileShader(ps_5_0, PS(4)));
+
+	}
+	pass P5
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetPixelShader(CompileShader(ps_5_0, PS(5)));
+
 	}
 };
-

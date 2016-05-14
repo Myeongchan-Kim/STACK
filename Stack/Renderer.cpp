@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "MyVertex.h"
 #include "WICTextureLoader.h"
+#include "ConstVars.h"
 
 Renderer::Renderer()
 {
@@ -20,15 +21,17 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	m_width = winWidth;
 	m_height = winHeight;
 	InitDevice(hwnd);
+	m_camera.InitCamera();
 
 	CreateShader();
 	CreateDepthStencilTexture();
 	CreateDepthStencilState();
-	CreateConstantBuffer();
 	CreateBlendState();
-	InitMatrix();
-	//LoadTexture(L"texture/febric.jpg");
-	LoadTexture(L"texture/concrete.jpg");
+	
+	
+	LoadTexture(ConstVars::CONCREAT_TEX_FILE);
+	LoadTexture(ConstVars::FEBRIC_TEX_FILE);
+	LoadTexture(ConstVars::PLANE_TEX_FILE);
 
 	return true;
 }
@@ -40,6 +43,22 @@ void Renderer::AddModel(ModelClass* model)
 	model->CreateVertexBuffer(m_device);
 	model->CreateIndexBuffer(m_device);
 
+	static int count = 0;
+	if (count == 0)
+	{
+		model->SetTextureName(ConstVars::FEBRIC_TEX_FILE);
+	}
+	else if (count == 1)
+	{
+		model->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+	}
+	else
+	{
+		model->SetTextureName(ConstVars::PLANE_TEX_FILE);
+	}
+	count++;
+	count %= 3;
+
 	m_modelList.emplace_back(model);
 }
 
@@ -47,8 +66,23 @@ void Renderer::AddTransparentModel(ModelClass* model)
 {
 	model->CreateVertexBuffer(m_device);
 	model->CreateIndexBuffer(m_device);
+	static int count = 0;
+	if (count == 0)
+	{
+		model->SetTextureName(ConstVars::FEBRIC_TEX_FILE);
+	}
+	else if (count == 1)
+	{
+		model->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+	}
+	else
+	{
+		model->SetTextureName(ConstVars::PLANE_TEX_FILE);
+	}
+	count++;
+	count %= 3;
 
-	m_modelList.emplace_back(model);
+	m_transparentModelList.emplace_back(model);
 }
 
 HRESULT Renderer::InitDevice(HWND hwnd)
@@ -164,7 +198,11 @@ void Renderer::CreateShader()
 	if (FAILED(hr))
 		return;
 
-	m_tech			= m_effect->GetTechniqueByName("ColorTech");
+	m_colorTech = m_effect->GetTechniqueByName("ColorTech");
+// 	for (int i = 0; i <= 5; i++)
+// 	{
+// 		m_transparentTechList.emplace_back(m_effect->GetTechniqueByName("TransparentTech" + i));
+// 	}
 	m_wvp			= m_effect->GetVariableByName("wvp")->AsMatrix();
 	m_world			= m_effect->GetVariableByName("world")->AsMatrix();
 	m_lightDir		= m_effect->GetVariableByName("lightDir")->AsVector();
@@ -187,7 +225,7 @@ void Renderer::CreateShader()
 	D3DX11_PASS_DESC passDesc;
 	UINT numElements = ARRAYSIZE(layout);
 
-	m_tech->GetPassByIndex(0)->GetDesc(&passDesc);
+	m_colorTech->GetPassByIndex(0)->GetDesc(&passDesc);
 
 	hr = m_device->CreateInputLayout(
 		layout,
@@ -198,32 +236,6 @@ void Renderer::CreateShader()
 
 	if (FAILED(hr))
 		return;
-}
-
-
-void Renderer::InitMatrix()
-{
-	
-	// View 행렬 구성
-	XMVECTOR 	pos = XMVectorSet(-10.0f, 15.0f, -10.0f, 1.0f);
-	XMVECTOR 	target = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-	XMVECTOR 	up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	m_view = XMMatrixLookAtLH(pos, target, up);
-
-	// Projection 행렬
-	m_projection = XMMatrixOrthographicLH((float)m_width/100, (float)m_height/100, 0.1f, 1000.0f);  	// near plane, far plane
-
-}
-
-void   Renderer::CreateConstantBuffer()
-{
-	D3D11_BUFFER_DESC 	cbd;
-	ZeroMemory(&cbd, sizeof(cbd));
-	cbd.Usage = D3D11_USAGE_DEFAULT;
-	cbd.ByteWidth = sizeof(ConstantBuffer);
-	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbd.CPUAccessFlags = 0;
-	m_device->CreateBuffer(&cbd, NULL, &m_constantBuffer);
 }
 
 void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)
@@ -238,7 +250,7 @@ void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)
 	XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 	XMMATRIX world = scale * rotation * trans;
-	XMMATRIX wvp = world * m_view * m_projection;
+	XMMATRIX wvp = world * m_camera.GetView() * m_camera.GetProjection(m_width, m_height);
 
 	m_wvp->SetMatrix((float*)&wvp);
 	m_world->SetMatrix((float*)&world);
@@ -305,10 +317,10 @@ HRESULT   Renderer::CreateBlendState()
 	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
 	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-
-	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
-	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+ 
+ 	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+ 	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+ 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
@@ -319,15 +331,20 @@ HRESULT   Renderer::CreateBlendState()
 
 HRESULT Renderer::LoadTexture(WCHAR* fileName)
 {
+	ID3D11ShaderResourceView* textureRV;
 
-	
 	HRESULT hr = CreateWICTextureFromFile(
 		m_device,
 		m_immediateContext,
 		fileName,
 		nullptr, //여기에 texture넣기.
-		&m_textureRV
+		&textureRV
 		);
+
+	if (FAILED(hr))
+		return hr;
+	
+	m_textureRVList.insert({ fileName, textureRV });
 
 	D3D11_SAMPLER_DESC	sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
@@ -340,16 +357,19 @@ HRESULT Renderer::LoadTexture(WCHAR* fileName)
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	hr = m_device->CreateSamplerState(&sampDesc, &m_samplerLinear);
-
+	
+	if (FAILED(hr))
+		return hr;
 
 	return hr;
 
 }
 
-bool Renderer::Frame(float deltaTime)
+bool Renderer::Frame(float elapsedTime)
 {
 	//model position 계산
 	float ClearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
+	static float lastTime = 0;
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 	m_immediateContext->ClearDepthStencilView(
 		m_depthStencilView,		//clear target
@@ -371,23 +391,26 @@ bool Renderer::Frame(float deltaTime)
 		m_immediateContext->IASetVertexBuffers(0, 1, &model->GetVB(), &stride, &offset);
 		m_immediateContext->IASetIndexBuffer(model->GetIB(), DXGI_FORMAT_R16_UINT, 0);
 
- 		m_texDiffuse->SetResource(m_textureRV);
+		auto textureName = model->GetTextureName();
+
+		auto texture = m_textureRVList.at(textureName);
+		m_texDiffuse->SetResource(texture);
 		m_samLinear->SetSampler(0, m_samplerLinear);
 		// 계산 및 그리기
-		CalculateMatrixForBox(deltaTime, model);
+		CalculateMatrixForBox(elapsedTime, model);
 
 		//빛 계산
 		m_lightDir->SetFloatVector((float*)&lightDirection);
 		m_lightColor->SetFloatVector((float*)&lightColor);
 
 		D3DX11_TECHNIQUE_DESC techDesc;
-		m_tech->GetDesc(&techDesc);
-		for (UINT p = 0; p < techDesc.Passes; ++p)
-		{
-			m_tech->GetPassByIndex(p)->Apply(0, m_immediateContext);
+		m_colorTech->GetDesc(&techDesc);
+		
+		int transparentLevel = model->GetTransparency();
+		m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
 
-			m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
-		}
+		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
+		
 	}
 
 	m_immediateContext->OMSetDepthStencilState(m_depthStencilStateZTestOff, 0);
@@ -401,23 +424,29 @@ bool Renderer::Frame(float deltaTime)
 		m_immediateContext->IASetVertexBuffers(0, 1, &model->GetVB(), &stride, &offset);
 		m_immediateContext->IASetIndexBuffer(model->GetIB(), DXGI_FORMAT_R16_UINT, 0);
 
-		m_texDiffuse->SetResource(m_textureRV);
+		auto textureName = model->GetTextureName();
+
+		auto texture = m_textureRVList.at(textureName);
+		m_texDiffuse->SetResource(texture);
 		m_samLinear->SetSampler(0, m_samplerLinear);
 		// 계산 및 그리기
-		CalculateMatrixForBox(deltaTime, model);
+		CalculateMatrixForBox(elapsedTime, model);
 
 		//빛 계산
 		m_lightDir->SetFloatVector((float*)&lightDirection);
 		m_lightColor->SetFloatVector((float*)&lightColor);
 
 		D3DX11_TECHNIQUE_DESC techDesc;
-		m_tech->GetDesc(&techDesc);
-		for (UINT p = 0; p < techDesc.Passes; ++p)
-		{
-			m_tech->GetPassByIndex(p)->Apply(0, m_immediateContext);
+		m_colorTech->GetDesc(&techDesc);
 
-			m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
+		int transparentLevel = model->GetTransparency();
+		m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
+		if (elapsedTime - lastTime > 0.1f)
+		{
+			model->UpTransparency();
+			lastTime = elapsedTime;
 		}
+		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
 	}
 
 // 	for (int i = 0; i < m_transparentModelList.size(); i++)
@@ -480,9 +509,12 @@ void Renderer::ShutDown()
 	if (m_pixelShader) m_pixelShader->Release();
 	if (m_solidRS) m_solidRS->Release();
 	if (m_wireFrameRS) m_wireFrameRS->Release();
-	if (m_textureRV) m_textureRV->Release();
 	if (m_samplerLinear) m_samplerLinear->Release();
 	if (m_effect) m_effect->Release();
 
+	for (auto texture : m_textureRVList)
+	{
+		if (texture.second != nullptr) texture.second->Release();
+	}
 
 }

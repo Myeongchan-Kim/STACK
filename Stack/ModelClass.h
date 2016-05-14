@@ -26,12 +26,19 @@ public:
 	void SetRotation(float x, float y, float z);
 
 
+	void UpTransparency() { if(m_transparency < 5) m_transparency++; };
+	int GetTransparency() { return m_transparency; };
 	DirectX::XMFLOAT3 GetPosition();
 	DirectX::XMFLOAT3 GetRotation();
 	inline DirectX::XMFLOAT4 GetColor() { return m_rgba; };
 
+	WCHAR*& GetTextureName() { return m_textureName; };
+	void SetTextureName(WCHAR* textureName);
+
 private:
 	void AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4);
+
+	WCHAR* m_textureName;
 
 	ID3D11Buffer*		m_vertexBuffer = nullptr;
 	ID3D11Buffer*		m_indexBuffer = nullptr;
@@ -45,5 +52,6 @@ private:
 	float				m_xRot;
 	float				m_yRot;
 	float				m_zRot;
+	int					m_transparency = 0;
 };
 

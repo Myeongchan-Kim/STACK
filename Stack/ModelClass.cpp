@@ -231,6 +231,11 @@ DirectX::XMFLOAT3 ModelClass::GetRotation()
 	return DirectX::XMFLOAT3({m_xRot, m_yRot, m_zRot});
 }
 
+void ModelClass::SetTextureName(WCHAR * textureName)
+{
+	m_textureName = textureName;
+}
+
 void ModelClass::SetPosition(float x, float y, float z)
 {
 	m_xPos = x;

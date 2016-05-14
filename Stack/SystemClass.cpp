@@ -146,14 +146,16 @@ bool SystemClass::Frame()
 	static float count = 0;
 	if (m_Input->IsKeyDown(VK_SPACE))
 	{
-		ModelClass* model = new ModelClass(0, count/2, 0);
-		ModelClass* transModel = new ModelClass(-1.0f, count/2, 0);
-		model->SetToCube(2, 0.5f, 2);
-		transModel->SetToCube(1, 0.5f, 1);
-		transModel->SetColor(1.0f - count * 0.1f, 0 + count * 0.1f, 0, 1.0f - count * 0.1f);
+		float dy = 1.0f;
+		ModelClass* model = new ModelClass(0, count, 0);
+		ModelClass* transModel = new ModelClass(-0.5f, count, 2);
+		model->SetToCube(2, 1, 2);
+		transModel->SetToCube(1, 1, 1);
 		m_renderer->AddModel(model);
 		m_renderer->AddTransparentModel(transModel);
-		count += 1.0;
+
+		m_renderer->MoveCamera(0.0f, dy, 0.0f);
+		count += dy;
 	}
 	m_Input->KeyUp(VK_SPACE);
 	result = m_renderer->Frame(totalElapsedTime);

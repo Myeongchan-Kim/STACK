@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="InputClass.cpp" />
     <ClCompile Include="MyVertex.cpp" />
     <ClCompile Include="ModelClass.cpp" />
@@ -159,6 +160,8 @@
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="ConstVars.h" />
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="MyVertex.h" />
     <ClInclude Include="ModelClass.h" />
