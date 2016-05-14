@@ -5,6 +5,8 @@
 #include <memory>
 #include "ModelClass.h"
 #include "Common\d3dx11effect.h"
+#include "Camera.h"
+
 using namespace DirectX;
 
 class Renderer
@@ -16,38 +18,21 @@ public:
 	void AddModel(ModelClass* model);
 	bool Frame(float deltaTime);
 	void ShutDown();
-	void MoveCamera(float x, float y, float z);
+	void MoveCamera(float x, float y, float z) { m_camera.MoveCamera(x, y, z); };
 
 private:
 
 
 	HRESULT InitDevice(HWND hwnd);
 	void CreateShader();
-	void InitCamera();
-	void SetCamera();
 	void CalculateMatrixForBox(float deltaTime, ModelClass* model);
 	void CreateDepthStencilTexture();
 	HRESULT LoadTexture(WCHAR* fileName);
 	void CreateRenderState();
 
-	XMFLOAT4 lightDirection =
-	{
-		XMFLOAT4(0.0f, -1.0f, -0.3f, 1.0f)
-	};
-
-	XMFLOAT4 lightColor =
-	{
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)
-	};
-
-	XMFLOAT4 			m_pos;
-	XMFLOAT4 			m_target;
-	XMFLOAT4 			m_up;
-
-	XMMATRIX			m_world2;
-	XMMATRIX			m_view;
-	XMMATRIX			m_projection;
-
+	XMFLOAT4 lightDirection = { 0.0f, -1.0f, -0.3f, 1.0f };
+	XMFLOAT4 lightColor = {1.0f, 1.0f, 1.0f, 1.0f};
+	Camera				m_camera;
 	int					m_width;
 	int					m_height;
 
@@ -76,10 +61,10 @@ private:
 	ID3DX11EffectVectorVariable*			m_lightDir;
 	ID3DX11EffectVectorVariable*			m_lightColor;
 
-	std::map<WCHAR*, ID3D11ShaderResourceView*>	m_textureRVList;
 	ID3D11Resource*							m_texture = nullptr;
 	ID3D11SamplerState*						m_samplerLinear = nullptr;
 
+	std::map<WCHAR*, ID3D11ShaderResourceView*>	m_textureRVList;
 	std::vector<ModelClass*>				m_modelList;
 };
 

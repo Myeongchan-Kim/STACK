@@ -45,6 +45,9 @@
     <ClCompile Include="ModelClass.cpp">
       <Filter>소스 파일\Graphic</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일\Graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyVertex.h">
@@ -70,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="ConstVars.h">
       <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>소스 파일\Graphic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
