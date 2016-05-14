@@ -1,9 +1,12 @@
 #pragma once
 #include <d3d11.h>
 #include <directxmath.h>
+#include <map>
 #include <memory>
 #include "ModelClass.h"
 #include "Common\d3dx11effect.h"
+#include "Camera.h"
+
 using namespace DirectX;
 
 class Renderer
@@ -15,35 +18,28 @@ public:
 	void AddModel(ModelClass* model);
 	bool Frame(float deltaTime);
 	void ShutDown();
+	void MoveCamera(float x, float y, float z) { m_camera.MoveCamera(x, y, z); };
 
 private:
 
 
 	HRESULT InitDevice(HWND hwnd);
 	void CreateShader();
-	//HRESULT CreateVertexBuffer();
-	//HRESULT CreateIndexBuffer();
-	void InitMatrix();
-	void CreateConstantBuffer();
 	void CalculateMatrixForBox(float deltaTime, ModelClass* model);
 	void CreateDepthStencilTexture();
 	HRESULT LoadTexture(WCHAR* fileName);
 	void CreateRenderState();
 
-	XMFLOAT4 lightDirection =
-	{
-		XMFLOAT4(0.0f, -1.0f, -0.3f, 1.0f)
-	};
-
-	XMFLOAT4 lightColor =
-	{
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)
-	};
+	XMFLOAT4 lightDirection = { 0.0f, -1.0f, -0.3f, 1.0f };
+	XMFLOAT4 lightColor = {1.0f, 1.0f, 1.0f, 1.0f};
+	Camera				m_camera;
+	int					m_width;
+	int					m_height;
 
 	IDXGISwapChain*					m_swapChain = nullptr; //DC 바꾸기
 	ID3D11Device*					m_device = nullptr;
 	ID3D11DeviceContext*			m_immediateContext = nullptr; //Dx용 DC
-	ID3D11RenderTargetView*			m_renderTargetView = nullptr;
+	ID3D11RenderTargetView*			m_renderTargetView = nullptr;	
 	D3D_FEATURE_LEVEL						m_featureLevel = D3D_FEATURE_LEVEL_11_0;
 	ID3D11Texture2D*						m_depthStencil = nullptr;
 	ID3D11DepthStencilView*					m_depthStencilView = nullptr;
@@ -56,9 +52,6 @@ private:
 	ID3D11RasterizerState*					m_solidRS = nullptr;
 	ID3D11RasterizerState*					m_wireFrameRS = nullptr;
 
-	ID3D11ShaderResourceView*				m_textureRV = nullptr;
-	ID3D11Resource*							m_texture = nullptr;
-	ID3D11SamplerState*						m_samplerLinear = nullptr;
 	ID3DX11Effect*							m_effect = nullptr;
 	ID3DX11EffectTechnique*					m_tech = nullptr;
 	ID3DX11EffectSamplerVariable*			m_samLinear = nullptr;
@@ -68,24 +61,10 @@ private:
 	ID3DX11EffectVectorVariable*			m_lightDir;
 	ID3DX11EffectVectorVariable*			m_lightColor;
 
-	//XMMATRIX								m_world;
-	XMMATRIX								m_world2;
-	XMMATRIX								m_view;
-	XMMATRIX								m_projection;
+	ID3D11Resource*							m_texture = nullptr;
+	ID3D11SamplerState*						m_samplerLinear = nullptr;
 
-	int										m_width;
-	int										m_height;
-
+	std::map<WCHAR*, ID3D11ShaderResourceView*>	m_textureRVList;
 	std::vector<ModelClass*>				m_modelList;
-
-	struct	 ConstantBuffer
-	{
-		XMMATRIX wvp;
-		XMMATRIX world;
-
-		XMFLOAT4 lightDir;
-		XMFLOAT4 lightColor;
-	};
-
 };
 

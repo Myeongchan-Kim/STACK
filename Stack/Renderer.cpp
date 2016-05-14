@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "MyVertex.h"
 #include "WICTextureLoader.h"
+#include "ConstVars.h"
 
 Renderer::Renderer()
 {
@@ -20,12 +21,14 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	m_width = winWidth;
 	m_height = winHeight;
 	InitDevice(hwnd);
+	m_camera.InitCamera();
 
 	CreateShader();
-	CreateConstantBuffer();
-	InitMatrix();
-	//LoadTexture(L"texture/febric.jpg");
-	LoadTexture(L"texture/concrete.jpg");
+	
+	
+	LoadTexture(ConstVars::CONCREAT_TEX_FILE);
+	LoadTexture(ConstVars::FEBRIC_TEX_FILE);
+	LoadTexture(ConstVars::PLANE_TEX_FILE);
 
 	return true;
 }
@@ -36,6 +39,22 @@ void Renderer::AddModel(ModelClass* model)
 	//model->SetSample();
 	model->CreateVertexBuffer(m_device);
 	model->CreateIndexBuffer(m_device);
+
+	static int count = 0;
+	if (count == 0)
+	{
+		model->SetTextureName(ConstVars::FEBRIC_TEX_FILE);
+	}
+	else if (count == 1)
+	{
+		model->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+	}
+	else
+	{
+		model->SetTextureName(ConstVars::PLANE_TEX_FILE);
+	}
+	count++;
+	count %= 3;
 
 	m_modelList.emplace_back(model);
 }
@@ -191,32 +210,6 @@ void Renderer::CreateShader()
 		return;
 }
 
-
-void Renderer::InitMatrix()
-{
-	
-	// View 행렬 구성
-	XMVECTOR 	pos = XMVectorSet(-10.0f, 15.0f, -10.0f, 1.0f);
-	XMVECTOR 	target = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-	XMVECTOR 	up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	m_view = XMMatrixLookAtLH(pos, target, up);
-
-	// Projection 행렬
-	m_projection = XMMatrixOrthographicLH((float)m_width/100, (float)m_height/100, 0.1f, 1000.0f);  	// near plane, far plane
-
-}
-
-void   Renderer::CreateConstantBuffer()
-{
-	D3D11_BUFFER_DESC 	cbd;
-	ZeroMemory(&cbd, sizeof(cbd));
-	cbd.Usage = D3D11_USAGE_DEFAULT;
-	cbd.ByteWidth = sizeof(ConstantBuffer);
-	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbd.CPUAccessFlags = 0;
-	m_device->CreateBuffer(&cbd, NULL, &m_constantBuffer);
-}
-
 void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)
 {
 	// 박스를 회전시키기 위한 연산.    위치, 크기를 변경하고자 한다면 SRT를 기억할 것.      
@@ -229,7 +222,7 @@ void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)
 	XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 	XMMATRIX world = scale * rotation * trans;
-	XMMATRIX wvp = world * m_view * m_projection;
+	XMMATRIX wvp = world * m_camera.GetView() * m_camera.GetProjection(m_width, m_height);
 
 	m_wvp->SetMatrix((float*)&wvp);
 	m_world->SetMatrix((float*)&world);
@@ -269,15 +262,20 @@ void Renderer::CreateDepthStencilTexture()
 
 HRESULT Renderer::LoadTexture(WCHAR* fileName)
 {
+	ID3D11ShaderResourceView* textureRV;
 
-	
 	HRESULT hr = CreateWICTextureFromFile(
 		m_device,
 		m_immediateContext,
 		fileName,
 		nullptr, //여기에 texture넣기.
-		&m_textureRV
+		&textureRV
 		);
+
+	if (FAILED(hr))
+		return hr;
+	
+	m_textureRVList.insert({ fileName, textureRV });
 
 	D3D11_SAMPLER_DESC	sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
@@ -290,7 +288,9 @@ HRESULT Renderer::LoadTexture(WCHAR* fileName)
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	hr = m_device->CreateSamplerState(&sampDesc, &m_samplerLinear);
-
+	
+	if (FAILED(hr))
+		return hr;
 
 	return hr;
 
@@ -317,7 +317,10 @@ bool Renderer::Frame(float deltaTime)
 		m_immediateContext->IASetVertexBuffers(0, 1, &model->GetVB(), &stride, &offset);
 		m_immediateContext->IASetIndexBuffer(model->GetIB(), DXGI_FORMAT_R16_UINT, 0);
 
- 		m_texDiffuse->SetResource(m_textureRV);
+		auto textureName = model->GetTextureName();
+
+		auto texture = m_textureRVList.at(textureName);
+		m_texDiffuse->SetResource(texture);
 		m_samLinear->SetSampler(0, m_samplerLinear);
 		// 계산 및 그리기
 		CalculateMatrixForBox(deltaTime, model);
@@ -386,9 +389,12 @@ void Renderer::ShutDown()
 	if (m_pixelShader) m_pixelShader->Release();
 	if (m_solidRS) m_solidRS->Release();
 	if (m_wireFrameRS) m_wireFrameRS->Release();
-	if (m_textureRV) m_textureRV->Release();
 	if (m_samplerLinear) m_samplerLinear->Release();
 	if (m_effect) m_effect->Release();
 
+	for (auto texture : m_textureRVList)
+	{
+		if (texture.second != nullptr) texture.second->Release();
+	}
 
 }
