@@ -2,6 +2,7 @@
 #include <dxgi.h>
 #include <d3dcompiler.h>
 #include "Renderer.h"
+#include "MyVertex.h"
 #include "WICTextureLoader.h"
 
 Renderer::Renderer()
@@ -149,6 +150,12 @@ void Renderer::CreateShader()
 		return;
 
 	m_tech = m_effect->GetTechniqueByName("ColorTech");
+	m_wvp = m_effect->GetVariableByName("wvp")->AsMatrix();
+	m_world = m_effect->GetVariableByName("world")->AsMatrix();
+	m_lightDir = m_effect->GetVariableByName("lightDir")->AsVector();
+	m_lightColor = m_effect->GetVariableByName("lightColor")->AsVector();
+	m_texDiffuse = m_effect->GetVariableByName("texDiffuse")->AsShaderResource();
+	m_samLinear = m_effect->GetVariableByName("samLinear")->AsSampler();
 
 	if (FAILED(hr))
 		return;
@@ -183,14 +190,14 @@ HRESULT Renderer::CreateVertexBuffer()
 {
 	MyVertex	vertices[] = 
 	{
-		{ XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(-0.33f, 0.33f, -0.33f), XMFLOAT2(1.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(0.33f, 0.33f, -0.33f), XMFLOAT2(0.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.33f, 0.33f, 0.33f), XMFLOAT2(0.0f, 0.0f) },
-		{ XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(-0.33f, 0.33f, 0.33f), XMFLOAT2(1.0f, 0.0f) },
-		{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(-0.33f, -0.33f, -0.33f), XMFLOAT2(0.0f, 0.0f) },
-		{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(0.33f, -0.33f, -0.33f), XMFLOAT2(1.0f, 0.0f) },
-		{ XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.33f, -0.33f, 0.33f), XMFLOAT2(1.0f, 1.0f) },
-		{ XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(-0.33f, -0.33f, 0.33f), XMFLOAT2(0.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, 0.5f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(-0.33f, 0.33f, -0.33f), XMFLOAT2(1.0f, 1.0f) },
+		{ XMFLOAT3(1.0f, 0.5f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(0.33f, 0.33f, -0.33f), XMFLOAT2(0.0f, 1.0f) },
+		{ XMFLOAT3(1.0f, 0.5f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.33f, 0.33f, 0.33f), XMFLOAT2(0.0f, 0.0f) },
+		{ XMFLOAT3(-1.0f, 0.5f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(-0.33f, 0.33f, 0.33f), XMFLOAT2(1.0f, 0.0f) },
+		{ XMFLOAT3(-1.0f, -0.5f, -1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(-0.33f, -0.33f, -0.33f), XMFLOAT2(0.0f, 0.0f) },
+		{ XMFLOAT3(1.0f, -0.5f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(0.33f, -0.33f, -0.33f), XMFLOAT2(1.0f, 0.0f) },
+		{ XMFLOAT3(1.0f, -0.5f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.33f, -0.33f, 0.33f), XMFLOAT2(1.0f, 1.0f) },
+		{ XMFLOAT3(-1.0f, -0.5f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(-0.33f, -0.33f, 0.33f), XMFLOAT2(0.0f, 1.0f) },
 
 	};
 
@@ -207,7 +214,6 @@ HRESULT Renderer::CreateVertexBuffer()
 	return m_device->CreateBuffer(&bd,			//생성할 버퍼의 정보를 담은 구조체
 		&initData,								//버퍼 초기화시 필요한 데이터
 		&m_vertexBuffer);						//생성된 버퍼
-
 
 }
 
@@ -251,19 +257,15 @@ HRESULT Renderer::CreateIndexBuffer()
 
 void Renderer::InitMatrix()
 {
-	// World 행렬 초기화
-	m_world = XMMatrixIdentity();
-
+	
 	// View 행렬 구성
-	XMVECTOR 	pos = XMVectorSet(0.0f, 0.0f, -5.0f, 1.0f);
-	XMVECTOR 	target = XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f);
+	XMVECTOR 	pos = XMVectorSet(-10.0f, 15.0f, -10.0f, 1.0f);
+	XMVECTOR 	target = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 	XMVECTOR 	up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	m_view = XMMatrixLookAtLH(pos, target, up);
 
 	// Projection 행렬
-	m_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2,  	// pi
-		m_width / (FLOAT)m_height,  // aspect ratio
-		0.01f, 100.0f);  	// near plane, far plane
+	m_projection = XMMatrixOrthographicLH((float)m_width/100, (float)m_height/100, 0.1f, 1000.0f);  	// near plane, far plane
 
 }
 
@@ -281,17 +283,15 @@ void   Renderer::CreateConstantBuffer()
 void Renderer::CalculateMatrixForBox(float deltaTime)
 {
 	// 박스를 회전시키기 위한 연산.    위치, 크기를 변경하고자 한다면 SRT를 기억할 것.      
-	XMMATRIX mat = XMMatrixRotationY(deltaTime);
-	mat *= XMMatrixRotationX(deltaTime);
-	m_world = mat;
+	XMMATRIX mat = XMMatrixTranslation(sinf(deltaTime*5), 0.0f, cosf(deltaTime * 5));
+	XMMATRIX world = mat;
 
-	XMMATRIX wvp = m_world * m_view * m_projection;
+	XMMATRIX wvp = world * m_view * m_projection;
 
-
-	m_effect->GetVariableByName("wvp")->AsMatrix()->SetMatrix((float*)&wvp);
-	m_effect->GetVariableByName("world")->AsMatrix()->SetMatrix((float*)&m_world);
-	m_effect->GetVariableByName("lightDir")->AsVector()->SetFloatVector((float*)&lightDirection);
-	m_effect->GetVariableByName("lightColor")->AsVector()->SetFloatVector((float*)&lightColor);
+	m_wvp->SetMatrix((float*)&wvp);
+	m_world->SetMatrix((float*)&world);
+	m_lightDir->SetFloatVector((float*)&lightDirection);
+	m_lightColor->SetFloatVector((float*)&lightColor);
 
 }
 
@@ -307,7 +307,7 @@ void Renderer::CalculateMatrixForBox2(float deltaTime)
 	XMMATRIX wvp = m_world2 * m_view * m_projection;
 	ConstantBuffer cb;
 	cb.wvp = XMMatrixTranspose(wvp);
-	cb.world = XMMatrixTranspose(m_world);
+	cb.world = XMMatrixTranspose(m_world2);
 	cb.lightDir = lightDirection;
 	cb.lightColor = lightColor;
 
@@ -394,19 +394,9 @@ bool Renderer::Frame(float deltaTime)
 	UINT offset = 0;
 	m_immediateContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
 	m_immediateContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R16_UINT, 0);
-// 
-// 	m_immediateContext->VSSetShader(m_vertexShader, NULL, 0);
-// 	m_immediateContext->PSSetShader(m_pixelShader, NULL, 0);
-// 
-//  m_immediateContext->PSSetShaderResources(0, 1, &m_textureRV);
-//  m_immediateContext->PSSetSamplers(0, 1, &m_samplerLinear);
 
-
-	//m_immediateContext->RSSetState(m_solidRS);
-
-
-	m_effect->GetVariableByName("texDiffuse")->AsShaderResource()->SetResource(m_textureRV);
-	m_effect->GetVariableByName("samLinear")->AsSampler()->SetSampler(0, m_samplerLinear);
+	m_texDiffuse->SetResource(m_textureRV);
+	m_samLinear->SetSampler(0, m_samplerLinear);
 	// 계산 및 그리기
 	CalculateMatrixForBox(deltaTime);
 
@@ -416,7 +406,6 @@ bool Renderer::Frame(float deltaTime)
 	{
 		m_tech->GetPassByIndex(p)->Apply(0, m_immediateContext);
 
-		// 36 indices for the box.
 		m_immediateContext->DrawIndexed(36, 0, 0);
 	}
 
