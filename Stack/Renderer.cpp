@@ -22,10 +22,13 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	m_height = winHeight;
 	InitDevice(hwnd);
 
-
+	m_modelList.emplace_back(new ModelClass());
 	CreateShader();
-	CreateVertexBuffer();
-	CreateIndexBuffer();
+	for (auto model : m_modelList)
+	{
+		model->CreateVertexBuffer(m_device);
+		model->CreateIndexBuffer(m_device);
+	}
 
 	CreateConstantBuffer();
 	InitMatrix();
@@ -186,75 +189,6 @@ void Renderer::CreateShader()
 }
 
 
-HRESULT Renderer::CreateVertexBuffer()
-{
-	MyVertex	vertices[] = 
-	{
-		{ XMFLOAT3(-1.0f, 0.5f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(-0.33f, 0.33f, -0.33f), XMFLOAT2(1.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, 0.5f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(0.33f, 0.33f, -0.33f), XMFLOAT2(0.0f, 1.0f) },
-		{ XMFLOAT3(1.0f, 0.5f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.33f, 0.33f, 0.33f), XMFLOAT2(0.0f, 0.0f) },
-		{ XMFLOAT3(-1.0f, 0.5f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(-0.33f, 0.33f, 0.33f), XMFLOAT2(1.0f, 0.0f) },
-		{ XMFLOAT3(-1.0f, -0.5f, -1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(-0.33f, -0.33f, -0.33f), XMFLOAT2(0.0f, 0.0f) },
-		{ XMFLOAT3(1.0f, -0.5f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(0.33f, -0.33f, -0.33f), XMFLOAT2(1.0f, 0.0f) },
-		{ XMFLOAT3(1.0f, -0.5f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.33f, -0.33f, 0.33f), XMFLOAT2(1.0f, 1.0f) },
-		{ XMFLOAT3(-1.0f, -0.5f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(-0.33f, -0.33f, 0.33f), XMFLOAT2(0.0f, 1.0f) },
-
-	};
-
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.ByteWidth = sizeof(vertices);			//버퍼 크기
-	bd.Usage = D3D11_USAGE_DEFAULT;				//버퍼 사용 방식
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;	//파이프라인에 연결되는 버퍼 형태
-	bd.CPUAccessFlags = 0;						//cpu접근 flag. 일반적으로 GPU를 사용하기 때문에 0을 쓴다.
-
-	D3D11_SUBRESOURCE_DATA	initData;
-	ZeroMemory(&initData, sizeof(initData));
-	initData.pSysMem = vertices;				//초기화하기 위한 버퍼 배열 포인터
-	return m_device->CreateBuffer(&bd,			//생성할 버퍼의 정보를 담은 구조체
-		&initData,								//버퍼 초기화시 필요한 데이터
-		&m_vertexBuffer);						//생성된 버퍼
-
-}
-
-
-HRESULT Renderer::CreateIndexBuffer()
-{
-	WORD indices[] =
-	{
-		3, 1, 0,
-		2, 1, 3,
-		0, 5, 4,
-		1, 5, 0,
-		3, 4, 7,
-		0, 4, 3,
-		1, 6, 5,
-		2, 6, 1,
-		2, 7, 6,
-		3, 7, 2,
-		6, 4, 5,
-		7, 4, 6,
-
-
-	};
-
-	D3D11_BUFFER_DESC ibd;
-	ZeroMemory(&ibd, sizeof(ibd));
-	ibd.ByteWidth = sizeof(indices);				//버퍼 크기
-	ibd.Usage = D3D11_USAGE_IMMUTABLE;				//버퍼 사용 방식
-	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;		//파이프라인에 연결되는 버퍼 형태
-	ibd.CPUAccessFlags = 0;							//cpu접근 flag. 일반적으로 GPU를 사용하기 때문에 0을 쓴다.
-
-	D3D11_SUBRESOURCE_DATA	initData;
-	ZeroMemory(&initData, sizeof(initData));
-	initData.pSysMem = indices;						//초기화하기 위한 버퍼 배열 포인터
-	return m_device->CreateBuffer(&ibd,				//생성할 버퍼의 정보를 담은 구조체
-		&initData,									//버퍼 초기화시 필요한 데이터
-		&m_indexBuffer);							//생성된 버퍼
-}
-
-
-
 void Renderer::InitMatrix()
 {
 	
@@ -390,25 +324,28 @@ bool Renderer::Frame(float deltaTime)
 	m_immediateContext->IASetInputLayout(m_inputLayout);
 	m_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	UINT stride = sizeof(MyVertex);
-	UINT offset = 0;
-	m_immediateContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
-	m_immediateContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R16_UINT, 0);
-
-	m_texDiffuse->SetResource(m_textureRV);
-	m_samLinear->SetSampler(0, m_samplerLinear);
-	// 계산 및 그리기
-	CalculateMatrixForBox(deltaTime);
-
-	D3DX11_TECHNIQUE_DESC techDesc;
-	m_tech->GetDesc(&techDesc);
-	for (UINT p = 0; p < techDesc.Passes; ++p)
+	for (auto model : m_modelList)
 	{
-		m_tech->GetPassByIndex(p)->Apply(0, m_immediateContext);
+		UINT stride = sizeof(MyVertex);
+		UINT offset = 0;
+		m_immediateContext->IASetVertexBuffers(0, 1, &model->GetVB(), &stride, &offset);
+		m_immediateContext->IASetIndexBuffer(model->GetIB(), DXGI_FORMAT_R16_UINT, 0);
 
-		m_immediateContext->DrawIndexed(36, 0, 0);
+		m_texDiffuse->SetResource(m_textureRV);
+		m_samLinear->SetSampler(0, m_samplerLinear);
+		// 계산 및 그리기
+		CalculateMatrixForBox(deltaTime);
+
+		D3DX11_TECHNIQUE_DESC techDesc;
+		m_tech->GetDesc(&techDesc);
+		for (UINT p = 0; p < techDesc.Passes; ++p)
+		{
+			m_tech->GetPassByIndex(p)->Apply(0, m_immediateContext);
+
+			m_immediateContext->DrawIndexed(36, 0, 0);
+		}
 	}
-
+	
 	m_swapChain->Present(0, 0);
 
 	return true;
@@ -441,12 +378,20 @@ void Renderer::CreateRenderState2()
 
 void Renderer::ShutDown()
 {
+	for (auto model : m_modelList)
+	{
+		model->ReleaseVB();
+		model->ReleaseIB();
+		if (!model)
+		{
+			delete model;
+			model = nullptr;
+		}
+		
+	}
 	if (m_immediateContext) m_immediateContext->ClearState();
 
 	if (m_constantBuffer) m_constantBuffer->Release();
-	if (m_indexBuffer) m_indexBuffer->Release();
-
-	if (m_vertexBuffer) m_vertexBuffer->Release();
 	if (m_inputLayout) m_inputLayout->Release();
 	if (m_vertexShader) m_vertexShader->Release();
 	if (m_pixelShader) m_pixelShader->Release();

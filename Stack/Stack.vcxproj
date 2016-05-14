@@ -152,7 +152,7 @@
   <ItemGroup>
     <ClCompile Include="InputClass.cpp" />
     <ClCompile Include="MyVertex.cpp" />
-    <ClCompile Include="Polygon.cpp" />
+    <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="MyTime.cpp" />
     <ClCompile Include="SystemClass.cpp" />
@@ -161,7 +161,7 @@
   <ItemGroup>
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="MyVertex.h" />
-    <ClInclude Include="Polygon.h" />
+    <ClInclude Include="ModelClass.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="MyTime.h" />
     <ClInclude Include="SystemClass.h" />
