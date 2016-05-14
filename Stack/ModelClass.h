@@ -20,9 +20,15 @@ public:
 	void SetSample();
 	void SetToCube(float widthX, float height, float widthZ);
 	void SetPosition(float x, float y, float z);
+	void SetColor(float r, float g, float b, float a);
+	void SetRGB(float r, float g, float b);
+	void SetAlpha(float a);
 	void SetRotation(float x, float y, float z);
+
+
 	DirectX::XMFLOAT3 GetPosition();
 	DirectX::XMFLOAT3 GetRotation();
+	inline DirectX::XMFLOAT4 GetColor() { return m_rgba; };
 
 private:
 	void AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4);
@@ -31,12 +37,13 @@ private:
 	ID3D11Buffer*		m_indexBuffer = nullptr;
 	std::vector<MyVertex>	m_vertices;
 	std::vector<WORD>	m_indices;
-	float				m_xPos = 0.0f;
-	float				m_yPos = 0.0f;
-	float				m_zPos = 0.0f;
+	DirectX::XMFLOAT4			m_rgba;
+	float				m_xPos;
+	float				m_yPos;
+	float				m_zPos;
 
-	float				m_xRot = 0.0f;
-	float				m_yRot = 0.0f;
-	float				m_zRot = 0.0f;
+	float				m_xRot;
+	float				m_yRot;
+	float				m_zRot;
 };
 
