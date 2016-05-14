@@ -12,6 +12,7 @@ public:
 	Renderer();
 	~Renderer();
 	bool Initialize(int winWidth, int winHeight, HWND hwnd);
+	void AddModel(ModelClass* model);
 	bool Frame(float deltaTime);
 	void ShutDown();
 
@@ -25,11 +26,9 @@ private:
 	void InitMatrix();
 	void CreateConstantBuffer();
 	void CalculateMatrixForBox(float deltaTime, ModelClass* model);
-	void CalculateMatrixForBox2(float deltaTime);
 	void CreateDepthStencilTexture();
 	HRESULT LoadTexture();
 	void CreateRenderState();
-	void CreateRenderState2();
 
 	XMFLOAT4 lightDirection =
 	{

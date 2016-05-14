@@ -7,7 +7,7 @@ class MyVertex;
 class ModelClass
 {
 public:
-	ModelClass();
+	ModelClass(float x, float y, float z);
 	~ModelClass();
 	HRESULT CreateVertexBuffer(ID3D11Device* device);
 	HRESULT CreateIndexBuffer(ID3D11Device* device);

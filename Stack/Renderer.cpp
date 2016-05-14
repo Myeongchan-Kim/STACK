@@ -22,22 +22,23 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	m_height = winHeight;
 	InitDevice(hwnd);
 
-	m_modelList.emplace_back(new ModelClass());
 	CreateShader();
-	for (auto model : m_modelList)
-	{
-		//model->SetSample();
-		model->SetToCube(4, 2, 1);
-		assert(model->indexSize() == 36);
-		model->CreateVertexBuffer(m_device);
-		model->CreateIndexBuffer(m_device);
-	}
 
 	CreateConstantBuffer();
 	InitMatrix();
 	LoadTexture();
 	
 	return true;
+}
+
+
+void Renderer::AddModel(ModelClass* model)
+{
+	//model->SetSample();
+	model->CreateVertexBuffer(m_device);
+	model->CreateIndexBuffer(m_device);
+
+	m_modelList.emplace_back(model);
 }
 
 HRESULT Renderer::InitDevice(HWND hwnd)
@@ -235,27 +236,6 @@ void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)
 	m_world->SetMatrix((float*)&world);
 }
 
-void Renderer::CalculateMatrixForBox2(float deltaTime)
-{
-	float scaleValue = sinf(deltaTime) * 0.5f + 1;
-	XMMATRIX scale = XMMatrixScaling(scaleValue, scaleValue, scaleValue);
-	XMMATRIX rotate = XMMatrixRotationZ(deltaTime);
-	float moveValue = cosf(deltaTime) * 5.0f;
-	XMMATRIX position = XMMatrixTranslation(moveValue, 0.0f, 0.0f);
-	m_world2 = scale * rotate * position;
-
-	XMMATRIX wvp = m_world2 * m_view * m_projection;
-	ConstantBuffer cb;
-	cb.wvp = XMMatrixTranspose(wvp);
-	cb.world = XMMatrixTranspose(m_world2);
-	cb.lightDir = lightDirection;
-	cb.lightColor = lightColor;
-
-	m_immediateContext->UpdateSubresource(m_constantBuffer, 0, 0, &cb, 0, 0);
-	m_immediateContext->VSSetConstantBuffers(0, 1, &m_constantBuffer);
-}
-
-
 void Renderer::CreateDepthStencilTexture()
 {
 	//Create depth stencil texture
@@ -320,11 +300,11 @@ HRESULT Renderer::LoadTexture()
 bool Renderer::Frame(float deltaTime)
 {
 	//model position 계산
-	for (auto model : m_modelList)
-	{
-		model->SetPosition(sinf(deltaTime * 3), 0.0f, cosf(deltaTime * 3));
-		model->SetRotation(sinf(deltaTime), cosf(deltaTime *2), sinf(deltaTime *0.5));
-	}
+// 	for (auto model : m_modelList)
+// 	{
+// 		model->SetPosition(sinf(deltaTime * 3), 0.0f, cosf(deltaTime * 3));
+// 		model->SetRotation(sinf(deltaTime), cosf(deltaTime *2), sinf(deltaTime *0.5));
+// 	}
 
 	float ClearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
@@ -344,7 +324,7 @@ bool Renderer::Frame(float deltaTime)
 		m_immediateContext->IASetVertexBuffers(0, 1, &model->GetVB(), &stride, &offset);
 		m_immediateContext->IASetIndexBuffer(model->GetIB(), DXGI_FORMAT_R16_UINT, 0);
 
-		m_texDiffuse->SetResource(m_textureRV);
+ 		m_texDiffuse->SetResource(m_textureRV);
 		m_samLinear->SetSampler(0, m_samplerLinear);
 		// 계산 및 그리기
 		CalculateMatrixForBox(deltaTime, model);
@@ -378,18 +358,6 @@ void Renderer::CreateRenderState()
 	rasterizerDesc.FrontCounterClockwise = false;
 
 	m_device->CreateRasterizerState(&rasterizerDesc, &m_solidRS);
-
-}
-
-void Renderer::CreateRenderState2()
-{
-	D3D11_RASTERIZER_DESC rasterizerDesc;
-	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
-	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	rasterizerDesc.CullMode = D3D11_CULL_BACK;
-	rasterizerDesc.FrontCounterClockwise = false;
-
-	m_device->CreateRasterizerState(&rasterizerDesc, &m_wireFrameRS);
 
 }
 

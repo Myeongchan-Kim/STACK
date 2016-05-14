@@ -4,7 +4,7 @@ SystemClass::SystemClass()
 {
 
 	m_Input = nullptr;
-	m_Graphics = nullptr;
+	m_renderer = nullptr;
 }
 
 bool SystemClass::Initialize()
@@ -32,14 +32,14 @@ bool SystemClass::Initialize()
 	m_Input->Initialize();
 
 	// Create the graphics object.  This object will handle rendering all the graphics for this application.
-	m_Graphics = new Renderer();
-	if (!m_Graphics)
+	m_renderer = new Renderer();
+	if (!m_renderer)
 	{
 		return false;
 	}
 
 	// Initialize the graphics object.
-	result = m_Graphics->Initialize(screenWidth, screenHeight, m_hwnd);
+	result = m_renderer->Initialize(screenWidth, screenHeight, m_hwnd);
 	if (!result)
 	{
 		return false;
@@ -57,11 +57,11 @@ bool SystemClass::Initialize()
 void SystemClass::Shutdown()
 {
 	// Release the graphics object.
-	if (m_Graphics)
+	if (m_renderer)
 	{
-		m_Graphics->ShutDown();
-		delete m_Graphics;
-		m_Graphics = nullptr;
+		m_renderer->ShutDown();
+		delete m_renderer;
+		m_renderer = nullptr;
 	}
 
 	// Release the input object.
@@ -142,7 +142,17 @@ bool SystemClass::Frame()
 	m_timer.ProcessTime();
 	static float totalElapsedTime = 0;
 	totalElapsedTime += m_timer.GetElapsedTime();
-	result = m_Graphics->Frame(totalElapsedTime);
+
+	static float count = 0;
+	if (m_Input->IsKeyDown(VK_SPACE))
+	{
+		ModelClass* model = new ModelClass(0, count, 0);
+		model->SetToCube(2, 1, 2);
+		m_renderer->AddModel(model);
+		count += 1.0;
+	}
+	m_Input->KeyUp(VK_SPACE);
+	result = m_renderer->Frame(totalElapsedTime);
 	
 	return result;
 }
