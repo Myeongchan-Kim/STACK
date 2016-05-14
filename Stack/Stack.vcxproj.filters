@@ -39,18 +39,30 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>소스 파일\Graphic</Filter>
     </ClCompile>
+    <ClCompile Include="Polygon.cpp">
+      <Filter>소스 파일\Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="MyVertex.cpp">
+      <Filter>소스 파일\Graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="InputClass.h">
-      <Filter>소스 파일</Filter>
+    <ClInclude Include="Polygon.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SystemClass.h">
-      <Filter>소스 파일</Filter>
+      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="MyTime.h">
-      <Filter>소스 파일</Filter>
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="InputClass.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MyVertex.h">
       <Filter>소스 파일\Graphic</Filter>
     </ClInclude>
   </ItemGroup>
