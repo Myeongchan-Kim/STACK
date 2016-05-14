@@ -131,7 +131,7 @@ void ModelClass::SetToCube(float widthX, float height, float widthZ)
 	}
 	
 	//color
-	XMFLOAT4 rgba = { 0.5f, 0.4f, 0.6f, 1.0f }; //gray color with little blue
+	XMFLOAT4 rgba = { 0.4f, 0.4f, 0.7f, 1.0f }; //gray color with little blue
 	
 	//normal vector
 	XMFLOAT3 left	= { -0.33f, +0.00f, +0.00f };

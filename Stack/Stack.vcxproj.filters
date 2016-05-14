@@ -59,10 +59,10 @@
     <ClInclude Include="Renderer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MyVertex.h">
-      <Filter>소스 파일\Graphic</Filter>
-    </ClInclude>
     <ClInclude Include="ModelClass.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MyVertex.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -15,7 +15,6 @@ Renderer::~Renderer()
 }
 
 
-
 bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 {
 	m_width = winWidth;
@@ -27,7 +26,7 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	for (auto model : m_modelList)
 	{
 		//model->SetSample();
-		model->SetToCube(4, 2, 1);
+		model->SetToCube(4, 2, 4);
 		assert(model->indexSize() == 36);
 		model->CreateVertexBuffer(m_device);
 		model->CreateIndexBuffer(m_device);
@@ -35,8 +34,9 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 
 	CreateConstantBuffer();
 	InitMatrix();
-	LoadTexture();
-	
+	LoadTexture(L"texture/febric.jpg");
+	//LoadTexture(L"texture/concrete.jpg");
+
 	return true;
 }
 
@@ -288,14 +288,14 @@ void Renderer::CreateDepthStencilTexture()
 
 }
 
-HRESULT Renderer::LoadTexture()
+HRESULT Renderer::LoadTexture(WCHAR* fileName)
 {
 
 	
 	HRESULT hr = CreateWICTextureFromFile(
 		m_device,
 		m_immediateContext,
-		L"Texture/images.jpg",
+		fileName,
 		nullptr, //여기에 texture넣기.
 		&m_textureRV
 		);
@@ -323,7 +323,6 @@ bool Renderer::Frame(float deltaTime)
 	for (auto model : m_modelList)
 	{
 		model->SetPosition(sinf(deltaTime * 3), 0.0f, cosf(deltaTime * 3));
-		model->SetRotation(sinf(deltaTime), cosf(deltaTime *2), sinf(deltaTime *0.5));
 	}
 
 	float ClearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };

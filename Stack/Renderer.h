@@ -27,13 +27,13 @@ private:
 	void CalculateMatrixForBox(float deltaTime, ModelClass* model);
 	void CalculateMatrixForBox2(float deltaTime);
 	void CreateDepthStencilTexture();
-	HRESULT LoadTexture();
+	HRESULT LoadTexture(WCHAR* fileName);
 	void CreateRenderState();
 	void CreateRenderState2();
 
 	XMFLOAT4 lightDirection =
 	{
-		XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)
+		XMFLOAT4(0.0f, -1.0f, -0.3f, 1.0f)
 	};
 
 	XMFLOAT4 lightColor =
