@@ -1,6 +1,7 @@
 #pragma once
 #include <d3d11.h>
 #include <directxmath.h>
+#include <map>
 #include <memory>
 #include "ModelClass.h"
 #include "Common\d3dx11effect.h"
@@ -55,9 +56,6 @@ private:
 	ID3D11RasterizerState*					m_solidRS = nullptr;
 	ID3D11RasterizerState*					m_wireFrameRS = nullptr;
 
-	ID3D11ShaderResourceView*				m_textureRV = nullptr;
-	ID3D11Resource*							m_texture = nullptr;
-	ID3D11SamplerState*						m_samplerLinear = nullptr;
 	ID3DX11Effect*							m_effect = nullptr;
 	ID3DX11EffectTechnique*					m_tech = nullptr;
 	ID3DX11EffectSamplerVariable*			m_samLinear = nullptr;
@@ -66,6 +64,11 @@ private:
 	ID3DX11EffectMatrixVariable*			m_world;
 	ID3DX11EffectVectorVariable*			m_lightDir;
 	ID3DX11EffectVectorVariable*			m_lightColor;
+
+	std::map<WCHAR*, ID3D11ShaderResourceView*>	m_textureRVList;
+	ID3D11Resource*							m_texture = nullptr;
+	ID3D11SamplerState*						m_samplerLinear = nullptr;
+
 
 	//XMMATRIX								m_world;
 	XMMATRIX								m_world2;

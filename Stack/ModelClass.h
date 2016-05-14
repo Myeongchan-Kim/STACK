@@ -24,13 +24,19 @@ public:
 	DirectX::XMFLOAT3 GetPosition();
 	DirectX::XMFLOAT3 GetRotation();
 
+	WCHAR*& GetTextureName() { return m_textureName; };
+	void SetTextureName(WCHAR* textureName);
+
 private:
 	void AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4);
+
+	WCHAR* m_textureName;
 
 	ID3D11Buffer*		m_vertexBuffer = nullptr;
 	ID3D11Buffer*		m_indexBuffer = nullptr;
 	std::vector<MyVertex>	m_vertices;
 	std::vector<WORD>	m_indices;
+
 	float				m_xPos = 0.0f;
 	float				m_yPos = 0.0f;
 	float				m_zPos = 0.0f;
