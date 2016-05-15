@@ -238,7 +238,7 @@ void Renderer::CreateDepthStencilState()
 
 	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateZTestOn);
 
-	depthStencilDesc.DepthEnable = false;    // Depth Test 비활성화
+	depthStencilDesc.DepthEnable = true;    // Depth Test 비활성화
 	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateZTestOff);
 }
 
