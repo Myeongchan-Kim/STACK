@@ -31,9 +31,6 @@
     <Filter Include="소스 파일\Engine\FX">
       <UniqueIdentifier>{1b3fdc39-9cf3-4180-969a-da8309a84c57}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Engine\Scene">
-      <UniqueIdentifier>{b3319bc2-3d8a-4e14-92c9-986168a389c3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Engine\System">
       <UniqueIdentifier>{9ac08e7e-feb4-42c2-8465-01649af425a5}</UniqueIdentifier>
     </Filter>
@@ -73,7 +70,7 @@
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
-      <Filter>소스 파일\Engine\Scene</Filter>
+      <Filter>소스 파일\Engine\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -114,7 +111,7 @@
       <Filter>소스 파일\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>소스 파일\Engine\Scene</Filter>
+      <Filter>소스 파일\Engine\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

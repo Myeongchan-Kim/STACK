@@ -27,5 +27,3 @@ void Scene::AddModel(ModelClass* model)
 {
 	m_modelsToBeRendered.push_back(model);
 }
-
-
