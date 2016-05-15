@@ -12,7 +12,7 @@ public:
 	void InitCamera();
 	XMMATRIX GetView();
 	XMMATRIX GetProjection(float width, float height);
-	virtual void MoveTo(float x, float y, float z);
+	virtual void MoveBy(float x, float y, float z);
 
 private:
 	XMFLOAT4 			m_target;

@@ -17,7 +17,7 @@ void Camera::InitCamera()
 	m_up = { 0.0f, 1.0f, 0.0f, 0.0f };
 }
 
-void Camera::MoveTo(float x, float y, float z)
+void Camera::MoveBy(float x, float y, float z)
 {
 	m_pos.x += x;
 	m_pos.y += y;

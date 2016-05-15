@@ -12,7 +12,7 @@ Object::~Object()
 }
 
 
-void Object::MoveTo(float x, float y, float z)
+void Object::MoveBy(float x, float y, float z)
 {
 	m_pos.x += x;
 	m_pos.y += y;
@@ -34,14 +34,14 @@ void Object::Frame(float dt)
 
 		if (move.remainTime >= dt)
 		{
-			MoveTo(velocity.x * dt, velocity.y * dt, velocity.z * dt);
+			MoveBy(velocity.x * dt, velocity.y * dt, velocity.z * dt);
 			move.x -= velocity.x * dt;
 			move.y -= velocity.y * dt;
 			move.z -= velocity.z * dt;
 		}
 		else
 		{
-			MoveTo(move.x, move.y, move.z);
+			MoveBy(move.x, move.y, move.z);
 		}
 
 		move.remainTime -= dt;

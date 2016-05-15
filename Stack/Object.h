@@ -12,7 +12,7 @@ public:
 
 	virtual void Frame(float dt);
 	virtual void AddMoveToScheduler(float x, float y, float z, float time);
-	virtual void MoveTo(float x, float y, float z);
+	virtual void MoveBy(float x, float y, float z);
 
 	struct LinearMove
 	{
