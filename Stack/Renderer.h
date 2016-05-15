@@ -20,6 +20,7 @@ public:
 	void AddTransparentModel(ModelClass* model);
 	bool Frame(float deltaTime);
 	void ShutDown();
+	Camera& GetCamera() { return m_camera; };
 	void SetCameraPos(float x, float y, float z) { m_camera.MoveBy(x, y, z); };
 	void MoveCameraFor(float x, float y, float z, float time);
 

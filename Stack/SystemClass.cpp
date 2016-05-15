@@ -178,7 +178,10 @@ bool SystemClass::Frame()
 	float deltaTime = 0;
 	deltaTime = m_timer.GetElapsedTime();
 	std::vector<ModelClass*> models;
-	m_currentScene->Play(deltaTime, *m_input, models, *m_renderer);
+
+	//Play함수가 렌더러를 가져가는데... 카메라를 Scene에서 조종하는게 이것 말고 불가능한 것 같아 이렇게 했습니다.
+	//어차피 Scene의 Play함수는 사용자가 만들지 않게 할거라 상관은 없지만 수정가능하면 부탁드림..
+	m_currentScene->Play(deltaTime, *m_input, models, m_renderer->GetCamera());
 
 	float dy = 1.0f;
 	for (auto model : models)
@@ -187,26 +190,6 @@ bool SystemClass::Frame()
 	}
 
 	result = m_renderer->Frame(deltaTime);
-// 	static float count = 0;
-// 	if (m_Input->IsKeyDown(VK_SPACE))
-// 	{
-// 		float dy = 1.0f;
-// 		ModelClass* model = new ModelClass();
-// 		model->SetPosition(0, count, 0);
-// 		ModelClass* transModel = new VanishingBlock();
-// 		transModel->SetPosition(-0.5f, count, 2);
-// 		model->SetToCube(2, 1, 2);
-// 		transModel->SetToCube(1, 1, 1);
-// 		m_renderer->AddModel(model);
-// 		m_renderer->AddTransparentModel(transModel);
-// 
-// 		count += dy;
-// 		
-// 		m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
-// 	}
-// 	m_Input->KeyUp(VK_SPACE);
-// 
-
 
 	//set pressed keys up.
 	m_input->Reset();
