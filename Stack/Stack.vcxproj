@@ -158,6 +158,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="MyTime.cpp" />
     <ClCompile Include="SystemClass.cpp" />
+    <ClCompile Include="VanishingBlock.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -170,6 +171,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="MyTime.h" />
     <ClInclude Include="SystemClass.h" />
+    <ClInclude Include="VanishingBlock.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MyShader.fx">

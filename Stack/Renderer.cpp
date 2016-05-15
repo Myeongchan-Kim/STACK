@@ -5,6 +5,7 @@
 #include "MyVertex.h"
 #include "WICTextureLoader.h"
 #include "ConstVars.h"
+#include "VanishingBlock.h"
 
 Renderer::Renderer()
 {
@@ -336,10 +337,10 @@ HRESULT Renderer::LoadTexture(WCHAR* fileName)
 
 }
 
-bool Renderer::Frame(float elapsedTime)
+bool Renderer::Frame(float deltaTime)
 {
 	//멤버 오브젝트들 이동.
-	m_camera.Frame(elapsedTime);
+	m_camera.Frame(deltaTime);
 
 	//model position 계산
 	float ClearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
@@ -371,7 +372,7 @@ bool Renderer::Frame(float elapsedTime)
 		m_texDiffuse->SetResource(texture);
 		m_samLinear->SetSampler(0, m_samplerLinear);
 		// 계산 및 그리기
-		CalculateMatrixForBox(elapsedTime, model);
+		CalculateMatrixForBox(deltaTime, model);
 
 		//빛 계산
 		m_lightDir->SetFloatVector((float*)&lightDirection);
@@ -380,8 +381,7 @@ bool Renderer::Frame(float elapsedTime)
 		D3DX11_TECHNIQUE_DESC techDesc;
 		m_colorTech->GetDesc(&techDesc);
 		
-		int transparentLevel = model->GetTransparency();
-		m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
+		m_colorTech->GetPassByIndex(0)->Apply(0, m_immediateContext);
 
 		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
 		
@@ -404,7 +404,7 @@ bool Renderer::Frame(float elapsedTime)
 		m_texDiffuse->SetResource(texture);
 		m_samLinear->SetSampler(0, m_samplerLinear);
 		// 계산 및 그리기
-		CalculateMatrixForBox(elapsedTime, model);
+		CalculateMatrixForBox(deltaTime, model);
 
 		//빛 계산
 		m_lightDir->SetFloatVector((float*)&lightDirection);
@@ -413,25 +413,28 @@ bool Renderer::Frame(float elapsedTime)
 		D3DX11_TECHNIQUE_DESC techDesc;
 		m_colorTech->GetDesc(&techDesc);
 
-		int transparentLevel = model->GetTransparency();
-		m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
-		if (elapsedTime > 0.1f)
-		{
-			model->UpTransparency();
-			lastTime = elapsedTime;
+		//사라지는 오브젝트 처리.
+		if (VanishingBlock* vblock = static_cast<VanishingBlock*>(model)) {
+
+			int transparentLevel = vblock->GetTransparency();
+			m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
+			float lastTime = vblock->GetElapsedTime();
+			vblock->SetElapsedTime(lastTime + deltaTime);
+			if (vblock->GetElapsedTime() > 0.1f)
+			{
+				vblock->UpTransparency();
+				lastTime = deltaTime;
+				vblock->SetElapsedTime(0);
+			}
 		}
+		else
+		{
+			m_colorTech->GetPassByIndex(0)->Apply(0, m_immediateContext);
+		}
+
 		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
 	}
 
-// 	for (int i = 0; i < m_transparentModelList.size(); i++)
-// 	{
-// 		ModelClass* model = m_transparentModelList.at(i);
-// 		if (model->GetColor().w == 0)
-// 		{
-// 			delete model;
-// 			m_transparentModelList.erase(m_transparentModelList.begin() + i);
-// 		}
-// 	}
 	
 	m_swapChain->Present(0, 0);
 
