@@ -1,5 +1,7 @@
 # DirectX11_Project
 
+https://trello.com/b/vvWjFuK5/2016-cpp-adv-stack
+
 ##코딩 규칙
 * 절대 마스터에 푸시하지 않기
 * 각자 작업 브랜치 생성 후 풀 리퀘스트 날리기
