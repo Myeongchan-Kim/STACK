@@ -43,22 +43,7 @@ void Renderer::AddModel(ModelClass* model)
 	model->CreateVertexBuffer(m_device);
 	model->CreateIndexBuffer(m_device);
 
-	static int count = 0;
-	if (count == 0)
-	{
-		model->SetTextureName(ConstVars::FEBRIC_TEX_FILE);
-	}
-	else if (count == 1)
-	{
-		model->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
-	}
-	else
-	{
-		model->SetTextureName(ConstVars::PLANE_TEX_FILE);
-	}
-	count++;
-	count %= 3;
-
+	model->SetTextureName(ConstVars::FEBRIC_TEX_FILE);
 	m_modelList.emplace_back(model);
 }
 
@@ -66,21 +51,7 @@ void Renderer::AddTransparentModel(ModelClass* model)
 {
 	model->CreateVertexBuffer(m_device);
 	model->CreateIndexBuffer(m_device);
-	static int count = 0;
-	if (count == 0)
-	{
-		model->SetTextureName(ConstVars::FEBRIC_TEX_FILE);
-	}
-	else if (count == 1)
-	{
-		model->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
-	}
-	else
-	{
-		model->SetTextureName(ConstVars::PLANE_TEX_FILE);
-	}
-	count++;
-	count %= 3;
+	model->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
 
 	m_transparentModelList.emplace_back(model);
 }
@@ -444,7 +415,7 @@ bool Renderer::Frame(float elapsedTime)
 
 		int transparentLevel = model->GetTransparency();
 		m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
-		if (elapsedTime - lastTime > 0.1f)
+		if (elapsedTime > 0.1f)
 		{
 			model->UpTransparency();
 			lastTime = elapsedTime;
