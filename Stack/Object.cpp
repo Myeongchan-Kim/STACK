@@ -52,3 +52,8 @@ void Object::Frame(float dt)
 	//
 }
 
+
+XMFLOAT3 Object::GetPosition()
+{
+	return XMFLOAT3{ m_pos.x, m_pos.y, m_pos.z };
+}

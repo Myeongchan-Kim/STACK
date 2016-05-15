@@ -1,4 +1,5 @@
 #include "SystemClass.h"
+#include "Camera.h"
 #include "VanishingBlock.h"
 
 SystemClass::SystemClass()
@@ -46,6 +47,14 @@ bool SystemClass::Initialize()
 		return false;
 	}
 
+	//배경 사각형 설정
+	auto backGround = new ModelClass();
+	backGround->SetPosition(5.0f, -7.0f, 5.0f);
+	backGround->SetRGB(0.7f, 1.0f, 1.0f);
+	backGround->SetToRectangle(15.0f, 15.0f, {0.0f, 1.0f, 0.0f});
+	m_backGround = backGround;
+	m_renderer->AddModel(backGround);
+
 	return true;
 }
 
@@ -70,6 +79,12 @@ void SystemClass::Shutdown()
 	{
 		delete m_Input;
 		m_Input = nullptr;
+	}
+
+	if (m_backGround)
+	{
+		delete m_backGround;
+		m_backGround = nullptr;
 	}
 
 	// Shutdown the window.
@@ -156,12 +171,15 @@ bool SystemClass::Frame()
 		transModel->SetToCube(1, 1, 1);
 		m_renderer->AddModel(model);
 		m_renderer->AddTransparentModel(transModel);
+		
 		count += dy;
 		m_renderer->MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
+		m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
 	}
 	m_Input->KeyUp(VK_SPACE);
 	result = m_renderer->Frame(deltaTime);
 
+	m_backGround->Frame(deltaTime);
 	return result;
 }
 /*

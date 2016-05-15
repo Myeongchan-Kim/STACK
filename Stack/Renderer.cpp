@@ -29,7 +29,6 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	CreateDepthStencilState();
 	CreateBlendState();
 	
-	
 	LoadTexture(ConstVars::CONCREAT_TEX_FILE);
 	LoadTexture(ConstVars::FEBRIC_TEX_FILE);
 	LoadTexture(ConstVars::PLANE_TEX_FILE);
@@ -339,6 +338,7 @@ HRESULT Renderer::LoadTexture(WCHAR* fileName)
 
 bool Renderer::Frame(float deltaTime)
 {
+
 	//멤버 오브젝트들 이동.
 	m_camera.Frame(deltaTime);
 
