@@ -1,4 +1,5 @@
 #include "SystemClass.h"
+#include "Camera.h"
 
 SystemClass::SystemClass()
 {
@@ -44,6 +45,15 @@ bool SystemClass::Initialize()
 	{
 		return false;
 	}
+
+	//배경 사각형 설정
+	auto backGround = new ModelClass(0.0f, 0.0f, 0.0f);
+	Camera camera = m_renderer->GetCamera();
+	auto pos = camera.GetPosition();
+	backGround->SetToRectangle(8.0f, 6.0f, pos);
+	backGround->SetColor(0.5, 1.0f, 1.0f, 1.0f);
+	//backGround->SetPosition(0.0f, 5.0f, 0.0f);
+	m_renderer->AddModel(backGround);
 
 	return true;
 }

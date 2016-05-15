@@ -192,6 +192,46 @@ void ModelClass::SetToCube(float widthX, float height, float widthZ)
 	AddRectangle(v1, v2, v3, v4);
 }
 
+void ModelClass::SetToRectangle(float width, float height, XMFLOAT3 normal)
+{
+	m_vertices.clear();
+	m_indices.clear();
+
+	XMFLOAT3 standardNormal = { 1.0f, 0.0f, 0.0f };
+	XMFLOAT3 pos[4];
+	pos[0] = { 0.0f, +height / 2, -width / 2 };
+	pos[1] = { 0.0f, +height / 2, +width / 2 };
+	pos[2] = { 0.0f, -height / 2, +width / 2 };
+	pos[3] = { 0.0f, -height / 2, -width / 2 };
+	
+	auto dot = [](XMFLOAT3 v1, XMFLOAT3 v2)
+	{
+		return (v1.x * v2.x + v1.y*v2.y + v1.z*v2.z);
+	};
+
+	auto radAxisY = acosf(dot({ normal.x, 0.0f, normal.z }, standardNormal) / sqrt(normal.x * normal.x + normal.z * normal.z)); // Y축으로의 회전량
+	auto radAxisZ = acosf(dot({ normal.x, normal.y, 0.0f }, standardNormal) / sqrt(normal.x * normal.x + normal.y * normal.y)); // Z축으로의 회전량
+
+	auto rotation = [&](float& x, float &y, float rad)
+	{
+		x = x * cosf(rad) + y * sinf(rad);
+		y = -x * sinf(rad) + y * cosf(rad);
+	};
+
+	for (int i = 0; i < 4; i++)
+	{
+		rotation(pos[i].x, pos[i].z, radAxisY);  //Y축 회전
+		rotation(pos[i].x, pos[i].y, radAxisZ);  //X축 회전
+	}
+
+	MyVertex v1 = { pos[0], m_rgba, normal,{ 0.0f, 0.0f } };
+	MyVertex v2 = { pos[1], m_rgba, normal,{ 1.0f, 0.0f } };
+	MyVertex v3 = { pos[2], m_rgba, normal,{ 1.0f, 1.0f } };
+	MyVertex v4 = { pos[3], m_rgba, normal,{ 0.0f, 1.0f } };
+
+	AddRectangle(v1, v2, v3, v4);
+}
+
 void ModelClass::AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4)
 {
 	UINT square[4];
@@ -218,11 +258,6 @@ void ModelClass::AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex
 	m_indices.push_back(square[2]);
 	m_indices.push_back(square[3]);
 	m_indices.push_back(square[0]);
-}
-
-XMFLOAT3 ModelClass::GetPosition()
-{
-	return XMFLOAT3{ m_pos.x, m_pos.y, m_pos.z};
 }
 
 DirectX::XMFLOAT3 ModelClass::GetRotation()

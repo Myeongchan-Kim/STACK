@@ -21,6 +21,8 @@ public:
 
 	void SetSample();
 	void SetToCube(float widthX, float height, float widthZ);
+	void SetToRectangle(float width, float height, XMFLOAT3 normal);
+
 	void SetPosition(float x, float y, float z);
 	void SetColor(float r, float g, float b, float a);
 	void SetRGB(float r, float g, float b);
@@ -29,9 +31,8 @@ public:
 
 
 	void UpTransparency() { if(m_transparency < 5) m_transparency++; };
-	int GetTransparency() { return m_transparency; };
-	DirectX::XMFLOAT3 GetPosition();
 	DirectX::XMFLOAT3 GetRotation();
+	int GetTransparency() { return m_transparency; };
 	inline DirectX::XMFLOAT4 GetColor() { return m_rgba; };
 
 	WCHAR*& GetTextureName() { return m_textureName; };
