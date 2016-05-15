@@ -19,7 +19,8 @@ public:
 	void AddTransparentModel(ModelClass* model);
 	bool Frame(float elapsedTime);
 	void ShutDown();
-	void MoveCamera(float x, float y, float z) { m_camera.MoveCamera(x, y, z); };
+	void SetCameraPos(float x, float y, float z) { m_camera.MoveBy(x, y, z); };
+	void MoveCameraFor(float x, float y, float z, float time);
 
 private:
 

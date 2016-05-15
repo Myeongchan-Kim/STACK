@@ -367,6 +367,9 @@ HRESULT Renderer::LoadTexture(WCHAR* fileName)
 
 bool Renderer::Frame(float elapsedTime)
 {
+	//멤버 오브젝트들 이동.
+	m_camera.Frame(elapsedTime);
+
 	//model position 계산
 	float ClearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
 	static float lastTime = 0;
@@ -517,4 +520,9 @@ void Renderer::ShutDown()
 		if (texture.second != nullptr) texture.second->Release();
 	}
 
+}
+
+void Renderer::MoveCameraFor(float x, float y, float z, float time)
+{
+	m_camera.AddMoveToScheduler(x, y, z, time);
 }

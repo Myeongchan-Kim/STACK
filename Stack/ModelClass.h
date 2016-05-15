@@ -2,9 +2,11 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <vector>
+#include "Object.h"
+using namespace DirectX;
 
 class MyVertex;
-class ModelClass
+class ModelClass :public Object
 {
 public:
 	ModelClass(float x, float y, float z);
@@ -44,14 +46,10 @@ private:
 	ID3D11Buffer*		m_indexBuffer = nullptr;
 	std::vector<MyVertex>	m_vertices;
 	std::vector<WORD>	m_indices;
-	DirectX::XMFLOAT4			m_rgba;
-	float				m_xPos;
-	float				m_yPos;
-	float				m_zPos;
 
+	DirectX::XMFLOAT4			m_rgba;
 	float				m_xRot;
 	float				m_yRot;
 	float				m_zRot;
 	int					m_transparency = 0;
 };
-
