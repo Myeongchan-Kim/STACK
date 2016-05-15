@@ -22,7 +22,7 @@ public:
 
 protected:
 
-	XMFLOAT4 				m_pos;
+	XMFLOAT4 				m_pos = {0.0f, 0.0f, 0.0f, 0.0f};
 	std::list<LinearMove>	m_moveList;
 };
 

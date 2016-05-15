@@ -223,7 +223,7 @@ void ModelClass::AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex
 
 XMFLOAT3 ModelClass::GetPosition()
 {
-	return m_pos;
+	return XMFLOAT3{ m_pos.x, m_pos.y, m_pos.z};
 }
 
 DirectX::XMFLOAT3 ModelClass::GetRotation()
