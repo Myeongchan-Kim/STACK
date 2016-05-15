@@ -2,6 +2,7 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <vector>
+using namespace DirectX;
 
 class MyVertex;
 class ModelClass
@@ -37,10 +38,8 @@ private:
 	std::vector<MyVertex>	m_vertices;
 	std::vector<WORD>	m_indices;
 
-	float				m_xPos = 0.0f;
-	float				m_yPos = 0.0f;
-	float				m_zPos = 0.0f;
-
+	XMFLOAT3			m_pos = {0.0f, 0.0f, 0.0f};
+	
 	float				m_xRot = 0.0f;
 	float				m_yRot = 0.0f;
 	float				m_zRot = 0.0f;

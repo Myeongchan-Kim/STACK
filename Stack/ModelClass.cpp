@@ -223,7 +223,7 @@ void ModelClass::AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex
 
 XMFLOAT3 ModelClass::GetPosition()
 {
-	return DirectX::XMFLOAT3({m_xPos, m_yPos, m_zPos});
+	return m_pos;
 }
 
 DirectX::XMFLOAT3 ModelClass::GetRotation()
@@ -238,9 +238,9 @@ void ModelClass::SetTextureName(WCHAR * textureName)
 
 void ModelClass::SetPosition(float x, float y, float z)
 {
-	m_xPos = x;
-	m_yPos = y;
-	m_zPos = z;
+	m_pos.x = x;
+	m_pos.y = y;
+	m_pos.z = z;
 }
 
 void ModelClass::SetRotation(float x, float y, float z)
