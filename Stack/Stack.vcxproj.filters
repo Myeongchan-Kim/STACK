@@ -22,6 +22,9 @@
     <Filter Include="소스 파일\FX">
       <UniqueIdentifier>{1b3fdc39-9cf3-4180-969a-da8309a84c57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Graphic\Object">
+      <UniqueIdentifier>{5f249595-ed44-4d16-9f5e-3d73a0545368}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputClass.cpp">
@@ -42,11 +45,14 @@
     <ClCompile Include="MyVertex.cpp">
       <Filter>소스 파일\Graphic</Filter>
     </ClCompile>
-    <ClCompile Include="ModelClass.cpp">
-      <Filter>소스 파일\Graphic</Filter>
+    <ClCompile Include="Object.cpp">
+      <Filter>소스 파일\Graphic\Object</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>소스 파일\Graphic</Filter>
+      <Filter>소스 파일\Graphic\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelClass.cpp">
+      <Filter>소스 파일\Graphic\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,17 +71,20 @@
     <ClInclude Include="Renderer.h">
       <Filter>소스 파일\Graphic</Filter>
     </ClInclude>
-    <ClInclude Include="ModelClass.h">
-      <Filter>소스 파일\Graphic</Filter>
-    </ClInclude>
     <ClInclude Include="MyVertex.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ConstVars.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>소스 파일\Graphic\Object</Filter>
+    </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>소스 파일\Graphic</Filter>
+      <Filter>소스 파일\Graphic\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelClass.h">
+      <Filter>소스 파일\Graphic\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

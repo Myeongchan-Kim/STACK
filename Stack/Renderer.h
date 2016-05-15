@@ -18,7 +18,8 @@ public:
 	void AddModel(ModelClass* model);
 	bool Frame(float deltaTime);
 	void ShutDown();
-	void MoveCamera(float x, float y, float z) { m_camera.MoveCamera(x, y, z); };
+	void MoveTo(float x, float y, float z) { m_camera.MoveTo(x, y, z); };
+	void MoveCameraFor(float x, float y, float z, float time);
 
 private:
 

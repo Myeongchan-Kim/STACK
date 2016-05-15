@@ -154,6 +154,7 @@
     <ClCompile Include="InputClass.cpp" />
     <ClCompile Include="MyVertex.cpp" />
     <ClCompile Include="ModelClass.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="MyTime.cpp" />
     <ClCompile Include="SystemClass.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="MyVertex.h" />
     <ClInclude Include="ModelClass.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="MyTime.h" />
     <ClInclude Include="SystemClass.h" />

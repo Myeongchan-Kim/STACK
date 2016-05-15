@@ -17,7 +17,7 @@ void Camera::InitCamera()
 	m_up = { 0.0f, 1.0f, 0.0f, 0.0f };
 }
 
-void Camera::MoveCamera(float x, float y, float z)
+void Camera::MoveTo(float x, float y, float z)
 {
 	m_pos.x += x;
 	m_pos.y += y;
@@ -42,4 +42,3 @@ XMMATRIX Camera::GetProjection(float width, float height)
 	m_projection = XMMatrixOrthographicLH( width / 100, height / 100, 0.1f, 1000.0f);  	// near plane, far plane
 	return m_projection;
 }
-

@@ -140,8 +140,8 @@ bool SystemClass::Frame()
 
 	// Do the frame processing for the graphics object.
 	m_timer.ProcessTime();
-	static float totalElapsedTime = 0;
-	totalElapsedTime += m_timer.GetElapsedTime();
+	float totalElapsedTime = 0;
+	totalElapsedTime = m_timer.GetElapsedTime();
 
 	static float count = 0;
 	if (m_Input->IsKeyDown(VK_SPACE))
@@ -151,7 +151,7 @@ bool SystemClass::Frame()
 		model->SetToCube(2, 1, 2);
 		m_renderer->AddModel(model);
 		count += dy;
-		m_renderer->MoveCamera(0.0f, dy, 0.0f);
+		m_renderer->MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
 	}
 	m_Input->KeyUp(VK_SPACE);
 	result = m_renderer->Frame(totalElapsedTime);
