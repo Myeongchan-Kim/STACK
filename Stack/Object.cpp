@@ -27,9 +27,8 @@ void Object::AddMoveToScheduler(float x, float y, float z, float time)
 void Object::Frame(float dt)
 {
 	//이동 해야하는것 처리.
-	for (auto iter = m_moveList.begin(); iter != m_moveList.end(); iter++)
+	for (auto& move : m_moveList)
 	{
-		auto& move = *iter;
 		XMFLOAT3 velocity = { move.x / move.remainTime, move.y / move.remainTime, move.z / move.remainTime };
 
 		if (move.remainTime >= dt)

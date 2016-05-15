@@ -1,4 +1,5 @@
 #include "SystemClass.h"
+#include "VanishingBlock.h"
 
 SystemClass::SystemClass()
 {
@@ -140,15 +141,17 @@ bool SystemClass::Frame()
 
 	// Do the frame processing for the graphics object.
 	m_timer.ProcessTime();
-	float totalElapsedTime = 0;
-	totalElapsedTime = m_timer.GetElapsedTime();
+	float deltaTime = 0;
+	deltaTime = m_timer.GetElapsedTime();
 
 	static float count = 0;
 	if (m_Input->IsKeyDown(VK_SPACE))
 	{
 		float dy = 1.0f;
-		ModelClass* model = new ModelClass(0, count, 0);
-		ModelClass* transModel = new ModelClass(-0.5f, count, 2);
+		ModelClass* model = new ModelClass();
+		model->SetPosition(0, count, 0);
+		ModelClass* transModel = new VanishingBlock();
+		transModel->SetPosition(-0.5f, count, 2);
 		model->SetToCube(2, 1, 2);
 		transModel->SetToCube(1, 1, 1);
 		m_renderer->AddModel(model);
@@ -157,7 +160,7 @@ bool SystemClass::Frame()
 		m_renderer->MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
 	}
 	m_Input->KeyUp(VK_SPACE);
-	result = m_renderer->Frame(totalElapsedTime);
+	result = m_renderer->Frame(deltaTime);
 
 	return result;
 }
