@@ -233,12 +233,12 @@ void Renderer::CreateDepthStencilState()
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 
 	depthStencilDesc.DepthEnable = true;    // Depth Test 활성화
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;   // Depth 쓰기 기능 활성화
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;   // Depth 쓰기 기능 활성화.
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;  	// Z 값이 작으면 통과. 즉 그린다.
 
 	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateZTestOn);
 
-	depthStencilDesc.DepthEnable = true;    // Depth Test 비활성화
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;	//Depth 쓰기 기능 비활성화.
 	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateZTestOff);
 }
 
