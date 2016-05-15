@@ -33,6 +33,7 @@ private:
 	void CreateDepthStencilTexture();
 	HRESULT CreateBlendState();
 	HRESULT LoadTexture(WCHAR* fileName);
+	void SetBuffers(ModelClass* model, float deltaTime);
 	void CreateRenderState();
 
 	XMFLOAT4 lightDirection = { 0.0f, -1.0f, -0.3f, 1.0f };
@@ -49,8 +50,8 @@ private:
 	D3D_FEATURE_LEVEL						m_featureLevel = D3D_FEATURE_LEVEL_11_0;
 	ID3D11Texture2D*						m_depthStencil = nullptr;
 	ID3D11DepthStencilView*					m_depthStencilView = nullptr;
-	ID3D11DepthStencilState*				m_depthStencilStateZTestOn = nullptr;
-	ID3D11DepthStencilState*				m_depthStencilStateZTestOff = nullptr;
+	ID3D11DepthStencilState*				m_depthStencilStateForNormalModel = nullptr;
+	ID3D11DepthStencilState*				m_depthStencilStateForTransparentModel = nullptr;
 	ID3D11BlendState*						m_blendState = nullptr;
 
 
@@ -80,14 +81,6 @@ private:
 	std::vector<ModelClass*>				m_modelList;
 	std::vector<ModelClass*>				m_transparentModelList;
 
-	struct	 ConstantBuffer
-	{
-		XMMATRIX wvp;
-		XMMATRIX world;
-
-		XMFLOAT4 lightDir;
-		XMFLOAT4 lightColor;
-	};
 
 };
 
