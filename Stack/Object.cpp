@@ -48,8 +48,6 @@ void Object::Frame(float dt)
 	auto negative = [](const LinearMove& m) { return m.remainTime <= 0.0f; };
 	m_moveList.remove_if(negative);
 
-	//기타 추가할 처리..
-	//
 }
 
 
