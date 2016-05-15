@@ -197,37 +197,30 @@ void ModelClass::SetToRectangle(float width, float height, XMFLOAT3 normal)
 	m_vertices.clear();
 	m_indices.clear();
 
-	XMFLOAT3 standardNormal = { 1.0f, 0.0f, 0.0f };
+	XMFLOAT3 standardNormal = { 0.0f, 1.0f, 0.0f };
 	XMFLOAT3 pos[4];
-	pos[0] = { 0.0f, +height / 2, -width / 2 };
-	pos[1] = { 0.0f, +height / 2, +width / 2 };
-	pos[2] = { 0.0f, -height / 2, +width / 2 };
-	pos[3] = { 0.0f, -height / 2, -width / 2 };
+	XMFLOAT4 rgba;
+	pos[0] = { -width / 2 ,0.0f, +height / 2, };
+	pos[1] = { +width / 2 ,0.0f, +height / 2, };
+	pos[2] = { +width / 2 ,0.0f, -height / 2, };
+	pos[3] = { -width / 2 ,0.0f, - height / 2, };
 	
 	auto dot = [](XMFLOAT3 v1, XMFLOAT3 v2)
 	{
 		return (v1.x * v2.x + v1.y*v2.y + v1.z*v2.z);
 	};
-
-	auto radAxisY = acosf(dot({ normal.x, 0.0f, normal.z }, standardNormal) / sqrt(normal.x * normal.x + normal.z * normal.z)); // Y축으로의 회전량
-	auto radAxisZ = acosf(dot({ normal.x, normal.y, 0.0f }, standardNormal) / sqrt(normal.x * normal.x + normal.y * normal.y)); // Z축으로의 회전량
-
 	auto rotation = [&](float& x, float &y, float rad)
 	{
 		x = x * cosf(rad) + y * sinf(rad);
 		y = -x * sinf(rad) + y * cosf(rad);
 	};
+	auto radAxisY = acosf(dot({ normal.x, 0.0f, normal.z }, standardNormal) / sqrt(normal.x * normal.x + normal.z * normal.z)); // Y축으로의 회전량
+	auto radAxisZ = acosf(dot({ normal.x, normal.y, 0.0f }, standardNormal) / sqrt(normal.x * normal.x + normal.y * normal.y)); // Z축으로의 회전량
 
-	for (int i = 0; i < 4; i++)
-	{
-		rotation(pos[i].x, pos[i].z, radAxisY);  //Y축 회전
-		rotation(pos[i].x, pos[i].y, radAxisZ);  //X축 회전
-	}
-
-	MyVertex v1 = { pos[0], m_rgba, normal,{ 0.0f, 0.0f } };
+	MyVertex v1 = { pos[0],{ m_rgba.x - 0.3f,m_rgba.y - 0.3f,m_rgba.z - 0.3f, 1.0f }, normal,{ 0.0f, 0.0f } };
 	MyVertex v2 = { pos[1], m_rgba, normal,{ 1.0f, 0.0f } };
-	MyVertex v3 = { pos[2], m_rgba, normal,{ 1.0f, 1.0f } };
-	MyVertex v4 = { pos[3], m_rgba, normal,{ 0.0f, 1.0f } };
+	MyVertex v3 = { pos[2],{ m_rgba.x - 0.3f,m_rgba.y - 0.3f,m_rgba.z - 0.3f, 1.0f }, normal,{ 1.0f, 1.0f } };
+	MyVertex v4 = { pos[3],{ m_rgba.x - 0.7f,m_rgba.y - 0.7f,m_rgba.z - 0.7f, 1.0f }, normal,{ 0.0f, 1.0f } };
 
 	AddRectangle(v1, v2, v3, v4);
 }

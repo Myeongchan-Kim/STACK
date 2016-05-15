@@ -34,6 +34,7 @@ private:
 	InputClass* m_Input;
 	Renderer* m_renderer;
 	CMyTime m_timer;
+	ModelClass* m_backGround = nullptr;
 	
 };
 
