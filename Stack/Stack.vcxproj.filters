@@ -25,24 +25,15 @@
     <Filter Include="소스 파일\Graphic\Object">
       <UniqueIdentifier>{5f249595-ed44-4d16-9f5e-3d73a0545368}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\System">
+      <UniqueIdentifier>{9ac08e7e-feb4-42c2-8465-01649af425a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="InputClass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemClass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="WinMain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="MyTime.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer.cpp">
-      <Filter>소스 파일\Graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="MyVertex.cpp">
       <Filter>소스 파일\Graphic</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
@@ -57,20 +48,23 @@
     <ClCompile Include="VanishingBlock.cpp">
       <Filter>소스 파일\Graphic\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemClass.cpp">
+      <Filter>소스 파일\System</Filter>
+    </ClCompile>
+    <ClCompile Include="InputClass.cpp">
+      <Filter>소스 파일\System</Filter>
+    </ClCompile>
+    <ClCompile Include="MyTime.cpp">
+      <Filter>소스 파일\System</Filter>
+    </ClCompile>
+    <ClCompile Include="MyVertex.cpp">
+      <Filter>소스 파일\Graphic\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MyVertex.h">
-      <Filter>소스 파일\Graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="InputClass.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="MyTime.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemClass.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer.h">
       <Filter>소스 파일\Graphic</Filter>
     </ClInclude>
@@ -90,6 +84,21 @@
       <Filter>소스 파일\Graphic\Object</Filter>
     </ClInclude>
     <ClInclude Include="VanishingBlock.h">
+      <Filter>소스 파일\Graphic\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemClass.h">
+      <Filter>소스 파일\System</Filter>
+    </ClInclude>
+    <ClInclude Include="InputClass.h">
+      <Filter>소스 파일\System</Filter>
+    </ClInclude>
+    <ClInclude Include="MyTime.h">
+      <Filter>소스 파일\System</Filter>
+    </ClInclude>
+    <ClInclude Include="MyVertex.h">
       <Filter>소스 파일\Graphic\Object</Filter>
     </ClInclude>
   </ItemGroup>
