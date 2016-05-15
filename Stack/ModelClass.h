@@ -9,7 +9,7 @@ class MyVertex;
 class ModelClass :public Object
 {
 public:
-	ModelClass(float x, float y, float z);
+	ModelClass();
 	virtual ~ModelClass();
 	HRESULT CreateVertexBuffer(ID3D11Device* device);
 	HRESULT CreateIndexBuffer(ID3D11Device* device);
@@ -28,29 +28,24 @@ public:
 	void SetRGB(float r, float g, float b);
 	void SetAlpha(float a);
 	void SetRotation(float x, float y, float z);
-
-
-	void UpTransparency() { if(m_transparency < 5) m_transparency++; };
-	DirectX::XMFLOAT3 GetRotation();
-	int GetTransparency() { return m_transparency; };
-	inline DirectX::XMFLOAT4 GetColor() { return m_rgba; };
-
-	WCHAR*& GetTextureName() { return m_textureName; };
 	void SetTextureName(WCHAR* textureName);
 
-private:
+	DirectX::XMFLOAT3 GetRotation();
+	inline DirectX::XMFLOAT4 GetColor() { return m_rgba; };
+	WCHAR*& GetTextureName() { return m_textureName; };
+
+protected:
 	void AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4);
 
-	WCHAR* m_textureName;
+	WCHAR*						m_textureName;
 
-	ID3D11Buffer*		m_vertexBuffer = nullptr;
-	ID3D11Buffer*		m_indexBuffer = nullptr;
-	std::vector<MyVertex>	m_vertices;
-	std::vector<WORD>	m_indices;
+	ID3D11Buffer*				m_vertexBuffer = nullptr;
+	ID3D11Buffer*				m_indexBuffer = nullptr;
+	std::vector<MyVertex>		m_vertices;
+	std::vector<WORD>			m_indices;
 
 	DirectX::XMFLOAT4			m_rgba;
-	float				m_xRot;
-	float				m_yRot;
-	float				m_zRot;
-	int					m_transparency = 0;
+	float						m_xRot;
+	float						m_yRot;
+	float						m_zRot;
 };

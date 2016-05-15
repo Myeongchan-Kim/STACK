@@ -17,7 +17,7 @@ public:
 	bool Initialize(int winWidth, int winHeight, HWND hwnd);
 	void AddModel(ModelClass* model);
 	void AddTransparentModel(ModelClass* model);
-	bool Frame(float elapsedTime);
+	bool Frame(float deltaTime);
 	void ShutDown();
 	void SetCameraPos(float x, float y, float z) { m_camera.MoveBy(x, y, z); };
 	void MoveCameraFor(float x, float y, float z, float time);

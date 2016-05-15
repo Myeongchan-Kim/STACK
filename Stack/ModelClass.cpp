@@ -5,14 +5,13 @@
 #include "MyVertex.h"
 #include "WICTextureLoader.h"
 
-
-ModelClass::ModelClass(float x, float y, float z) :	m_xRot(0.0f), m_yRot(0.0f), m_zRot(0.0f),
-													m_rgba( 0.8f, 0.8f, 0.8f, 1.0f ),	m_indexBuffer(nullptr), m_vertexBuffer(nullptr)
+ModelClass::ModelClass() : m_xRot(0.0f), m_yRot(0.0f), m_zRot(0.0f),
+							m_rgba(0.8f, 0.8f, 0.8f, 1.0f), m_indexBuffer(nullptr), m_vertexBuffer(nullptr)
 {
-	SetPosition(x, y, z);								  
+
 }
 
-ModelClass::~ModelClass()								  
+ModelClass::~ModelClass()
 {
 }
 

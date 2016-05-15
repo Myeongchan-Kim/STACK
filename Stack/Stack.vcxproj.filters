@@ -54,6 +54,9 @@
     <ClCompile Include="ModelClass.cpp">
       <Filter>소스 파일\Graphic\Object</Filter>
     </ClCompile>
+    <ClCompile Include="VanishingBlock.cpp">
+      <Filter>소스 파일\Graphic\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyVertex.h">
@@ -84,6 +87,9 @@
       <Filter>소스 파일\Graphic\Object</Filter>
     </ClInclude>
     <ClInclude Include="ModelClass.h">
+      <Filter>소스 파일\Graphic\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="VanishingBlock.h">
       <Filter>소스 파일\Graphic\Object</Filter>
     </ClInclude>
   </ItemGroup>
