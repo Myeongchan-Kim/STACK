@@ -6,13 +6,13 @@
 #include "WICTextureLoader.h"
 
 
-ModelClass::ModelClass(float x, float y, float z) :m_indexBuffer(nullptr), m_vertexBuffer(nullptr)
+ModelClass::ModelClass(float x, float y, float z) :	m_xRot(0.0f), m_yRot(0.0f), m_zRot(0.0f),
+													m_rgba( 0.8f, 0.8f, 0.8f, 1.0f ),	m_indexBuffer(nullptr), m_vertexBuffer(nullptr)
 {
-	SetPosition(x, y, z);
+	SetPosition(x, y, z);								  
 }
 
-
-ModelClass::~ModelClass()
+ModelClass::~ModelClass()								  
 {
 }
 
@@ -140,7 +140,6 @@ void ModelClass::SetToCube(float widthX, float height, float widthZ)
 	}
 	
 	//color
-	XMFLOAT4 rgba = { 0.8f, 0.8f, 0.8f, 1.0f }; //gray color with little blue
 	
 	//normal vector
 	XMFLOAT3 left	= { -0.33f, +0.00f, +0.00f };
@@ -151,45 +150,45 @@ void ModelClass::SetToCube(float widthX, float height, float widthZ)
 	XMFLOAT3 back	= { +0.00f, +0.00f, +0.33f };
 
 	//top area
-	auto v1 = MyVertex({ pos[0 + 2 + 1] , rgba, up,{ 0.0f, 0.0f } });
-	auto v2 = MyVertex({ pos[4 + 2 + 1] , rgba, up,{ 1.0f, 0.0f } });
-	auto v3 = MyVertex({ pos[4 + 2 + 0] , rgba, up,{ 1.0f, 1.0f } });
-	auto v4 = MyVertex({ pos[0 + 2 + 0] , rgba, up,{ 0.0f, 1.0f } });
+	auto v1 = MyVertex({ pos[0 + 2 + 1] , m_rgba, up,{ 0.0f, 0.0f } });
+	auto v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, up,{ 1.0f, 0.0f } });
+	auto v3 = MyVertex({ pos[4 + 2 + 0] , m_rgba, up,{ 1.0f, 1.0f } });
+	auto v4 = MyVertex({ pos[0 + 2 + 0] , m_rgba, up,{ 0.0f, 1.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//bottom area
-	v1 = MyVertex({ pos[0 + 0 + 0] , rgba, down,{ 0.0f, 0.0f } });
-	v2 = MyVertex({ pos[4 + 0 + 0] , rgba, down,{ 1.0f, 0.0f } });
-	v3 = MyVertex({ pos[4 + 0 + 1] , rgba, down,{ 1.0f, 1.0f } });
-	v4 = MyVertex({ pos[0 + 0 + 1] , rgba, down,{ 0.0f, 1.0f } });
+	v1 = MyVertex({ pos[0 + 0 + 0] , m_rgba, down,{ 0.0f, 0.0f } });
+	v2 = MyVertex({ pos[4 + 0 + 0] , m_rgba, down,{ 1.0f, 0.0f } });
+	v3 = MyVertex({ pos[4 + 0 + 1] , m_rgba, down,{ 1.0f, 1.0f } });
+	v4 = MyVertex({ pos[0 + 0 + 1] , m_rgba, down,{ 0.0f, 1.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//right area
-	v1 = MyVertex({ pos[4 + 2 + 0] , rgba, right,{ 0.0f, 0.0f } });
-	v2 = MyVertex({ pos[4 + 2 + 1] , rgba, right,{ 1.0f, 0.0f } });
-	v3 = MyVertex({ pos[4 + 0 + 1] , rgba, right,{ 1.0f, 1.0f } });
-	v4 = MyVertex({ pos[4 + 0 + 0] , rgba, right,{ 0.0f, 1.0f } });
+	v1 = MyVertex({ pos[4 + 2 + 0] , m_rgba, right,{ 0.0f, 0.0f } });
+	v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, right,{ 1.0f, 0.0f } });
+	v3 = MyVertex({ pos[4 + 0 + 1] , m_rgba, right,{ 1.0f, 1.0f } });
+	v4 = MyVertex({ pos[4 + 0 + 0] , m_rgba, right,{ 0.0f, 1.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//left area
-	v1 = MyVertex({ pos[0 + 2 + 1] , rgba, left,{ 0.0f, 0.0f } });
-	v2 = MyVertex({ pos[0 + 2 + 0] , rgba, left,{ 1.0f, 0.0f } });
-	v3 = MyVertex({ pos[0 + 0 + 0] , rgba, left,{ 1.0f, 1.0f } });
-	v4 = MyVertex({ pos[0 + 0 + 1] , rgba, left,{ 0.0f, 1.0f } });
+	v1 = MyVertex({ pos[0 + 2 + 1] , m_rgba, left,{ 0.0f, 0.0f } });
+	v2 = MyVertex({ pos[0 + 2 + 0] , m_rgba, left,{ 1.0f, 0.0f } });
+	v3 = MyVertex({ pos[0 + 0 + 0] , m_rgba, left,{ 1.0f, 1.0f } });
+	v4 = MyVertex({ pos[0 + 0 + 1] , m_rgba, left,{ 0.0f, 1.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//front area
-	v1 = MyVertex({ pos[0 + 2 + 0] , rgba, front,{ 0.0f, 0.0f } });
-	v2 = MyVertex({ pos[4 + 2 + 0] , rgba, front,{ 1.0f, 0.0f } });
-	v3 = MyVertex({ pos[4 + 0 + 0] , rgba, front,{ 1.0f, 1.0f } });
-	v4 = MyVertex({ pos[0 + 0 + 0] , rgba, front,{ 0.0f, 1.0f } });
+	v1 = MyVertex({ pos[0 + 2 + 0] , m_rgba, front,{ 0.0f, 0.0f } });
+	v2 = MyVertex({ pos[4 + 2 + 0] , m_rgba, front,{ 1.0f, 0.0f } });
+	v3 = MyVertex({ pos[4 + 0 + 0] , m_rgba, front,{ 1.0f, 1.0f } });
+	v4 = MyVertex({ pos[0 + 0 + 0] , m_rgba, front,{ 0.0f, 1.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//back area
-	v1 = MyVertex({ pos[4 + 2 + 1] , rgba, back,{ 0.0f, 0.0f } });
-	v2 = MyVertex({ pos[0 + 2 + 1] , rgba, back,{ 1.0f, 0.0f } });
-	v3 = MyVertex({ pos[0 + 0 + 1] , rgba, back,{ 1.0f, 1.0f } });
-	v4 = MyVertex({ pos[4 + 0 + 1] , rgba, back,{ 0.0f, 1.0f } });
+	v1 = MyVertex({ pos[4 + 2 + 1] , m_rgba, back,{ 0.0f, 0.0f } });
+	v2 = MyVertex({ pos[0 + 2 + 1] , m_rgba, back,{ 1.0f, 0.0f } });
+	v3 = MyVertex({ pos[0 + 0 + 1] , m_rgba, back,{ 1.0f, 1.0f } });
+	v4 = MyVertex({ pos[4 + 0 + 1] , m_rgba, back,{ 0.0f, 1.0f } });
 	AddRectangle(v1, v2, v3, v4);
 }
 
@@ -241,6 +240,29 @@ void ModelClass::SetPosition(float x, float y, float z)
 	m_pos.x = x;
 	m_pos.y = y;
 	m_pos.z = z;
+}
+
+void ModelClass::SetColor(float r, float g, float b, float a)
+{
+	m_rgba.x = r;
+	m_rgba.y = g;
+	m_rgba.z = b;
+	m_rgba.w = a;
+
+	for (auto& vertex : m_vertices)
+	{
+		vertex.color = m_rgba;
+	}
+}
+
+void ModelClass::SetRGB(float r, float g, float b)
+{
+	SetColor(r, g, b, m_rgba.w);
+}
+
+void ModelClass::SetAlpha(float a)
+{
+	SetColor(m_rgba.x, m_rgba.y, m_rgba.z, a);
 }
 
 void ModelClass::SetRotation(float x, float y, float z)

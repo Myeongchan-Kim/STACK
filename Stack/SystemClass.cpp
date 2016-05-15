@@ -148,14 +148,17 @@ bool SystemClass::Frame()
 	{
 		float dy = 1.0f;
 		ModelClass* model = new ModelClass(0, count, 0);
+		ModelClass* transModel = new ModelClass(-0.5f, count, 2);
 		model->SetToCube(2, 1, 2);
+		transModel->SetToCube(1, 1, 1);
 		m_renderer->AddModel(model);
+		m_renderer->AddTransparentModel(transModel);
 		count += dy;
 		m_renderer->MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
 	}
 	m_Input->KeyUp(VK_SPACE);
 	result = m_renderer->Frame(totalElapsedTime);
-	
+
 	return result;
 }
 /*
@@ -166,11 +169,11 @@ bool SystemClass::Frame()
 */
 
 /*
-	wParam, lParamÀº iMessageÀÇ ¸Þ½ÃÁö¿¡ µû¸¥ ºÎ°¡ÀûÀÎ Á¤º¸¸¦ °¡Áø´Ù.
-	¿¹¸¦ µé¾î ¸¶¿ì½º ¹öÆ°ÀÌ ´­·¯Á³´Ù´Â WM_LBUTTONDOWN ¸Þ½ÃÁö°¡ ÀÔ·ÂµÇ¾ú´Ù¸é È­¸éÀÇ ¾îµðÂë¿¡¼­ ¸¶¿ì½º ¹öÆ°ÀÌ ´­·¯Á³´Â°¡,
-	±×¶§ÀÇ Å°º¸µå »óÈ²(Shift, Ctrl, Alt)Àº ¾î¶°ÇÑ°¡¿¡ °üÇÑ Á¤º¸°¡ Ãß°¡·Î ÇÊ¿äÇÏ¸ç WM_CHAR ¸Þ½ÃÁö,
-	Áï Å°º¸µå·ÎºÎÅÍ Å°°¡ ÀÔ·ÂµÇ¾ú´Ù´Â ¸Þ½ÃÁö°¡ ÀÔ·ÂµÇ¾ú´Ù¸é ¾î¶² Å°°¡ ÀÔ·ÂµÇ¾ú´Â°¡¿¡ °üÇÑ Ãß°¡ÀûÀÎ Á¤º¸°¡ ÇÊ¿äÇÏ´Ù.
-	ÀÌ·± Ãß°¡ Á¤º¸µéÀÌ wParam, lParamÀ¸·Î Àü´ÞµÈ´Ù. wParam, lParam¿¡ ½ÇÁ¦·Î ¾î¶² °ªÀ» Àü´ÞµÇ´ÂÁö´Â ¸Þ½ÃÁöº°·Î ´Ù¸£´Ù.
+	wParam, lParamï¿½ï¿½ iMessageï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+	ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ì½º ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù´ï¿½ WM_LBUTTONDOWN ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ÂµÇ¾ï¿½ï¿½Ù¸ï¿½ È­ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ë¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ì½º ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â°ï¿½,
+	ï¿½×¶ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È²(Shift, Ctrl, Alt)ï¿½ï¿½ ï¿½î¶°ï¿½Ñ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï¸ï¿½ WM_CHAR ï¿½Þ½ï¿½ï¿½ï¿½,
+	ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ Å°ï¿½ï¿½ ï¿½Ô·ÂµÇ¾ï¿½ï¿½Ù´ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ÂµÇ¾ï¿½ï¿½Ù¸ï¿½ ï¿½î¶² Å°ï¿½ï¿½ ï¿½Ô·ÂµÇ¾ï¿½ï¿½Â°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.
+	ï¿½Ì·ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ wParam, lParamï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÞµÈ´ï¿½. wParam, lParamï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÞµÇ´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½.
 */
 
 LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
@@ -218,7 +221,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	int windowstate;
 
 
-	// Get an external pointer to this object.	
+	// Get an external pointer to this object.
 	ApplicationHandle = this;
 
 	// Get the instance of this application.
@@ -279,17 +282,17 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	}
 
 	// Create the window with the screen settings and get the handle to it.
-	m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, 
-		m_applicationName, 
+	m_hwnd = CreateWindowEx(WS_EX_APPWINDOW,
+		m_applicationName,
 		m_applicationName,
 		windowstate,
-		posX, 
-		posY, 
-		screenWidth, 
-		screenHeight, 
-		NULL, 
-		NULL, 
-		m_hinstance, 
+		posX,
+		posY,
+		screenWidth,
+		screenHeight,
+		NULL,
+		NULL,
+		m_hinstance,
 		NULL);
 
 	// Bring the window up on the screen and set it as main focus.

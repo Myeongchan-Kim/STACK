@@ -24,6 +24,9 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	m_camera.InitCamera();
 
 	CreateShader();
+	CreateDepthStencilTexture();
+	CreateDepthStencilState();
+	CreateBlendState();
 	
 	
 	LoadTexture(ConstVars::CONCREAT_TEX_FILE);
@@ -57,6 +60,29 @@ void Renderer::AddModel(ModelClass* model)
 	count %= 3;
 
 	m_modelList.emplace_back(model);
+}
+
+void Renderer::AddTransparentModel(ModelClass* model)
+{
+	model->CreateVertexBuffer(m_device);
+	model->CreateIndexBuffer(m_device);
+	static int count = 0;
+	if (count == 0)
+	{
+		model->SetTextureName(ConstVars::FEBRIC_TEX_FILE);
+	}
+	else if (count == 1)
+	{
+		model->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+	}
+	else
+	{
+		model->SetTextureName(ConstVars::PLANE_TEX_FILE);
+	}
+	count++;
+	count %= 3;
+
+	m_transparentModelList.emplace_back(model);
 }
 
 HRESULT Renderer::InitDevice(HWND hwnd)
@@ -138,8 +164,6 @@ HRESULT Renderer::InitDevice(HWND hwnd)
 	vp.TopLeftY = 0;
 	m_immediateContext->RSSetViewports(1, &vp); // 뷰포트가 여러개면 개수와, 배열의 주소를 넣는다.
 
-	CreateDepthStencilTexture();
-	m_immediateContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 	return hr;
 
@@ -174,13 +198,17 @@ void Renderer::CreateShader()
 	if (FAILED(hr))
 		return;
 
-	m_tech = m_effect->GetTechniqueByName("ColorTech");
-	m_wvp = m_effect->GetVariableByName("wvp")->AsMatrix();
-	m_world = m_effect->GetVariableByName("world")->AsMatrix();
-	m_lightDir = m_effect->GetVariableByName("lightDir")->AsVector();
-	m_lightColor = m_effect->GetVariableByName("lightColor")->AsVector();
-	m_texDiffuse = m_effect->GetVariableByName("texDiffuse")->AsShaderResource();
-	m_samLinear = m_effect->GetVariableByName("samLinear")->AsSampler();
+	m_colorTech = m_effect->GetTechniqueByName("ColorTech");
+// 	for (int i = 0; i <= 5; i++)
+// 	{
+// 		m_transparentTechList.emplace_back(m_effect->GetTechniqueByName("TransparentTech" + i));
+// 	}
+	m_wvp			= m_effect->GetVariableByName("wvp")->AsMatrix();
+	m_world			= m_effect->GetVariableByName("world")->AsMatrix();
+	m_lightDir		= m_effect->GetVariableByName("lightDir")->AsVector();
+	m_lightColor	= m_effect->GetVariableByName("lightColor")->AsVector();
+	m_texDiffuse	= m_effect->GetVariableByName("texDiffuse")->AsShaderResource();
+	m_samLinear		= m_effect->GetVariableByName("samLinear")->AsSampler();
 
 	if (FAILED(hr))
 		return;
@@ -197,7 +225,7 @@ void Renderer::CreateShader()
 	D3DX11_PASS_DESC passDesc;
 	UINT numElements = ARRAYSIZE(layout);
 
-	m_tech->GetPassByIndex(0)->GetDesc(&passDesc);
+	m_colorTech->GetPassByIndex(0)->GetDesc(&passDesc);
 
 	hr = m_device->CreateInputLayout(
 		layout,
@@ -228,8 +256,25 @@ void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)
 	m_world->SetMatrix((float*)&world);
 }
 
+void Renderer::CreateDepthStencilState()
+{
+	D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+
+	depthStencilDesc.DepthEnable = true;    // Depth Test 활성화
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;   // Depth 쓰기 기능 활성화
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;  	// Z 값이 작으면 통과. 즉 그린다.
+
+	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateZTestOn);
+
+	depthStencilDesc.DepthEnable = false;    // Depth Test 비활성화
+	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateZTestOff);
+}
+
+
 void Renderer::CreateDepthStencilTexture()
 {
+
 	//Create depth stencil texture
 	D3D11_TEXTURE2D_DESC descDepth;
 	ZeroMemory(&descDepth, sizeof(descDepth));
@@ -258,6 +303,30 @@ void Renderer::CreateDepthStencilTexture()
 	m_device->CreateDepthStencilView(m_depthStencil, &descDSV, &m_depthStencilView);
 
 
+	m_immediateContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+
+}
+
+
+HRESULT   Renderer::CreateBlendState()
+{
+	D3D11_BLEND_DESC   blendDesc;
+	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
+	blendDesc.RenderTarget[0].BlendEnable = true;
+
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+ 
+ 	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+ 	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+ 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	m_device->CreateBlendState(&blendDesc, &m_blendState);
+
+	return S_OK;
 }
 
 HRESULT Renderer::LoadTexture(WCHAR* fileName)
@@ -296,13 +365,14 @@ HRESULT Renderer::LoadTexture(WCHAR* fileName)
 
 }
 
-bool Renderer::Frame(float deltaTime)
+bool Renderer::Frame(float elapsedTime)
 {
 	//멤버 오브젝트들 이동.
-	m_camera.Frame(deltaTime);
+	m_camera.Frame(elapsedTime);
 
 	//model position 계산
 	float ClearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
+	static float lastTime = 0;
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 	m_immediateContext->ClearDepthStencilView(
 		m_depthStencilView,		//clear target
@@ -312,6 +382,10 @@ bool Renderer::Frame(float deltaTime)
 
 	m_immediateContext->IASetInputLayout(m_inputLayout);
 	m_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	// Z test 활성화 State 설정.
+	m_immediateContext->OMSetDepthStencilState(m_depthStencilStateZTestOn, 0);
+	m_immediateContext->OMSetBlendState(0, 0, 0xffffffff);
 
 	for (auto model : m_modelList)
 	{
@@ -326,21 +400,67 @@ bool Renderer::Frame(float deltaTime)
 		m_texDiffuse->SetResource(texture);
 		m_samLinear->SetSampler(0, m_samplerLinear);
 		// 계산 및 그리기
-		CalculateMatrixForBox(deltaTime, model);
+		CalculateMatrixForBox(elapsedTime, model);
 
 		//빛 계산
 		m_lightDir->SetFloatVector((float*)&lightDirection);
 		m_lightColor->SetFloatVector((float*)&lightColor);
 
 		D3DX11_TECHNIQUE_DESC techDesc;
-		m_tech->GetDesc(&techDesc);
-		for (UINT p = 0; p < techDesc.Passes; ++p)
-		{
-			m_tech->GetPassByIndex(p)->Apply(0, m_immediateContext);
+		m_colorTech->GetDesc(&techDesc);
+		
+		int transparentLevel = model->GetTransparency();
+		m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
 
-			m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
-		}
+		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
+		
 	}
+
+	m_immediateContext->OMSetDepthStencilState(m_depthStencilStateZTestOff, 0);
+	m_immediateContext->OMSetBlendState(m_blendState, 0, 0xffffffff);
+	for (auto model : m_transparentModelList)
+	{
+		UINT stride = sizeof(MyVertex);
+		UINT offset = 0;
+		if(model->GetColor().w == 0)
+			continue;
+		m_immediateContext->IASetVertexBuffers(0, 1, &model->GetVB(), &stride, &offset);
+		m_immediateContext->IASetIndexBuffer(model->GetIB(), DXGI_FORMAT_R16_UINT, 0);
+
+		auto textureName = model->GetTextureName();
+
+		auto texture = m_textureRVList.at(textureName);
+		m_texDiffuse->SetResource(texture);
+		m_samLinear->SetSampler(0, m_samplerLinear);
+		// 계산 및 그리기
+		CalculateMatrixForBox(elapsedTime, model);
+
+		//빛 계산
+		m_lightDir->SetFloatVector((float*)&lightDirection);
+		m_lightColor->SetFloatVector((float*)&lightColor);
+
+		D3DX11_TECHNIQUE_DESC techDesc;
+		m_colorTech->GetDesc(&techDesc);
+
+		int transparentLevel = model->GetTransparency();
+		m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
+		if (elapsedTime - lastTime > 0.1f)
+		{
+			model->UpTransparency();
+			lastTime = elapsedTime;
+		}
+		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
+	}
+
+// 	for (int i = 0; i < m_transparentModelList.size(); i++)
+// 	{
+// 		ModelClass* model = m_transparentModelList.at(i);
+// 		if (model->GetColor().w == 0)
+// 		{
+// 			delete model;
+// 			m_transparentModelList.erase(m_transparentModelList.begin() + i);
+// 		}
+// 	}
 	
 	m_swapChain->Present(0, 0);
 

@@ -22,9 +22,17 @@ public:
 	void SetSample();
 	void SetToCube(float widthX, float height, float widthZ);
 	void SetPosition(float x, float y, float z);
+	void SetColor(float r, float g, float b, float a);
+	void SetRGB(float r, float g, float b);
+	void SetAlpha(float a);
 	void SetRotation(float x, float y, float z);
+
+
+	void UpTransparency() { if(m_transparency < 5) m_transparency++; };
+	int GetTransparency() { return m_transparency; };
 	DirectX::XMFLOAT3 GetPosition();
 	DirectX::XMFLOAT3 GetRotation();
+	inline DirectX::XMFLOAT4 GetColor() { return m_rgba; };
 
 	WCHAR*& GetTextureName() { return m_textureName; };
 	void SetTextureName(WCHAR* textureName);
@@ -39,8 +47,9 @@ private:
 	std::vector<MyVertex>	m_vertices;
 	std::vector<WORD>	m_indices;
 
-	float				m_xRot = 0.0f;
-	float				m_yRot = 0.0f;
-	float				m_zRot = 0.0f;
+	DirectX::XMFLOAT4			m_rgba;
+	float				m_xRot;
+	float				m_yRot;
+	float				m_zRot;
+	int					m_transparency = 0;
 };
-
