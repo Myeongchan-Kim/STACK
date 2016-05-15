@@ -10,7 +10,7 @@ class ModelClass :public Object
 {
 public:
 	ModelClass(float x, float y, float z);
-	~ModelClass();
+	virtual ~ModelClass();
 	HRESULT CreateVertexBuffer(ID3D11Device* device);
 	HRESULT CreateIndexBuffer(ID3D11Device* device);
 	ID3D11Buffer*& GetVB() { return m_vertexBuffer; };
