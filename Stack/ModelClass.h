@@ -38,6 +38,7 @@ public:
 	WCHAR*& GetTextureName() { return m_textureName; };
 
 protected:
+	void UpdateBackgroundColor();
 	void AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4);
 
 	WCHAR*						m_textureName;

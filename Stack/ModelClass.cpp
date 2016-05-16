@@ -228,9 +228,13 @@ void ModelClass::SetToRectangle(float width, float height, XMFLOAT3 normal)
 	MyVertex v1 = { pos[0],{ m_rgba.x - 0.3f,m_rgba.y - 0.3f,m_rgba.z - 0.3f, 1.0f }, normal,{ 0.0f, 0.0f } };
 	MyVertex v2 = { pos[1], m_rgba, normal,{ 1.0f, 0.0f } };
 	MyVertex v3 = { pos[2],{ m_rgba.x - 0.3f,m_rgba.y - 0.3f,m_rgba.z - 0.3f, 1.0f }, normal,{ 1.0f, 1.0f } };
-	MyVertex v4 = { pos[3],{ m_rgba.x - 0.7f,m_rgba.y - 0.7f,m_rgba.z - 0.7f, 1.0f }, normal,{ 0.0f, 1.0f } };
+	MyVertex v4 = { pos[3],{ m_rgba.x - 0.8f,m_rgba.y - 0.8f,m_rgba.z - 0.8f, 1.0f }, normal,{ 0.0f, 1.0f } };
 
 	AddRectangle(v1, v2, v3, v4);
+}
+
+void ModelClass::UpdateBackgroundColor()
+{
 }
 
 void ModelClass::AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4)

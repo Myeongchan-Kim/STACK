@@ -44,14 +44,14 @@ VertexOut VS(VertexIn vIn)
 float4 PS(VertexOut vOut) : SV_TARGET
 {
 	float4 finalColor = 0;
-	float bright = saturate(dot((float4) - lightDir, vOut.normal) * 0.5 + 0.5);
+	float bright = saturate(dot((float4) - lightDir, vOut.normal) * 0.5 + 0.5) + 0.1f;
 
 	finalColor = bright * vOut.color;
 	finalColor.a = vOut.color.a;
 	float4 texColor = texDiffuse.Sample(samLinear, vOut.tex);
 
 	float4 result;
-	result = 0.5*texColor + 0.5*finalColor;
+	result = 0.3*texColor + 0.7*finalColor;
 	result.a = finalColor.a;
 	return result;
 };
