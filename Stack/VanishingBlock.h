@@ -6,11 +6,11 @@ class VanishingBlock :
 public:
 	VanishingBlock();
 	~VanishingBlock();
-	void SetElapsedTime(float time) { m_lifeTime = time; }
+	void SetLifeTime(float time) { m_lifeTime = time; }
 	virtual void Play(float dt) override;
 	void UpTransparency() { if (m_transparency < 5) m_transparency++; };
 
-	float GetElapsedTime() { return m_lifeTime; };
+	float GetLifeTime() { return m_lifeTime; };
 
 private:
 	static const float MAX_LIFETIME;

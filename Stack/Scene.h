@@ -14,7 +14,9 @@ public:
 	virtual void Update(InputClass& input, Camera& camera) = 0;
 
 private:
-	virtual void Play(float detaTime, InputClass& input, Camera& camera);
+
+	//Play함수는 Update, Start함수를 적절히 불러주는 함수로 SystemClass객체만이 부를수 있습니다. 재정의 하는 함수가 아닙니다.
+	void Play(float detaTime, InputClass& input, Camera& camera);
 
 
 private:
