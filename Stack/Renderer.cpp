@@ -42,8 +42,6 @@ void Renderer::AddModel(ModelClass* model)
 	//model->SetSample();
 	model->CreateVertexBuffer(m_device);
 	model->CreateIndexBuffer(m_device);
-
-	model->SetTextureName(ConstVars::FEBRIC_TEX_FILE);
 	m_modelList.emplace_back(model);
 }
 
@@ -246,10 +244,10 @@ void Renderer::CreateDepthStencilState()
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;   // Depth 쓰기 기능 활성화.
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;  	// Z 값이 작으면 통과. 즉 그린다.
 
-	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateZTestOn);
+	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateForNormalModel);
 
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;	//Depth 쓰기 기능 비활성화.
-	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateZTestOff);
+	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateForTransparentModel);
 }
 
 
@@ -346,6 +344,54 @@ HRESULT Renderer::LoadTexture(WCHAR* fileName)
 
 }
 
+
+//Set buffers. You should call this after setting all of model.
+void Renderer::SetBuffers(ModelClass* model, float deltaTime)
+{
+	UINT stride = sizeof(MyVertex);
+	UINT offset = 0;
+
+	m_immediateContext->IASetVertexBuffers(0, 1, &model->GetVB(), &stride, &offset);
+	m_immediateContext->IASetIndexBuffer(model->GetIB(), DXGI_FORMAT_R16_UINT, 0);
+
+	auto textureName = model->GetTextureName();
+	auto texture = m_textureRVList.at(textureName);
+	m_texDiffuse->SetResource(texture);
+	m_samLinear->SetSampler(0, m_samplerLinear);
+	// 계산 및 그리기
+	CalculateMatrixForBox(deltaTime, model);
+
+	//빛 계산
+	m_lightDir->SetFloatVector((float*)&lightDirection);
+	m_lightColor->SetFloatVector((float*)&lightColor);
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	m_colorTech->GetDesc(&techDesc);
+
+	//사라지는 오브젝트 처리.
+	if (VanishingBlock* vblock = dynamic_cast<VanishingBlock*>(model)) {
+
+   		int transparentLevel = vblock->GetTransparency();
+		m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
+
+
+		float lastTime = vblock->GetElapsedTime();
+		vblock->SetElapsedTime(lastTime + deltaTime);
+
+		if (vblock->GetElapsedTime() > 0.1f)
+		{
+			vblock->UpTransparency();
+			lastTime = deltaTime;
+			vblock->SetElapsedTime(0);
+		}
+	}
+	else
+	{
+		m_colorTech->GetPassByIndex(0)->Apply(0, m_immediateContext);
+	}
+}
+
+
 bool Renderer::Frame(float deltaTime)
 {
 
@@ -365,84 +411,25 @@ bool Renderer::Frame(float deltaTime)
 	m_immediateContext->IASetInputLayout(m_inputLayout);
 	m_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// Z test 활성화 State 설정.
-	m_immediateContext->OMSetDepthStencilState(m_depthStencilStateZTestOn, 0);
-	m_immediateContext->OMSetBlendState(0, 0, 0xffffffff);
+	// Z buffer writing 활성화 State 설정.
+	
 
-	for (auto model : m_modelList)
+	for (auto& model : m_modelList)
 	{
-		UINT stride = sizeof(MyVertex);
-		UINT offset = 0;
-		m_immediateContext->IASetVertexBuffers(0, 1, &model->GetVB(), &stride, &offset);
-		m_immediateContext->IASetIndexBuffer(model->GetIB(), DXGI_FORMAT_R16_UINT, 0);
-
-		auto textureName = model->GetTextureName();
-
-		auto texture = m_textureRVList.at(textureName);
-		m_texDiffuse->SetResource(texture);
-		m_samLinear->SetSampler(0, m_samplerLinear);
-		// 계산 및 그리기
-		CalculateMatrixForBox(deltaTime, model);
-
-		//빛 계산
-		m_lightDir->SetFloatVector((float*)&lightDirection);
-		m_lightColor->SetFloatVector((float*)&lightColor);
-
-		D3DX11_TECHNIQUE_DESC techDesc;
-		m_colorTech->GetDesc(&techDesc);
-		
-		m_colorTech->GetPassByIndex(0)->Apply(0, m_immediateContext);
-
-		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
-		
-	}
-
-	m_immediateContext->OMSetDepthStencilState(m_depthStencilStateZTestOff, 0);
-	m_immediateContext->OMSetBlendState(m_blendState, 0, 0xffffffff);
-	for (auto model : m_transparentModelList)
-	{
-		UINT stride = sizeof(MyVertex);
-		UINT offset = 0;
-		if(model->GetColor().w == 0)
-			continue;
-		m_immediateContext->IASetVertexBuffers(0, 1, &model->GetVB(), &stride, &offset);
-		m_immediateContext->IASetIndexBuffer(model->GetIB(), DXGI_FORMAT_R16_UINT, 0);
-
-		auto textureName = model->GetTextureName();
-
-		auto texture = m_textureRVList.at(textureName);
-		m_texDiffuse->SetResource(texture);
-		m_samLinear->SetSampler(0, m_samplerLinear);
-		// 계산 및 그리기
-		CalculateMatrixForBox(deltaTime, model);
-
-		//빛 계산
-		m_lightDir->SetFloatVector((float*)&lightDirection);
-		m_lightColor->SetFloatVector((float*)&lightColor);
-
-		D3DX11_TECHNIQUE_DESC techDesc;
-		m_colorTech->GetDesc(&techDesc);
-
-		//사라지는 오브젝트 처리.
-		if (VanishingBlock* vblock = static_cast<VanishingBlock*>(model)) {
-
-			int transparentLevel = vblock->GetTransparency();
-			m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
-			float lastTime = vblock->GetElapsedTime();
-			vblock->SetElapsedTime(lastTime + deltaTime);
-			if (vblock->GetElapsedTime() > 0.1f)
-			{
-				vblock->UpTransparency();
-				lastTime = deltaTime;
-				vblock->SetElapsedTime(0);
-			}
+		if (model->GetTransparency() == 0)
+		{
+			m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForNormalModel, 0);
+			m_immediateContext->OMSetBlendState(0, 0, 0xffffffff);
 		}
 		else
 		{
-			m_colorTech->GetPassByIndex(0)->Apply(0, m_immediateContext);
+			m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForTransparentModel, 0);
+			m_immediateContext->OMSetBlendState(m_blendState, 0, 0xffffffff);
 		}
-
+		model->Frame(deltaTime);
+		SetBuffers(model, deltaTime);
 		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
+		
 	}
 
 	

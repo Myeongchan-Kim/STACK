@@ -2,12 +2,38 @@
 #include "Camera.h"
 #include "VanishingBlock.h"
 #include "ConstVars.h"
+#include "Scene.h"
+#include "Renderer.h"
+#include "InputClass.h"
+
+SystemClass* SystemClass::instance = nullptr;
 
 SystemClass::SystemClass()
 {
 
-	m_Input = nullptr;
+	m_input = nullptr;
 	m_renderer = nullptr;
+}
+
+SystemClass* SystemClass::GetInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new SystemClass();
+	}
+
+	return instance;
+}
+
+SystemClass::~SystemClass()
+{
+	if(instance)
+		delete instance;
+}
+
+void SystemClass::SetScene(Scene* scene)
+{
+	m_currentScene = scene;
 }
 
 bool SystemClass::Initialize()
@@ -20,19 +46,21 @@ bool SystemClass::Initialize()
 	// Initialize the width and height of the screen to zero before sending the variables into the function.
 	screenWidth = 0;
 	screenHeight = 0;
+	// Create the input object.  This object will be used to handle reading the keyboard input from the user.
+	m_input = new InputClass();
+
+	if (!m_input)
+	{
+		return false;
+	}
+	// Initialize the input object.
+	m_input->Initialize();
 
 	// Initialize the windows api.
 	InitializeWindows(screenWidth, screenHeight);
 
-	// Create the input object.  This object will be used to handle reading the keyboard input from the user.
-	m_Input = new InputClass();
-	if (!m_Input)
-	{
-		return false;
-	}
+	
 
-	// Initialize the input object.
-	m_Input->Initialize();
 
 	// Create the graphics object.  This object will handle rendering all the graphics for this application.
 	m_renderer = new Renderer();
@@ -47,15 +75,6 @@ bool SystemClass::Initialize()
 	{
 		return false;
 	}
-
-	//배경 사각형 설정
-	auto backGround = new ModelClass();
-	backGround->SetPosition(5.0f, -7.0f, 5.0f);
-	backGround->SetRGB(0.7f, 1.0f, 1.0f);
-	backGround->SetToRectangle(15.0f, 15.0f, {0.0f, 1.0f, 0.0f});
-	m_backGround = backGround;
-	m_renderer->AddModel(backGround, ConstVars::PLANE_TEX_FILE);
-
 	return true;
 }
 
@@ -76,17 +95,12 @@ void SystemClass::Shutdown()
 	}
 
 	// Release the input object.
-	if (m_Input)
+	if (m_input)
 	{
-		delete m_Input;
-		m_Input = nullptr;
+		delete m_input;
+		m_input = nullptr;
 	}
 
-	if (m_backGround)
-	{
-		delete m_backGround;
-		m_backGround = nullptr;
-	}
 
 	// Shutdown the window.
 	ShutdownWindows();
@@ -100,6 +114,7 @@ The application processing is done in the Frame function which is called each lo
 
 void SystemClass::Run()
 {
+
 	MSG msg;
 	bool done, result;
 
@@ -148,39 +163,35 @@ bool SystemClass::Frame()
 {
 	bool result;
 
-
 	// Check if the user pressed escape and wants to exit the application.
-	if (m_Input->IsKeyDown(VK_ESCAPE))
+	if (m_input->IsKeyDown(VK_ESCAPE))
 	{
 		return false;
 	}
+
+	if (m_currentScene == nullptr)
+		return true;
 
 	// Do the frame processing for the graphics object.
 	m_timer.ProcessTime();
 	float deltaTime = 0;
 	deltaTime = m_timer.GetElapsedTime();
+	std::vector<ModelClass*> models;
 
-	static float count = 0;
-	if (m_Input->IsKeyDown(VK_SPACE))
+	//Play함수가 렌더러를 가져가는데... 카메라를 Scene에서 조종하는게 이것 말고 불가능한 것 같아 이렇게 했습니다.
+	//어차피 Scene의 Play함수는 사용자가 만들지 않게 할거라 상관은 없지만 수정가능하면 부탁드림..
+	m_currentScene->Play(deltaTime, *m_input, models, m_renderer->GetCamera());
+
+	float dy = 1.0f;
+	for (auto model : models)
 	{
-		float dy = 1.0f;
-		ModelClass* model = new ModelClass();
-		model->SetPosition(0, count, 0);
-		ModelClass* transModel = new VanishingBlock();
-		transModel->SetPosition(-0.5f, count, 2);
-		model->SetToCube(2, 1, 2);
-		transModel->SetToCube(1, 1, 1);
 		m_renderer->AddModel(model);
-		m_renderer->AddTransparentModel(transModel);
-		
-		count += dy;
-		m_renderer->MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
-		m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
 	}
-	m_Input->KeyUp(VK_SPACE);
+
 	result = m_renderer->Frame(deltaTime);
 
-	m_backGround->Frame(deltaTime);
+	//set pressed keys up.
+	m_input->Reset();
 	return result;
 }
 /*
@@ -206,7 +217,7 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam
 	case WM_KEYDOWN:
 	{
 		// If a key is pressed send it to the input object so it can record that state.
-		m_Input->KeyDown((unsigned int)wparam);
+		m_input->KeyDown((unsigned int)wparam);
 		return 0;
 	}
 
@@ -214,7 +225,7 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam
 	case WM_KEYUP:
 	{
 		// If a key is released then send it to the input object so it can unset the state for that key.
-		m_Input->KeyUp((unsigned int)wparam);
+		m_input->KeyUp((unsigned int)wparam);
 		return 0;
 	}
 

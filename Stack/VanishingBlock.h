@@ -11,10 +11,8 @@ public:
 	void UpTransparency() { if (m_transparency < 5) m_transparency++; };
 
 	float GetElapsedTime() { return m_elapsedTime; };
-	int GetTransparency() { return m_transparency; };
 
 private:
 	float						m_elapsedTime = 0.0f;
-	int							m_transparency = 0;
 };
 

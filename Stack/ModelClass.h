@@ -15,6 +15,8 @@ public:
 	HRESULT CreateIndexBuffer(ID3D11Device* device);
 	ID3D11Buffer*& GetVB() { return m_vertexBuffer; };
 	ID3D11Buffer*& GetIB() { return m_indexBuffer; };
+	int GetTransparency() { return m_transparency; };
+
 	void ReleaseVB();
 	void ReleaseIB();
 	UINT indexSize() { return m_indices.size(); };
@@ -43,6 +45,7 @@ protected:
 	ID3D11Buffer*				m_indexBuffer = nullptr;
 	std::vector<MyVertex>		m_vertices;
 	std::vector<WORD>			m_indices;
+	int							m_transparency = 0;
 
 	DirectX::XMFLOAT4			m_rgba;
 	float						m_xRot;

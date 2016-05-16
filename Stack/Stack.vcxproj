@@ -151,12 +151,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="InputClass.cpp" />
     <ClCompile Include="MyVertex.cpp" />
     <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="MyTime.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SystemClass.cpp" />
     <ClCompile Include="VanishingBlock.cpp" />
     <ClCompile Include="WinMain.cpp" />
@@ -164,12 +166,14 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstVars.h" />
+    <ClInclude Include="GameScene.h" />
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="MyVertex.h" />
     <ClInclude Include="ModelClass.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="MyTime.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="SystemClass.h" />
     <ClInclude Include="VanishingBlock.h" />
   </ItemGroup>

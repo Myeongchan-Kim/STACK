@@ -16,63 +16,66 @@
     <Filter Include="FX">
       <UniqueIdentifier>{24a30d46-6773-41b4-b8c3-029d020809d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Graphic">
+    <Filter Include="소스 파일\Scene">
+      <UniqueIdentifier>{2851a327-a5d2-4f06-a404-0dac9c3878d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine">
+      <UniqueIdentifier>{21dff705-8afb-4291-96ff-941173d41116}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\Graphic">
       <UniqueIdentifier>{532daaaa-37c8-4a70-8b8a-e664ab15bf11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\FX">
+    <Filter Include="소스 파일\Engine\Graphic\Object">
+      <UniqueIdentifier>{5f249595-ed44-4d16-9f5e-3d73a0545368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Engine\FX">
       <UniqueIdentifier>{1b3fdc39-9cf3-4180-969a-da8309a84c57}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Graphic\Object">
-      <UniqueIdentifier>{5f249595-ed44-4d16-9f5e-3d73a0545368}</UniqueIdentifier>
+    <Filter Include="소스 파일\Engine\System">
+      <UniqueIdentifier>{9ac08e7e-feb4-42c2-8465-01649af425a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="InputClass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemClass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="WinMain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="MyTime.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer.cpp">
-      <Filter>소스 파일\Graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="MyVertex.cpp">
-      <Filter>소스 파일\Graphic</Filter>
+      <Filter>소스 파일\Engine\Graphic</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>소스 파일\Graphic\Object</Filter>
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>소스 파일\Graphic\Object</Filter>
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClCompile>
     <ClCompile Include="ModelClass.cpp">
-      <Filter>소스 파일\Graphic\Object</Filter>
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClCompile>
     <ClCompile Include="VanishingBlock.cpp">
-      <Filter>소스 파일\Graphic\Object</Filter>
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemClass.cpp">
+      <Filter>소스 파일\Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="InputClass.cpp">
+      <Filter>소스 파일\Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="MyTime.cpp">
+      <Filter>소스 파일\Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="MyVertex.cpp">
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일\Engine\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MyVertex.h">
-      <Filter>소스 파일\Graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="InputClass.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="MyTime.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemClass.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer.h">
-      <Filter>소스 파일\Graphic</Filter>
+      <Filter>소스 파일\Engine\Graphic</Filter>
     </ClInclude>
     <ClInclude Include="MyVertex.h">
       <Filter>헤더 파일</Filter>
@@ -81,16 +84,34 @@
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>소스 파일\Graphic\Object</Filter>
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>소스 파일\Graphic\Object</Filter>
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClInclude>
     <ClInclude Include="ModelClass.h">
-      <Filter>소스 파일\Graphic\Object</Filter>
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClInclude>
     <ClInclude Include="VanishingBlock.h">
-      <Filter>소스 파일\Graphic\Object</Filter>
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemClass.h">
+      <Filter>소스 파일\Engine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="InputClass.h">
+      <Filter>소스 파일\Engine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="MyTime.h">
+      <Filter>소스 파일\Engine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="MyVertex.h">
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene.h">
+      <Filter>소스 파일\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\Engine\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -98,7 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MyShader.fx">
-      <Filter>소스 파일\FX</Filter>
+      <Filter>소스 파일\Engine\FX</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

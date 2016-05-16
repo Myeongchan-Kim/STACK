@@ -1,8 +1,9 @@
 #pragma once
 
 #include <windows.h>
-#include "InputClass.h"
-#include "Renderer.h"
+class Scene;
+class InputClass;
+class Renderer;
 #include "MyTime.h"
 
 const bool FULL_SCREEN = false;
@@ -13,8 +14,9 @@ const float SCREEN_NEAR = 0.1f;
 class SystemClass
 {
 public:
-
-	SystemClass();
+	static SystemClass* GetInstance();
+	~SystemClass();
+	void SetScene(Scene* scene);
 	bool Initialize();
 	void Shutdown();
 	void Run();
@@ -22,19 +24,21 @@ public:
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
 private:
+	SystemClass();
 	bool Frame();
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
 
 private:
+	static SystemClass* instance;
 	LPCWSTR m_applicationName;
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
 
-	InputClass* m_Input;
-	Renderer* m_renderer;
+	InputClass* m_input;
 	CMyTime m_timer;
-	ModelClass* m_backGround = nullptr;
+	Renderer* m_renderer;
+	Scene* m_currentScene = nullptr;
 	
 };
 
