@@ -8,7 +8,7 @@
 
 
 //Only SystemClass calls this function
-void Scene::Play(float detaTime, InputClass& input, std::vector<ModelClass*>& modelsToBeRendered, Camera& camera)
+void Scene::Play(float deltaTime, InputClass& input, Camera& camera)
 {
 	if (!m_started)
 	{
@@ -17,8 +17,10 @@ void Scene::Play(float detaTime, InputClass& input, std::vector<ModelClass*>& mo
 	}
 	Update(input, camera);
 
-	modelsToBeRendered = std::move(m_modelsToBeRendered);
-	m_modelsToBeRendered.clear();
+	for (auto& model : m_modelsToBeRendered)
+	{
+		model->Play(deltaTime);
+	}
 }
 
 

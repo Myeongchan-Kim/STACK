@@ -4,9 +4,10 @@
 #include "ModelClass.h"
 #include "MyVertex.h"
 #include "WICTextureLoader.h"
+#include "ConstVars.h"
 
 ModelClass::ModelClass() : m_xRot(0.0f), m_yRot(0.0f), m_zRot(0.0f),
-							m_rgba(0.8f, 0.8f, 0.8f, 1.0f), m_indexBuffer(nullptr), m_vertexBuffer(nullptr)
+							m_rgba(0.8f, 0.8f, 0.8f, 1.0f), m_indexBuffer(nullptr), m_vertexBuffer(nullptr), m_textureName(ConstVars::PLANE_TEX_FILE)
 {
 
 }
@@ -54,6 +55,14 @@ HRESULT ModelClass::CreateIndexBuffer(ID3D11Device* device)
 	return device->CreateBuffer(&ibd,				//생성할 버퍼의 정보를 담은 구조체
 		&initData,									//버퍼 초기화시 필요한 데이터
 		&m_indexBuffer);							//생성된 버퍼
+}
+
+void ModelClass::SetTransParency(float alpha)
+{
+	for (auto& vertex : m_vertices)
+	{
+		vertex.color.w = alpha;
+	}
 }
 
 void ModelClass::ReleaseVB()

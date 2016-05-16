@@ -14,11 +14,12 @@ class Renderer
 {
 public:
 	Renderer();
-	~Renderer();
-	bool Initialize(int winWidth, int winHeight, HWND hwnd);
+	virtual ~Renderer();
+	virtual bool Initialize(int winWidth, int winHeight, HWND hwnd);
+	virtual bool Frame(float deltaTime, Scene* curScene);
+
 	void AddModel(ModelClass* model);
 	void AddTransparentModel(ModelClass* model);
-	bool Frame(float deltaTime);
 	void ShutDown();
 	Camera& GetCamera() { return m_camera; };
 	void SetCameraPos(float x, float y, float z) { m_camera.MoveBy(x, y, z); };
@@ -66,8 +67,7 @@ private:
 
 	ID3DX11Effect*							m_effect = nullptr;
 	ID3DX11EffectTechnique*					m_colorTech = nullptr;
-	std::vector<ID3DX11EffectTechnique*>	m_transparentTechList;
-
+	
 	ID3DX11EffectSamplerVariable*			m_samLinear = nullptr;
 	ID3DX11EffectShaderResourceVariable*	m_texDiffuse = nullptr;
 	ID3DX11EffectMatrixVariable*			m_wvp;

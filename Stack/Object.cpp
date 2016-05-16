@@ -24,7 +24,7 @@ void Object::AddMoveToScheduler(float x, float y, float z, float time)
 	m_moveList.push_back({ x, y, z, time });
 }
 
-void Object::Frame(float dt)
+void Object::Play(float dt)
 {
 	//이동 해야하는것 처리.
 	for (auto& move : m_moveList)

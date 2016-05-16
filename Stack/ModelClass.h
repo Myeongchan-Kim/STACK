@@ -16,6 +16,7 @@ public:
 	ID3D11Buffer*& GetVB() { return m_vertexBuffer; };
 	ID3D11Buffer*& GetIB() { return m_indexBuffer; };
 	int GetTransparency() { return m_transparency; };
+	void SetTransParency(float alpha);
 
 	void ReleaseVB();
 	void ReleaseIB();
