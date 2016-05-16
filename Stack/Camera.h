@@ -14,7 +14,8 @@ public:
 	XMMATRIX GetProjection(float width, float height);
 	virtual void MoveBy(float x, float y, float z);
 
-	void SetCameraPos(float x, float y, float z) { MoveBy(x, y, z); };
+	void SetCameraPos(float x, float y, float z);
+	void SetCameraTarget(float x, float y, float z);
 	void MoveCameraFor(float x, float y, float z, float time);
 private:
 	XMFLOAT4 			m_target;

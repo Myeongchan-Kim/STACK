@@ -7,7 +7,7 @@
 #include "ConstVars.h"
 #include <time.h>
 
-void GameScene::Start()
+void GameScene::Start(Camera& camera)
 {
 	srand(time(NULL));
 	float r = (float)rand() / (RAND_MAX + 1);
@@ -18,10 +18,12 @@ void GameScene::Start()
 	auto backGround = new ModelClass();
 	backGround->SetPosition(5.0f, -7.0f, 5.0f);
 	backGround->SetRGB(m_color.x, m_color.y, m_color.z);
-	backGround->SetToRectangle(15.0f, 15.0f, { 0.0f, 1.0f, 0.0f });
 	backGround->SetTextureName(ConstVars::PLANE_TEX_FILE);
+	backGround->SetToRectangle(20.0f, 20.0f, { 0.0f, 1.0f, 0.0f });
 	m_backGround = backGround;
 	AddModel(backGround);
+	camera.SetCameraPos(-8.0f, 10.0f, -8.0f);
+	camera.SetCameraTarget(0.0f, 0.0f, 0.0f);
 
 }
 
@@ -48,14 +50,16 @@ void GameScene::Update(InputClass& input, Camera& camera)
 		count += dy;
 
 		m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
+		m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
+		m_backGround->SetToRectangle(20.0f, 20.0f, { 0.0f, 1.0f, 0.0f });
 		camera.MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
-		m_color.x = m_color.x + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.1f;
-		m_color.y = m_color.y + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.1f;
-		m_color.z = m_color.z + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.1f;
+		m_color.x = m_color.x + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
+		m_color.y = m_color.y + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
+		m_color.z = m_color.z + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
 		
-     	RemoveModel(std::function<bool(ModelClass* model)>([&] (ModelClass* model) -> bool {
-			return true;
-		}));
+//      	RemoveModel(std::function<bool(ModelClass* model)>([&] (ModelClass* model) -> bool {
+// 			return true;
+// 		}));
 	}
 
 }

@@ -13,7 +13,7 @@ void Scene::Play(float deltaTime, InputClass& input, Camera& camera)
 {
 	if (!m_started)
 	{
-		Start();
+		Start(camera);
 		m_started = true;
 	}
 	Update(input, camera);

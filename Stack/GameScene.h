@@ -5,7 +5,7 @@ class GameScene :
 {
 public:
 
-	virtual void Start() override;
+	virtual void Start(Camera& camera) override;
 	virtual void Update(InputClass& input, Camera& camera) override;
 
 private:

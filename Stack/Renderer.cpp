@@ -475,8 +475,3 @@ void Renderer::ShutDown()
 	}
 
 }
-
-void Renderer::MoveCameraFor(float x, float y, float z, float time)
-{
-	m_camera.AddMoveToScheduler(x, y, z, time);
-}
