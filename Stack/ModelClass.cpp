@@ -57,6 +57,14 @@ HRESULT ModelClass::CreateIndexBuffer(ID3D11Device* device)
 		&m_indexBuffer);							//생성된 버퍼
 }
 
+void ModelClass::SetTransParency(float alpha)
+{
+	for (auto& vertex : m_vertices)
+	{
+		vertex.color.w = alpha;
+	}
+}
+
 void ModelClass::ReleaseVB()
 {
 	if (m_vertexBuffer != nullptr)

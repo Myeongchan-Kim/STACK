@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
+#include "Renderer.h"
 
 class ModelClass;
 class InputClass;
 class Camera;
-class Renderer;
 
 class Scene
 {
@@ -14,7 +14,7 @@ public:
 	virtual void Update(InputClass& input, Camera& camera) = 0;
 
 private:
-	void Play(float detaTime, InputClass& input, std::vector<ModelClass*>& modelsToBeRendered, Camera& camera);
+	void Play(float detaTime, InputClass& input, Camera& camera);
 
 
 private:
@@ -23,5 +23,6 @@ private:
 
 
 	friend class SystemClass;
+	friend class Renderer;
 };
 

@@ -6,6 +6,7 @@
 #include "WICTextureLoader.h"
 #include "ConstVars.h"
 #include "VanishingBlock.h"
+#include "Scene.h"
 
 Renderer::Renderer()
 {
@@ -42,17 +43,6 @@ void Renderer::AddModel(ModelClass* model)
 	//model->SetSample();
 	model->CreateVertexBuffer(m_device);
 	model->CreateIndexBuffer(m_device);
-	m_modelList.emplace_back(model);
-}
-
-void Renderer::AddModel(ModelClass* model, WCHAR* texture)
-{
-	//model->SetSample();
-	model->CreateVertexBuffer(m_device);
-	model->CreateIndexBuffer(m_device);
-
-	model->SetTextureName(texture);
-
 	m_modelList.emplace_back(model);
 }
 
@@ -364,36 +354,26 @@ void Renderer::SetBuffers(ModelClass* model, float deltaTime)
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	m_colorTech->GetDesc(&techDesc);
-
-	//사라지는 오브젝트 처리.
-	if (VanishingBlock* vblock = dynamic_cast<VanishingBlock*>(model)) {
-
-   		int transparentLevel = vblock->GetTransparency();
-		m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
-
-
-		float lastTime = vblock->GetElapsedTime();
-		vblock->SetElapsedTime(lastTime + deltaTime);
-
-		if (vblock->GetElapsedTime() > 0.1f)
-		{
-			vblock->UpTransparency();
-			lastTime = deltaTime;
-			vblock->SetElapsedTime(0);
-		}
-	}
-	else
-	{
-		m_colorTech->GetPassByIndex(0)->Apply(0, m_immediateContext);
-	}
 }
 
 
-bool Renderer::Frame(float deltaTime)
+bool Renderer::Frame(float deltaTime, Scene* curScene)
 {
+	//카메라 처리.
+	m_camera.Play(deltaTime);
 
-	//멤버 오브젝트들 이동.
-	m_camera.Frame(deltaTime);
+	//modelList 생성
+	m_modelList.clear();
+	m_transparentModelList.clear();
+
+	float dy = 1.0f;
+	for (auto model : curScene->m_modelsToBeRendered)
+	{
+		if (model->GetTransparency() == 0)
+			AddModel(model);
+		else
+			AddTransparentModel(model);
+	}
 
 	//model position 계산
 	float ClearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
@@ -413,20 +393,28 @@ bool Renderer::Frame(float deltaTime)
 
 	for (auto& model : m_modelList)
 	{
-		if (model->GetTransparency() == 0)
-		{
-			m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForNormalModel, 0);
-			m_immediateContext->OMSetBlendState(0, 0, 0xffffffff);
-		}
-		else
-		{
-			m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForTransparentModel, 0);
-			m_immediateContext->OMSetBlendState(m_blendState, 0, 0xffffffff);
-		}
-		model->Frame(deltaTime);
+		m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForNormalModel, 0);
+		m_immediateContext->OMSetBlendState(0, 0, 0xffffffff);
+
 		SetBuffers(model, deltaTime);
-		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
+		m_colorTech->GetPassByIndex(0)->Apply(0, m_immediateContext);
 		
+		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
+	}
+
+	for (auto& model : m_transparentModelList)
+	{
+		m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForTransparentModel, 0);
+		m_immediateContext->OMSetBlendState(m_blendState, 0, 0xffffffff);
+
+		SetBuffers(model, deltaTime);
+
+		if (VanishingBlock* vblock = dynamic_cast<VanishingBlock*>(model)) {
+			int transparentLevel = vblock->GetTransparency();
+			m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
+		}
+
+		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
 	}
 
 	
