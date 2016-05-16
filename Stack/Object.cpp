@@ -51,7 +51,7 @@ void Object::Play(float dt)
 }
 
 
-XMFLOAT3 Object::GetPosition()
+const XMFLOAT3  const Object::GetPosition()
 {
 	return XMFLOAT3{ m_pos.x, m_pos.y, m_pos.z };
 }

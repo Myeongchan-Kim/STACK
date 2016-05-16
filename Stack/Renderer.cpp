@@ -398,7 +398,7 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 
 		SetBuffers(model, deltaTime);
 		m_colorTech->GetPassByIndex(0)->Apply(0, m_immediateContext);
-		
+
 		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
 	}
 
@@ -409,10 +409,8 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 
 		SetBuffers(model, deltaTime);
 
-		if (VanishingBlock* vblock = dynamic_cast<VanishingBlock*>(model)) {
-			int transparentLevel = vblock->GetTransparency();
-			m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
-		}
+		m_colorTech->GetPassByIndex(0)->Apply(0, m_immediateContext);
+		
 
 		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
 	}

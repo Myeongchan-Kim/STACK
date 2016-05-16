@@ -13,7 +13,7 @@ public:
 	virtual void Play(float dt);
 	virtual void AddMoveToScheduler(float x, float y, float z, float time);
 	virtual void MoveBy(float x, float y, float z);
-	virtual XMFLOAT3 GetPosition();
+	virtual const XMFLOAT3 const GetPosition();
 	
 	struct LinearMove
 	{

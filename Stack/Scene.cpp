@@ -5,6 +5,7 @@
 #include "ModelClass.h"
 #include "VanishingBlock.h"
 #include "Camera.h"
+#include <algorithm>    // std::remove_if
 
 
 //Only SystemClass calls this function
@@ -28,4 +29,10 @@ void Scene::Play(float deltaTime, InputClass& input, Camera& camera)
 void Scene::AddModel(ModelClass* model)
 {
 	m_modelsToBeRendered.push_back(model);
+}
+
+
+void Scene::RemoveModel(std::function<bool(ModelClass*)> compare)
+{
+	std::remove_if(m_modelsToBeRendered.begin(), m_modelsToBeRendered.end(), compare);
 }

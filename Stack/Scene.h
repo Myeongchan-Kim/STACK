@@ -10,6 +10,7 @@ class Scene
 {
 public:
 	void AddModel(ModelClass* model);
+	void RemoveModel(std::function<bool(ModelClass*)> compare);
 	virtual void Start() = 0;
 	virtual void Update(InputClass& input, Camera& camera) = 0;
 
