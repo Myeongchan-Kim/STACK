@@ -10,7 +10,6 @@ SystemClass* SystemClass::instance = nullptr;
 
 SystemClass::SystemClass()
 {
-
 	m_input = nullptr;
 	m_renderer = nullptr;
 }
@@ -27,8 +26,17 @@ SystemClass* SystemClass::GetInstance()
 
 SystemClass::~SystemClass()
 {
-	if(instance)
-		delete instance;
+	if (m_input != nullptr)
+	{
+		delete m_input;
+		m_input = nullptr;
+	}
+
+	if (m_renderer != nullptr)
+	{
+		delete m_renderer;
+		m_renderer = nullptr;
+	}
 }
 
 void SystemClass::SetScene(Scene* scene)
