@@ -14,7 +14,7 @@ public:
 	virtual void Update(InputClass& input, Camera& camera) = 0;
 
 private:
-	void Play(float detaTime, InputClass& input, Camera& camera);
+	virtual void Play(float detaTime, InputClass& input, Camera& camera);
 
 
 private:

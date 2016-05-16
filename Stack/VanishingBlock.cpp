@@ -1,28 +1,24 @@
 #include "VanishingBlock.h"
 
+const float VanishingBlock::MAX_LIFETIME = 0.5f;
 
-
-VanishingBlock::VanishingBlock()
+VanishingBlock::VanishingBlock() : m_lifeTime(MAX_LIFETIME)
 {
+	m_transparency = 1;
 }
 
 
-VanishingBlock::~VanishingBlock()
+VanishingBlock::~VanishingBlock() 
 {
 }
 
 void VanishingBlock::Play(float dt)
 {
+	//이동 처리
 	ModelClass::Play(dt);
 
-	//사라지는 오브젝트 처리.
+	//투명도 처리
 	float lastTime = GetElapsedTime();
-	SetElapsedTime(lastTime + dt);
-
-	if (GetElapsedTime() > 0.1f)
-	{
-		UpTransparency();
-		lastTime = dt;
-		SetElapsedTime(0);
-	}
+	SetElapsedTime(lastTime - dt);
+	SetAlpha(m_lifeTime / MAX_LIFETIME);
 }

@@ -47,7 +47,7 @@ float4 PS(VertexOut vOut, uniform int alphaLevel) : SV_TARGET
 	float bright = saturate(dot((float4) - lightDir, vOut.normal) * 0.5 + 0.5);
 
 	finalColor = bright * vOut.color;
-	finalColor = finalColor - float4(0,0,0, alphaLevel * 0.2f);
+	finalColor.a = alphaLevel * vOut.color.a;
 	float4 texColor = texDiffuse.Sample(samLinear, vOut.tex);
 
 	float4 result;
@@ -78,30 +78,5 @@ technique11 ColorTech
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetPixelShader(CompileShader(ps_5_0, PS(1)));
-
-	}
-	pass P2
-	{
-		SetVertexShader(CompileShader(vs_5_0, VS()));
-		SetPixelShader(CompileShader(ps_5_0, PS(2)));
-
-	}
-	pass P3
-	{
-		SetVertexShader(CompileShader(vs_5_0, VS()));
-		SetPixelShader(CompileShader(ps_5_0, PS(3)));
-
-	}
-	pass P4
-	{
-		SetVertexShader(CompileShader(vs_5_0, VS()));
-		SetPixelShader(CompileShader(ps_5_0, PS(4)));
-
-	}
-	pass P5
-	{
-		SetVertexShader(CompileShader(vs_5_0, VS()));
-		SetPixelShader(CompileShader(ps_5_0, PS(5)));
-
 	}
 };

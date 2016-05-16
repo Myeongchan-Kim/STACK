@@ -185,8 +185,7 @@ bool SystemClass::Frame()
 	float deltaTime = 0;
 	deltaTime = m_timer.GetElapsedTime();
 	
-	//Play함수가 렌더러를 가져가는데... 카메라를 Scene에서 조종하는게 이것 말고 불가능한 것 같아 이렇게 했습니다.
-	//어차피 Scene의 Play함수는 사용자가 만들지 않게 할거라 상관은 없지만 수정가능하면 부탁드림..
+	//Scene obj Play...
 	m_currentScene->Play(deltaTime, *m_input,m_renderer->GetCamera());
 
 	result = m_renderer->Frame(deltaTime, m_currentScene);
