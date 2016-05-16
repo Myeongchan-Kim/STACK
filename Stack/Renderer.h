@@ -67,8 +67,7 @@ private:
 
 	ID3DX11Effect*							m_effect = nullptr;
 	ID3DX11EffectTechnique*					m_colorTech = nullptr;
-	std::vector<ID3DX11EffectTechnique*>	m_transparentTechList;
-
+	
 	ID3DX11EffectSamplerVariable*			m_samLinear = nullptr;
 	ID3DX11EffectShaderResourceVariable*	m_texDiffuse = nullptr;
 	ID3DX11EffectMatrixVariable*			m_wvp;

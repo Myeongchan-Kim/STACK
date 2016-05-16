@@ -52,6 +52,7 @@ void Renderer::AddModel(ModelClass* model, WCHAR* texture)
 	model->CreateIndexBuffer(m_device);
 
 	model->SetTextureName(texture);
+
 	m_modelList.emplace_back(model);
 }
 
@@ -59,7 +60,6 @@ void Renderer::AddTransparentModel(ModelClass* model)
 {
 	model->CreateVertexBuffer(m_device);
 	model->CreateIndexBuffer(m_device);
-	model->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
 
 	m_transparentModelList.emplace_back(model);
 }
@@ -178,10 +178,7 @@ void Renderer::CreateShader()
 		return;
 
 	m_colorTech = m_effect->GetTechniqueByName("ColorTech");
-// 	for (int i = 0; i <= 5; i++)
-// 	{
-// 		m_transparentTechList.emplace_back(m_effect->GetTechniqueByName("TransparentTech" + i));
-// 	}
+
 	m_wvp			= m_effect->GetVariableByName("wvp")->AsMatrix();
 	m_world			= m_effect->GetVariableByName("world")->AsMatrix();
 	m_lightDir		= m_effect->GetVariableByName("lightDir")->AsVector();

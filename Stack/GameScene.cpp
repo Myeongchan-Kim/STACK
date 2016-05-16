@@ -8,7 +8,6 @@
 
 void GameScene::Start()
 {
-
 	auto backGround = new ModelClass();
 	backGround->SetPosition(5.0f, -7.0f, 5.0f);
 	backGround->SetRGB(0.7f, 1.0f, 1.0f);
