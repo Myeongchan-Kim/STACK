@@ -16,6 +16,7 @@ public:
 	~Renderer();
 	bool Initialize(int winWidth, int winHeight, HWND hwnd);
 	void AddModel(ModelClass* model);
+	void Renderer::AddModel(ModelClass* model, WCHAR* texture);
 	void AddTransparentModel(ModelClass* model);
 	bool Frame(float deltaTime);
 	void ShutDown();

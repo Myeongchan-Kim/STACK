@@ -47,6 +47,16 @@ void Renderer::AddModel(ModelClass* model)
 	m_modelList.emplace_back(model);
 }
 
+void Renderer::AddModel(ModelClass* model, WCHAR* texture)
+{
+	//model->SetSample();
+	model->CreateVertexBuffer(m_device);
+	model->CreateIndexBuffer(m_device);
+
+	model->SetTextureName(texture);
+	m_modelList.emplace_back(model);
+}
+
 void Renderer::AddTransparentModel(ModelClass* model)
 {
 	model->CreateVertexBuffer(m_device);

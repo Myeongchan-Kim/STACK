@@ -1,6 +1,7 @@
 #include "SystemClass.h"
 #include "Camera.h"
 #include "VanishingBlock.h"
+#include "ConstVars.h"
 
 SystemClass::SystemClass()
 {
@@ -53,7 +54,7 @@ bool SystemClass::Initialize()
 	backGround->SetRGB(0.7f, 1.0f, 1.0f);
 	backGround->SetToRectangle(15.0f, 15.0f, {0.0f, 1.0f, 0.0f});
 	m_backGround = backGround;
-	m_renderer->AddModel(backGround);
+	m_renderer->AddModel(backGround, ConstVars::PLANE_TEX_FILE);
 
 	return true;
 }
