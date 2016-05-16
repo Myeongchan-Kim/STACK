@@ -28,6 +28,12 @@ void Camera::MoveBy(float x, float y, float z)
 	m_target.z += z;
 }
 
+
+void Camera::MoveCameraFor(float x, float y, float z, float time)
+{
+	AddMoveToScheduler(x, y, z, time);
+}
+
 XMMATRIX Camera::GetView()
 {
 	auto pos = XMVectorSet(m_pos.x, m_pos.y, m_pos.z, m_pos.w);

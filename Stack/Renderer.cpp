@@ -405,25 +405,24 @@ bool Renderer::Frame(float deltaTime)
 	m_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Z buffer writing 활성화 State 설정.
-	m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForNormalModel, 0);
-	m_immediateContext->OMSetBlendState(0, 0, 0xffffffff);
+	
 
 	for (auto& model : m_modelList)
 	{
-
+		if (model->GetTransparency() == 0)
+		{
+			m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForNormalModel, 0);
+			m_immediateContext->OMSetBlendState(0, 0, 0xffffffff);
+		}
+		else
+		{
+			m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForTransparentModel, 0);
+			m_immediateContext->OMSetBlendState(m_blendState, 0, 0xffffffff);
+		}
 		model->Frame(deltaTime);
 		SetBuffers(model, deltaTime);
 		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
 		
-	}
-
-	// Z buffer writing 비활성화 State 설정.
-	m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForTransparentModel, 0);
-	m_immediateContext->OMSetBlendState(m_blendState, 0, 0xffffffff);
-	for (auto& model : m_transparentModelList)
-	{
-		SetBuffers(model, deltaTime);
-		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
 	}
 
 	
