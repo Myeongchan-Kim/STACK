@@ -11,7 +11,8 @@ public:
 
 	void InitCamera();
 	XMMATRIX GetView();
-	XMMATRIX GetProjection(float width, float height);
+	XMMATRIX GetProjection();
+	void SetProjection(float width, float height);
 	virtual void MoveBy(float x, float y, float z);
 
 	void SetCameraPos(float x, float y, float z);

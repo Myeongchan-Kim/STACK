@@ -216,7 +216,7 @@ void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)
 	XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 	XMMATRIX world = scale * rotation * trans;
-	XMMATRIX wvp = world * m_camera.GetView() * m_camera.GetProjection(m_width, m_height);
+	XMMATRIX wvp = world * m_camera.GetView() * m_camera.GetProjection();
 
 	m_wvp->SetMatrix((float*)&wvp);
 	m_world->SetMatrix((float*)&world);
