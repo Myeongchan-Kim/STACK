@@ -34,5 +34,6 @@ void Scene::AddModel(ModelClass* model)
 
 void Scene::RemoveModel(std::function<bool(ModelClass*)> compare)
 {
-	std::remove_if(m_modelsToBeRendered.begin(), m_modelsToBeRendered.end(), compare);
+	auto iter = std::remove_if(m_modelsToBeRendered.begin(), m_modelsToBeRendered.end(), compare);
+	m_modelsToBeRendered.erase(iter, m_modelsToBeRendered.end());
 }
