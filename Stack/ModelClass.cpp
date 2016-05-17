@@ -282,6 +282,13 @@ void ModelClass::SetPosition(float x, float y, float z)
 	m_pos.z = z;
 }
 
+void ModelClass::SetPosition(Vector3 pos)
+{
+	m_pos.x = pos.x;
+	m_pos.y = pos.y;
+	m_pos.z = pos.z;
+}
+
 void ModelClass::SetColor(float r, float g, float b, float a)
 {
 	m_rgba.x = r;

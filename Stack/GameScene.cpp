@@ -27,7 +27,7 @@ void GameScene::Start(Camera& camera)
 	m_currentBlock->SetPosition(m_curPos);
 	AddModel(m_currentBlock);
 	camera.SetProjection(7, 7);
-	camera.SetCameraPos(-8.0f, 10.0f, -8.0f);
+	camera.SetCameraPos(8.0f, 10.0f, -8.0f);
 	camera.SetCameraTarget(0.0f, 0.0f, 0.0f);
 
 }
@@ -38,8 +38,8 @@ void GameScene::Update(InputClass& input, Camera& camera)
 	//배경 사각형 설정
 
 	if (!m_currentBlock->IsOnMove()) {
-		m_currentBlock->AddMoveToScheduler(0, 0, 4, 1.0f);
-		m_currentBlock->AddMoveToScheduler(0, 0, -4, 1.0f);
+		m_currentBlock->AddMoveToScheduler(0, 0, 8, 1.0f);
+		m_currentBlock->AddMoveToScheduler(0, 0, -8, 1.0f);
 	}
 
 	
@@ -47,15 +47,17 @@ void GameScene::Update(InputClass& input, Camera& camera)
 	{
 		m_curPos.y += dy;
 		m_currentBlock->StopMove();
-		m_currentBlock->SetPosition(m_curPos);
 
 		ModelClass* model = new ModelClass();
 		model->SetToCube(2, 1, 2);
 		model->SetPosition(m_curPos);
 		model->SetRGB(m_color.x, m_color.y, m_color.z);
 		model->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+		model->SetPosition(m_curPos);
+
 		AddModel(model);
 		m_currentBlock = model;
+
 
 		ModelClass* transModel = new VanishingBlock();
 		transModel->SetToCube(1, 1, 1);

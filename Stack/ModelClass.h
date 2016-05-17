@@ -4,6 +4,12 @@
 #include <vector>
 #include "Object.h"
 using namespace DirectX;
+struct Vector3 {
+	float x;
+	float y;
+	float z;
+};
+
 
 class MyVertex;
 class ModelClass :public Object
@@ -27,6 +33,7 @@ public:
 	void SetToRectangle(float width, float height, XMFLOAT3 normal);
 
 	void SetPosition(float x, float y, float z);
+	void SetPosition(Vector3 pos);
 	void SetColor(float r, float g, float b, float a);
 	void SetRGB(float r, float g, float b);
 	void SetAlpha(float a);

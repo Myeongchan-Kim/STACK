@@ -12,7 +12,7 @@ public:
 private:
 	ModelClass* m_currentBlock = nullptr;
 	ModelClass* m_lastBlock = nullptr;
-	Vector3 m_curPos = { 0, 0, 0 };
+	Vector3 m_curPos = { 0, 0, -4 };
 
 
 	ModelClass* m_backGround = nullptr;
