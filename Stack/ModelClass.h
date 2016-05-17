@@ -29,7 +29,7 @@ public:
 	UINT indexSize() { return m_indices.size(); };
 
 	void SetSample();
-	void SetToCube(float widthX, float height, float widthZ);
+	void SetToCube(Vector3 boxSize);
 	void SetToRectangle(float width, float height, XMFLOAT3 normal);
 
 	void SetPosition(float x, float y, float z);

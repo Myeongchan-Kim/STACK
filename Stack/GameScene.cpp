@@ -16,14 +16,14 @@ void GameScene::Start(Camera& camera)
 
 	m_color = { r, g, b };
 	m_backGround = new ModelClass();
-	m_backGround->SetPosition(5.0f, -7.0f, 5.0f);
+	m_backGround->SetPosition(5.0f, m_curPos.y - 7, 5.0f);
 	m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
 	m_backGround->SetTextureName(ConstVars::PLANE_TEX_FILE);
 	m_backGround->SetToRectangle(20.0f, 20.0f, { 0.0f, 1.0f, 0.0f });
 	AddModel(m_backGround);
 
 	m_currentBlock = new ModelClass();
-	m_currentBlock->SetToCube(2, 1, 2);
+	m_currentBlock->SetToCube(m_boxSize);
 	m_currentBlock->SetPosition(m_curPos);
 	AddModel(m_currentBlock);
 	camera.SetProjection(7, 7);
@@ -49,22 +49,25 @@ void GameScene::Update(InputClass& input, Camera& camera)
 		m_currentBlock->StopMove();
 
 		ModelClass* model = new ModelClass();
-		model->SetToCube(2, 1, 2);
+		model->SetToCube(m_boxSize);
 		model->SetPosition(m_curPos);
 		model->SetRGB(m_color.x, m_color.y, m_color.z);
 		model->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
 		model->SetPosition(m_curPos);
 
 		AddModel(model);
+		m_lastBlock = m_currentBlock;
 		m_currentBlock = model;
 
 
-		ModelClass* transModel = new VanishingBlock();
-		transModel->SetToCube(1, 1, 1);
-		transModel->SetPosition(-0.5f, m_curPos.y, 2);
-		transModel->SetRGB(m_color.x, m_color.y, m_color.z);
-		transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
-		AddModel(transModel);
+
+// 
+// 		ModelClass* transModel = new VanishingBlock();
+// 		transModel->SetToCube(1, 1, 1);
+// 		transModel->SetPosition(-0.5f, m_curPos.y, 2);
+// 		transModel->SetRGB(m_color.x, m_color.y, m_color.z);
+// 		transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+// 		AddModel(transModel);
 
 		m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
 		m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);

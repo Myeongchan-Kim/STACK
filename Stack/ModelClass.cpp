@@ -128,8 +128,11 @@ void ModelClass::SetSample()
 	}
 }
 
-void ModelClass::SetToCube(float widthX, float height, float widthZ)
+void ModelClass::SetToCube(Vector3 boxSize)
 {
+	float widthX = boxSize.x;
+	float height = boxSize.y; 
+	float widthZ = boxSize.z;
 	m_vertices.clear();
 	m_indices.clear();
 

@@ -17,5 +17,6 @@ private:
 
 	ModelClass* m_backGround = nullptr;
 	XMFLOAT3 m_color;
+	Vector3 m_boxSize = { 2, 1, 2 };
 };
 
