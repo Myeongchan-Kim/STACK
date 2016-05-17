@@ -126,10 +126,10 @@ bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
 		return false;
 
 	if (
-		b1->GetPosition().x > b2->GetPosition().x - m_boxSize.x / 2 &&
-		b1->GetPosition().x < b2->GetPosition().x + m_boxSize.x / 2 &&
-		b1->GetPosition().z > b2->GetPosition().z - m_boxSize.z / 2 &&
-		b1->GetPosition().z < b2->GetPosition().z + m_boxSize.z / 2
+		b1->GetPosition().x > b2->GetPosition().x - m_boxSize.x &&
+		b1->GetPosition().x < b2->GetPosition().x + m_boxSize.x &&
+		b1->GetPosition().z > b2->GetPosition().z - m_boxSize.z &&
+		b1->GetPosition().z < b2->GetPosition().z + m_boxSize.z
 	)
 	{
 		return true;
