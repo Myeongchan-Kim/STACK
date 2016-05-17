@@ -22,6 +22,15 @@ void GameScene::Start(Camera& camera)
 	m_backGround->SetToRectangle(20.0f, 20.0f, { 0.0f, 1.0f, 0.0f });
 	AddModel(m_backGround);
 
+	
+	m_lastBlock = new ModelClass();
+	m_lastBlock->SetToCube(m_boxSize);
+	m_lastBlock->SetPosition(m_curPos);
+	AddModel(m_lastBlock);
+
+	m_curPos.y += 1.0f;
+
+
 	m_currentBlock = new ModelClass();
 	m_currentBlock->SetToCube(m_boxSize);
 	m_currentBlock->SetPosition(m_curPos);
@@ -38,8 +47,9 @@ void GameScene::Update(InputClass& input, Camera& camera)
 	//배경 사각형 설정
 
 	if (!m_currentBlock->IsOnMove()) {
-		m_currentBlock->AddMoveToScheduler(0, 0, 8, 1.0f);
-		m_currentBlock->AddMoveToScheduler(0, 0, -8, 1.0f);
+
+		m_currentBlock->AddMoveToScheduler(0, 0, 8 - m_currentBlock->GetPosition().z, 1.0f);
+		m_currentBlock->AddMoveToScheduler(0, 0, -8 - m_currentBlock->GetPosition().z, 1.0f);
 	}
 
 	
@@ -48,35 +58,56 @@ void GameScene::Update(InputClass& input, Camera& camera)
 		m_curPos.y += dy;
 		m_currentBlock->StopMove();
 
-		ModelClass* model = new ModelClass();
-		model->SetToCube(m_boxSize);
-		model->SetPosition(m_curPos);
-		model->SetRGB(m_color.x, m_color.y, m_color.z);
-		model->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
-		model->SetPosition(m_curPos);
+		if (IsOn(m_currentBlock, m_lastBlock))
+		{
+			ModelClass* model = new ModelClass();
+			model->SetToCube(m_boxSize);
+			model->SetPosition(m_curPos);
+			model->SetRGB(m_color.x, m_color.y, m_color.z);
+			model->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+			model->SetPosition(m_curPos);
 
-		AddModel(model);
-		m_lastBlock = m_currentBlock;
-		m_currentBlock = model;
+			AddModel(model);
+			m_lastBlock = m_currentBlock;
+			m_currentBlock = model;
 
 
 
-// 
-// 		ModelClass* transModel = new VanishingBlock();
-// 		transModel->SetToCube(1, 1, 1);
-// 		transModel->SetPosition(-0.5f, m_curPos.y, 2);
-// 		transModel->SetRGB(m_color.x, m_color.y, m_color.z);
-// 		transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
-// 		AddModel(transModel);
+			// 
+			// 		ModelClass* transModel = new VanishingBlock();
+			// 		transModel->SetToCube(1, 1, 1);
+			// 		transModel->SetPosition(-0.5f, m_curPos.y, 2);
+			// 		transModel->SetRGB(m_color.x, m_color.y, m_color.z);
+			// 		transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+			// 		AddModel(transModel);
 
-		m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
-		m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
-		m_backGround->SetToRectangle(20.0f, 20.0f, { 0.0f, 1.0f, 0.0f });
-		camera.MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
-		m_color.x = m_color.x + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
-		m_color.y = m_color.y + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
-		m_color.z = m_color.z + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
+			m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
+			m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
+			m_backGround->SetToRectangle(20.0f, 20.0f, { 0.0f, 1.0f, 0.0f });
+			camera.MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
+			m_color.x = m_color.x + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
+			m_color.y = m_color.y + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
+			m_color.z = m_color.z + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
+		}
+
 	
 	}
 	
+}
+
+bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
+{
+	if (!b1 || !b2)
+		return false;
+
+	if (
+		b1->GetPosition().x > b2->GetPosition().x - m_boxSize.x / 2 &&
+		b1->GetPosition().x < b2->GetPosition().x + m_boxSize.x / 2 &&
+		b1->GetPosition().z > b2->GetPosition().z - m_boxSize.z / 2 &&
+		b1->GetPosition().z < b2->GetPosition().z + m_boxSize.z / 2
+	)
+	{
+		return true;
+	}
+	return false;
 }

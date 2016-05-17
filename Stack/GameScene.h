@@ -10,6 +10,7 @@ public:
 	virtual void Update(InputClass& input, Camera& camera) override;
 
 private:
+	bool IsOn(ModelClass* b1, ModelClass* b2);
 	ModelClass* m_currentBlock = nullptr;
 	ModelClass* m_lastBlock = nullptr;
 	Vector3 m_curPos = { 0, 0, -4 };
@@ -19,4 +20,3 @@ private:
 	XMFLOAT3 m_color;
 	Vector3 m_boxSize = { 2, 1, 2 };
 };
-
