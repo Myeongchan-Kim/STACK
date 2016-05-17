@@ -16,7 +16,7 @@ void Scene::Play(float deltaTime, InputClass& input, Camera& camera)
 		Start(camera);
 		m_started = true;
 	}
-	Update(input, camera);
+	Update(deltaTime, input, camera);
 
 	for (auto& model : m_modelsToBeRendered)
 	{

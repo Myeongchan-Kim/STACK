@@ -62,6 +62,7 @@ DirectX::XMMATRIX Camera::GetProjection()
 
 void Camera::SetProjection(float width, float height)
 {
-	// Projection За·Д
+
 	m_projection = XMMatrixOrthographicLH(width, height, 0.1f, 1000.0f); // near plane, far plane
 }
+
