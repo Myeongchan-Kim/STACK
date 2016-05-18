@@ -68,6 +68,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 			if (IsOn(m_currentBlock, m_lastBlock))
 			{
 				float length = m_currentBlock->GetPosition().z - m_lastBlock->GetPosition().z;
+				float deltaPosition = length;
 				if (length < 0)
 					length = -length;
 
@@ -76,11 +77,16 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 
 				//잘린 후 두 블럭의 크기, 위치 지정.
 				Vector3 visibleBlockSize = { m_boxSize.x, m_boxSize.y, m_boxSize.z - length };
-				Vector3 visibleBlockPos = { m_currentBlock->GetPosition().x, m_currentBlock->GetPosition().y, m_lastBlock->GetPosition().z + (m_boxSize.z - length)/ 2 };
+				Vector3 visibleBlockPos = { m_currentBlock->GetPosition().x, m_currentBlock->GetPosition().y, m_lastBlock->GetPosition().z + (deltaPosition)/ 2 };
 
 
 				Vector3 vanishingBlockSize = { m_boxSize.x, m_boxSize.y,  length };
-				Vector3 vanishingBlockPos = { m_currentBlock->GetPosition().x, m_currentBlock->GetPosition().y, m_lastBlock->GetPosition().z - length / 2 };
+				Vector3 vanishingBlockPos = { m_currentBlock->GetPosition().x, m_currentBlock->GetPosition().y, m_lastBlock->GetPosition().z };
+				if (deltaPosition < 0)
+					vanishingBlockPos.z -= (visibleBlockSize.z/2 + vanishingBlockSize.z);
+				else
+					vanishingBlockPos.z += (visibleBlockSize.z/2 + vanishingBlockSize.z);
+
 
 
 				//현재 블록 지우기.
@@ -102,6 +108,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				transModel->SetPosition(vanishingBlockPos);
 				transModel->SetRGB(m_color.x, m_color.y, m_color.z);
 				transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+				transModel->AddMoveToScheduler(0.0f, -1.0f, 0.0f, 0.5f);
 				AddModel(transModel);
 
 				//밑단 블럭을 잘린 보이는 블록으로 지정.

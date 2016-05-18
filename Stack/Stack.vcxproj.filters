@@ -66,10 +66,10 @@
     <ClCompile Include="GameScene.cpp">
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>소스 파일\Engine\System</Filter>
-    </ClCompile>
     <ClCompile Include="VanishingBlock.cpp">
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,14 +104,14 @@
     <ClInclude Include="GameScene.h">
       <Filter>소스 파일\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>소스 파일\Engine\System</Filter>
-    </ClInclude>
-    <ClInclude Include="VanishingBlock.h">
-      <Filter>소스 파일\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="MyVertex.h">
       <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="VanishingBlock.h">
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
