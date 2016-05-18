@@ -10,6 +10,8 @@ public:
 	virtual void Update(float dt, InputClass& input, Camera& camera) override;
 
 private:
+	void ChangeDirection();
+
 	bool IsOn(ModelClass* b1, ModelClass* b2);
 	ModelClass* m_currentBlock = nullptr;
 	ModelClass* m_lastBlock = nullptr;
