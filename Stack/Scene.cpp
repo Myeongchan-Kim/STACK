@@ -26,6 +26,11 @@ void Scene::Play(float deltaTime, InputClass& input, Camera& camera)
 
 
 
+Scene::~Scene()
+{
+	m_modelsToBeRendered.remove_if([](ModelClass* model)->bool { return true; });
+}
+
 void Scene::AddModel(ModelClass* model)
 {
 	m_modelsToBeRendered.push_back(model);

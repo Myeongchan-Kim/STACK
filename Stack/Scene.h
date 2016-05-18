@@ -9,6 +9,7 @@ class Camera;
 class Scene
 {
 public:
+	~Scene();
 	void AddModel(ModelClass* model);
 	void RemoveModel(std::function<bool(ModelClass*)> compare);
 	virtual void Start(Camera& camera) = 0;
