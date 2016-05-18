@@ -32,8 +32,6 @@ void Object::StopMove()
 void Object::Play(float dt)
 {
 	//이동 해야하는것 처리.
-
-	
 	if (!m_moveList.empty())
 	{
 		LinearMove& move = *m_moveList.begin();

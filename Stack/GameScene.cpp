@@ -39,6 +39,9 @@ void GameScene::Start(Camera& camera)
 	m_currentBlock->SetPosition(m_curPos);
 	m_currentBlock->SetRGB(m_color.x, m_color.y, m_color.z);
 	AddModel(m_currentBlock);
+	
+	//처음은 z축으로 블록 이동
+	m_curMoveDir = { 0, 0, 4 };
 
 	//카메라 위치및 방향 지정.
 	camera.SetProjection(7, 7);
@@ -55,10 +58,11 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 	if(!m_isEnd)
 	{
 		if (!m_currentBlock->IsOnMove()) {
-
-			m_currentBlock->AddMoveToScheduler(0, 0, 4, 0.5f);
-			m_currentBlock->AddMoveToScheduler(0, 0, -8, 1.0f);
-			m_currentBlock->AddMoveToScheduler(0, 0, 4, 0.5f);
+			//m_curMoveDir = { 0, 0, 4 };
+			//m_curMoveDir = { 4, 0, 0 };
+			m_currentBlock->AddMoveToScheduler(m_curMoveDir.x, m_curMoveDir.y, m_curMoveDir.z, 0.5f);
+			m_currentBlock->AddMoveToScheduler(m_curMoveDir.x * -2, m_curMoveDir.y, m_curMoveDir.z * -2, 1.0f);
+			m_currentBlock->AddMoveToScheduler(m_curMoveDir.x, m_curMoveDir.y, m_curMoveDir.z,  0.5f);
 		}
 
 
@@ -67,21 +71,49 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 
 			if (IsOn(m_currentBlock, m_lastBlock))
 			{
-				float length = m_currentBlock->GetPosition().z - m_lastBlock->GetPosition().z;
-				if (length < 0)
-					length = -length;
+				float lengthZ = m_currentBlock->GetPosition().z - m_lastBlock->GetPosition().z;
+				float lengthX = m_currentBlock->GetPosition().x - m_lastBlock->GetPosition().x;
+				float deltaPositionZ = lengthZ;
+				float deltaPositionX = lengthX;
+				if (lengthZ < 0)
+					lengthZ = -lengthZ;
+				if (lengthX < 0)
+					lengthX = -lengthX;
 
 				//현재블럭 멈춤.
 				m_currentBlock->StopMove();
 
 				//잘린 후 두 블럭의 크기, 위치 지정.
-				Vector3 visibleBlockSize = { m_boxSize.x, m_boxSize.y, m_boxSize.z - length };
-				Vector3 visibleBlockPos = { m_currentBlock->GetPosition().x, m_currentBlock->GetPosition().y, m_lastBlock->GetPosition().z + (m_boxSize.z - length)/ 2 };
+				Vector3 visibleBlockSize = { m_boxSize.x - lengthX, m_boxSize.y, m_boxSize.z - lengthZ };
+				Vector3 visibleBlockPos = { 
+					m_lastBlock->GetPosition().x + (deltaPositionX) / 2 , 
+					m_currentBlock->GetPosition().y, 
+					m_lastBlock->GetPosition().z + (deltaPositionZ)/ 2 };
 
+				Vector3 vanishingBlockSize;
+				Vector3 vanishingBlockPos = {
+					m_lastBlock->GetPosition().x,
+					m_currentBlock->GetPosition().y,
+					m_lastBlock->GetPosition().z };
 
-				Vector3 vanishingBlockSize = { m_boxSize.x, m_boxSize.y,  length };
-				Vector3 vanishingBlockPos = { m_currentBlock->GetPosition().x, m_currentBlock->GetPosition().y, m_lastBlock->GetPosition().z - length / 2 };
+				if (m_curMoveDir.x > 0)
+				{
+					vanishingBlockSize = { lengthX, m_boxSize.y,  m_boxSize.z };
 
+					if (deltaPositionX < 0)
+						vanishingBlockPos.x -= (visibleBlockSize.x / 2 + vanishingBlockSize.x);
+					else
+						vanishingBlockPos.x += (visibleBlockSize.x / 2 + vanishingBlockSize.x);
+				}
+				else
+				{
+					vanishingBlockSize = { m_boxSize.x, m_boxSize.y,  lengthZ };
+
+					if (deltaPositionZ < 0)
+						vanishingBlockPos.z -= (visibleBlockSize.z / 2 + vanishingBlockSize.z);
+					else
+						vanishingBlockPos.z += (visibleBlockSize.z / 2 + vanishingBlockSize.z);
+				}
 
 				//현재 블록 지우기.
 				RemoveModel([=](ModelClass* model) -> bool {
@@ -102,6 +134,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				transModel->SetPosition(vanishingBlockPos);
 				transModel->SetRGB(m_color.x, m_color.y, m_color.z);
 				transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+				transModel->AddMoveToScheduler(0.0f, -1.0f, 0.0f, 0.5f);
 				AddModel(transModel);
 
 				//밑단 블럭을 잘린 보이는 블록으로 지정.
@@ -112,6 +145,8 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 
 				//새로 만드는 박스 높이를 한단계증가.
 				m_curPos.y += dy;
+				m_curPos.x = visibleBlockPos.x;
+				m_curPos.z = visibleBlockPos.z;
 
 				//색상 변경.
 				m_color.x = m_color.x + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
@@ -127,7 +162,12 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				AddModel(newBlock);
 
 				m_currentBlock = newBlock;
-
+				
+				//새 블록 움직이는 방향 설정
+				if (m_curMoveDir.x > 0)
+					m_curMoveDir = { 0, 0, 4 };
+				else
+					m_curMoveDir = { 4, 0, 0 };
 
 				m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
 				m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
