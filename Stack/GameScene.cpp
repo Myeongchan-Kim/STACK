@@ -197,6 +197,9 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 		elapsedTime += dt;
 		if (elapsedTime > 0 && elapsedTime < 1)
 			return;
+
+		if (elapsedTime > 10)
+			return;
 		float moveratio = (elapsedTime-1) / 3 + 0.3;
 
 		camera.SetCameraTarget(m_curPos.x * moveratio, (m_curPos.y / 2) * moveratio, m_curPos.z * moveratio);
