@@ -102,6 +102,12 @@ void SystemClass::Shutdown()
 		m_renderer = nullptr;
 	}
 
+	if (m_currentScene)
+	{
+		delete m_currentScene;
+		m_currentScene = nullptr;
+	}
+
 	// Release the input object.
 	if (m_input)
 	{
