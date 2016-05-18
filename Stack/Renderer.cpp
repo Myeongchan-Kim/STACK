@@ -216,7 +216,7 @@ void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)
 	XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
 
 	XMMATRIX world = scale * rotation * trans;
-	XMMATRIX wvp = world * m_camera.GetView() * m_camera.GetProjection(m_width, m_height);
+	XMMATRIX wvp = world * m_camera.GetView() * m_camera.GetProjection();
 
 	m_wvp->SetMatrix((float*)&wvp);
 	m_world->SetMatrix((float*)&world);
@@ -398,7 +398,7 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 
 		SetBuffers(model, deltaTime);
 		m_colorTech->GetPassByIndex(0)->Apply(0, m_immediateContext);
-		
+
 		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
 	}
 
@@ -409,10 +409,8 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 
 		SetBuffers(model, deltaTime);
 
-		if (VanishingBlock* vblock = dynamic_cast<VanishingBlock*>(model)) {
-			int transparentLevel = vblock->GetTransparency();
-			m_colorTech->GetPassByIndex(transparentLevel)->Apply(0, m_immediateContext);
-		}
+		m_colorTech->GetPassByIndex(0)->Apply(0, m_immediateContext);
+		
 
 		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
 	}
@@ -476,9 +474,4 @@ void Renderer::ShutDown()
 		if (texture.second != nullptr) texture.second->Release();
 	}
 
-}
-
-void Renderer::MoveCameraFor(float x, float y, float z, float time)
-{
-	m_camera.AddMoveToScheduler(x, y, z, time);
 }

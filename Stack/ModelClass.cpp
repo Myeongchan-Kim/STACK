@@ -128,8 +128,11 @@ void ModelClass::SetSample()
 	}
 }
 
-void ModelClass::SetToCube(float widthX, float height, float widthZ)
+void ModelClass::SetToCube(Vector3 boxSize)
 {
+	float widthX = boxSize.x;
+	float height = boxSize.y; 
+	float widthZ = boxSize.z;
 	m_vertices.clear();
 	m_indices.clear();
 
@@ -228,9 +231,13 @@ void ModelClass::SetToRectangle(float width, float height, XMFLOAT3 normal)
 	MyVertex v1 = { pos[0],{ m_rgba.x - 0.3f,m_rgba.y - 0.3f,m_rgba.z - 0.3f, 1.0f }, normal,{ 0.0f, 0.0f } };
 	MyVertex v2 = { pos[1], m_rgba, normal,{ 1.0f, 0.0f } };
 	MyVertex v3 = { pos[2],{ m_rgba.x - 0.3f,m_rgba.y - 0.3f,m_rgba.z - 0.3f, 1.0f }, normal,{ 1.0f, 1.0f } };
-	MyVertex v4 = { pos[3],{ m_rgba.x - 0.7f,m_rgba.y - 0.7f,m_rgba.z - 0.7f, 1.0f }, normal,{ 0.0f, 1.0f } };
+	MyVertex v4 = { pos[3],{ m_rgba.x - 0.8f,m_rgba.y - 0.8f,m_rgba.z - 0.8f, 1.0f }, normal,{ 0.0f, 1.0f } };
 
 	AddRectangle(v1, v2, v3, v4);
+}
+
+void ModelClass::UpdateBackgroundColor()
+{
 }
 
 void ModelClass::AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4)
@@ -276,6 +283,13 @@ void ModelClass::SetPosition(float x, float y, float z)
 	m_pos.x = x;
 	m_pos.y = y;
 	m_pos.z = z;
+}
+
+void ModelClass::SetPosition(Vector3 pos)
+{
+	m_pos.x = pos.x;
+	m_pos.y = pos.y;
+	m_pos.z = pos.z;
 }
 
 void ModelClass::SetColor(float r, float g, float b, float a)

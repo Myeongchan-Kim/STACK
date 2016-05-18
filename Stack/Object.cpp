@@ -24,11 +24,20 @@ void Object::AddMoveToScheduler(float x, float y, float z, float time)
 	m_moveList.push_back({ x, y, z, time });
 }
 
+void Object::StopMove()
+{
+	m_moveList.clear();
+}
+
 void Object::Play(float dt)
 {
 	//이동 해야하는것 처리.
-	for (auto& move : m_moveList)
+
+	
+	if (!m_moveList.empty())
 	{
+		LinearMove& move = *m_moveList.begin();
+
 		XMFLOAT3 velocity = { move.x / move.remainTime, move.y / move.remainTime, move.z / move.remainTime };
 
 		if (move.remainTime >= dt)
@@ -44,14 +53,16 @@ void Object::Play(float dt)
 		}
 
 		move.remainTime -= dt;
+
+		auto negative = [](const LinearMove& m) { return m.remainTime <= 0.0f; };
+		m_moveList.remove_if(negative);
 	}
-	auto negative = [](const LinearMove& m) { return m.remainTime <= 0.0f; };
-	m_moveList.remove_if(negative);
+		
 
 }
 
 
-XMFLOAT3 Object::GetPosition()
+const XMFLOAT3  const Object::GetPosition()
 {
 	return XMFLOAT3{ m_pos.x, m_pos.y, m_pos.z };
 }
