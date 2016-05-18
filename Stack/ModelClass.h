@@ -4,6 +4,12 @@
 #include <vector>
 #include "Object.h"
 using namespace DirectX;
+struct Vector3 {
+	float x;
+	float y;
+	float z;
+};
+
 
 class MyVertex;
 class ModelClass :public Object
@@ -23,10 +29,11 @@ public:
 	UINT indexSize() { return m_indices.size(); };
 
 	void SetSample();
-	void SetToCube(float widthX, float height, float widthZ);
+	void SetToCube(Vector3 boxSize);
 	void SetToRectangle(float width, float height, XMFLOAT3 normal);
 
 	void SetPosition(float x, float y, float z);
+	void SetPosition(Vector3 pos);
 	void SetColor(float r, float g, float b, float a);
 	void SetRGB(float r, float g, float b);
 	void SetAlpha(float a);
@@ -38,6 +45,7 @@ public:
 	WCHAR*& GetTextureName() { return m_textureName; };
 
 protected:
+	void UpdateBackgroundColor();
 	void AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4);
 
 	WCHAR*						m_textureName;

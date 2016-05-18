@@ -8,7 +8,6 @@ public:
 	~VanishingBlock();
 	void SetLifeTime(float time) { m_lifeTime = time; }
 	virtual void Play(float dt) override;
-	void UpTransparency() { if (m_transparency < 5) m_transparency++; };
 
 	float GetLifeTime() { return m_lifeTime; };
 

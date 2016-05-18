@@ -12,7 +12,8 @@ Camera::~Camera()
 
 void Camera::InitCamera()
 {
-	m_pos = { -10.0f, 15.0f, -10.0f, 1.0f };
+	m_projection = XMMatrixOrthographicLH(10, 10, 0.1f, 1000.0f); // near plane, far plane
+	m_pos = { 0.0f, 0.0f, -10.0f, 1.0f };
 	m_target = { 0.0f, 0.0f, 0.0f, 1.0f };
 	m_up = { 0.0f, 1.0f, 0.0f, 0.0f };
 }
@@ -29,6 +30,16 @@ void Camera::MoveBy(float x, float y, float z)
 }
 
 
+void Camera::SetCameraPos(float x, float y, float z)
+{
+	m_pos = { x, y, z, 1.0f };
+}
+
+void Camera::SetCameraTarget(float x, float y, float z)
+{
+	m_target = XMFLOAT4(x, y, z, 1.0f);
+}
+
 void Camera::MoveCameraFor(float x, float y, float z, float time)
 {
 	AddMoveToScheduler(x, y, z, time);
@@ -42,9 +53,16 @@ XMMATRIX Camera::GetView()
 	return XMMatrixLookAtLH(pos, target, up);
 }
 
-XMMATRIX Camera::GetProjection(float width, float height)
+DirectX::XMMATRIX Camera::GetProjection()
 {
-	// Projection За·Д
-	m_projection = XMMatrixOrthographicLH( width / 100, height / 100, 0.1f, 1000.0f);  	// near plane, far plane
+	 	
 	return m_projection;
 }
+
+
+void Camera::SetProjection(float width, float height)
+{
+
+	m_projection = XMMatrixOrthographicLH(width, height, 0.1f, 1000.0f); // near plane, far plane
+}
+
