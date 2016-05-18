@@ -34,6 +34,8 @@ HRESULT ModelClass::CreateVertexBuffer(ID3D11Device* device)
 	}
 	initData.pSysMem = &m_vertices[0];				//초기화하기 위한 버퍼 배열 포인터
 
+	if(m_vertexBuffer)
+		ReleaseVB();
 	return device->CreateBuffer(&bd,			//생성할 버퍼의 정보를 담은 구조체
 		&initData,								//버퍼 초기화시 필요한 데이터
 		&m_vertexBuffer);						//생성된 버퍼
@@ -52,6 +54,8 @@ HRESULT ModelClass::CreateIndexBuffer(ID3D11Device* device)
 	D3D11_SUBRESOURCE_DATA	initData;
 	ZeroMemory(&initData, sizeof(initData));
 	initData.pSysMem = &m_indices[0];						//초기화하기 위한 버퍼 배열 포인터
+	if(m_indexBuffer)
+		m_indexBuffer->Release();
 	return device->CreateBuffer(&ibd,				//생성할 버퍼의 정보를 담은 구조체
 		&initData,									//버퍼 초기화시 필요한 데이터
 		&m_indexBuffer);							//생성된 버퍼
