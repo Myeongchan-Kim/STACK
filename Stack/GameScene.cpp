@@ -166,21 +166,16 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				m_currentBlock = newBlock;
 				
 				//새 블록 움직이는 방향 설정
-				if (m_curMoveDir.x > 0)
-					m_curMoveDir = { 0, 0, 4 };
-				else
-					m_curMoveDir = { 4, 0, 0 };
+				ChangeDirection();
 
+				//background & camera move
 				m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
 				m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
 				m_backGround->SetToRectangle(20.0f, 20.0f, { 0.0f, 1.0f, 0.0f });
 				camera.MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
-
-
 			}
 			else
 			{
-				
 				ModelClass* transModel = new VanishingBlock();
 				transModel->SetToCube(m_boxSize);
 				transModel->SetPosition(m_currentBlock->GetPosition().x, m_curPos.y, m_currentBlock->GetPosition().z);
@@ -213,6 +208,14 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 		camera.SetProjection(20 * moveratio, 20 * moveratio);
 	}
 	
+}
+
+void GameScene::ChangeDirection()
+{
+	if (m_curMoveDir.x > 0)
+		m_curMoveDir = { 0, 0, 4 };
+	else
+		m_curMoveDir = { 4, 0, 0 };
 }
 
 bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
