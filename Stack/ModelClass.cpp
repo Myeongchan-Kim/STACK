@@ -1,6 +1,7 @@
 #include <dxgi.h>
 #include <d3dcompiler.h>
 #include <algorithm>
+#include <fstream>
 #include "ModelClass.h"
 #include "MyVertex.h"
 #include "WICTextureLoader.h"
@@ -9,6 +10,46 @@
 ModelClass::ModelClass() : m_xRot(0.0f), m_yRot(0.0f), m_zRot(0.0f),
 							m_rgba(0.8f, 0.8f, 0.8f, 1.0f), m_indexBuffer(nullptr), m_vertexBuffer(nullptr), m_textureName(ConstVars::PLANE_TEX_FILE)
 {
+
+}
+
+ModelClass::ModelClass(std::string filename)
+{
+	std::ifstream fin;
+	char input;
+
+
+	// Initialize the counts.
+	int vertexCount = 0;
+	int textureCount = 0;
+	int normalCount = 0;
+	int faceCount = 0;
+
+	// Open the file.
+	fin.open(filename);
+
+	// Check if it was successful in opening the file.
+	if (fin.fail() == true)
+	{
+		return;
+	}
+	while (!fin.eof())
+	{
+		char temp[200];
+		fin.getline(temp, 200);
+		std::string line(temp);
+		if (line[0] == 'v')
+		{
+			if (line[1] == 't')
+			{
+
+			}
+			else if (line[1] == 'n')
+			{
+
+			}
+		}
+	}
 
 }
 

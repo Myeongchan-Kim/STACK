@@ -5,6 +5,7 @@
 #include "VanishingBlock.h"
 #include "Camera.h"
 #include "ConstVars.h"
+#include <Model.h>
 #include <time.h>
 
 void GameScene::Start(Camera& camera)
@@ -47,6 +48,7 @@ void GameScene::Start(Camera& camera)
 	camera.SetProjection(7, 7);
 	camera.SetCameraPos(8.0f, 10.0f, -8.0f);
 	camera.SetCameraTarget(0.0f, 0.0f, 0.0f);
+
 
 }
 
