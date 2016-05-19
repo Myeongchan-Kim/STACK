@@ -7,7 +7,7 @@ class Camera : public Object
 {
 public:
 	Camera();
-	~Camera();
+	virtual ~Camera();
 
 	void InitCamera();
 	XMMATRIX GetView();

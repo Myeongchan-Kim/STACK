@@ -375,6 +375,7 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 		else
 			AddTransparentModel(model);
 	}
+
 	for (auto model : curScene->m_UImodel)
 	{
 		if (model->GetTransparency() == 0)

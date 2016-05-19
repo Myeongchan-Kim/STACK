@@ -60,6 +60,7 @@ void Scene::AddUIModel(UIModel* model)
 
 void Scene::RemoveModel(std::function<bool(ModelClass*)> compare)
 {
+
 	auto iter = std::remove_if(m_modelsToBeRendered.begin(), m_modelsToBeRendered.end(), compare);
 	m_modelsToBeRendered.erase(iter, m_modelsToBeRendered.end());
 }
@@ -67,7 +68,7 @@ void Scene::RemoveModel(std::function<bool(ModelClass*)> compare)
 
 void Scene::UpdateUI(Camera& camera)
 {
-	for (auto& model : m_UImodel)
+	for (auto model : m_UImodel)
 	{
 		delete model;
 		model = nullptr;

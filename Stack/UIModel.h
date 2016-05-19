@@ -7,7 +7,7 @@ class UIModel :
 {
 public:
 	UIModel();
-	~UIModel();
+	virtual ~UIModel() override;
 	void SetUIXY(float x, float y);
 	float GetUIX();
 	float GetUIY();

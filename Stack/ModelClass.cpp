@@ -13,6 +13,8 @@ ModelClass::ModelClass() : m_indexBuffer(nullptr), m_vertexBuffer(nullptr), m_te
 
 ModelClass::~ModelClass()
 {
+	m_vertexBuffer->Release();
+	m_indexBuffer->Release();
 }
 
 
@@ -33,8 +35,12 @@ HRESULT ModelClass::CreateVertexBuffer(ID3D11Device* device)
 	}
 	initData.pSysMem = &m_vertices[0];				//초기화하기 위한 버퍼 배열 포인터
 
-	if(m_vertexBuffer)
+	if (m_vertexBuffer)
+	{
 		ReleaseVB();
+		m_vertexBuffer == nullptr;
+	}
+
 	return device->CreateBuffer(&bd,			//생성할 버퍼의 정보를 담은 구조체
 		&initData,								//버퍼 초기화시 필요한 데이터
 		&m_vertexBuffer);						//생성된 버퍼
@@ -73,6 +79,7 @@ void ModelClass::ReleaseVB()
 	if (m_vertexBuffer != nullptr)
 	{
 		m_vertexBuffer->Release();
+		m_vertexBuffer == nullptr;
 	}
 }
 
@@ -81,6 +88,7 @@ void ModelClass::ReleaseIB()
 	if (m_indexBuffer != nullptr)
 	{
 		m_indexBuffer->Release();
+		m_indexBuffer == nullptr;
 	}
 }
 
@@ -335,6 +343,6 @@ void ModelClass::RotationToCamera(Camera& c)
 	auto radAxisY = getAngle(afterRotX, destVec);
 
 	//시바.. 그냥 하드코딩...
-	SetRotation(-0.8f, -3.141592f / 4.0f, 0.0f);
+	SetRotation(-3.141592f / 4.0f, -3.141592f / 4.0f, 0.0f);
 }
 
