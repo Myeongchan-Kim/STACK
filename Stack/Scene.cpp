@@ -63,3 +63,15 @@ void Scene::RemoveModel(std::function<bool(ModelClass*)> compare)
 	auto iter = std::remove_if(m_modelsToBeRendered.begin(), m_modelsToBeRendered.end(), compare);
 	m_modelsToBeRendered.erase(iter, m_modelsToBeRendered.end());
 }
+
+
+void Scene::UpdateUI(Camera& camera)
+{
+	for (auto& model : m_UImodel)
+	{
+		delete model;
+		model = nullptr;
+	}
+	//Set UI string
+	m_UImodel.clear();
+}

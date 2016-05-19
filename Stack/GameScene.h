@@ -10,6 +10,7 @@ public:
 	virtual void Update(float dt, InputClass& input, Camera& camera) override;
 	float GetHeight();
 	int GetCount();
+	void UpdateUI(Camera& camera) override;
 
 private:
 	void ChangeDirection();

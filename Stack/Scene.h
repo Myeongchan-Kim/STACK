@@ -16,6 +16,7 @@ public:
 	void RemoveModel(std::function<bool(ModelClass*)> compare);
 	virtual void Start(Camera& camera) = 0;
 	virtual void Update(float dt, InputClass& input, Camera& camera) = 0;
+	virtual void UpdateUI(Camera& camera);
 
 private:
 

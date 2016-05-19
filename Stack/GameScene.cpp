@@ -38,38 +38,6 @@ void GameScene::Start(Camera& camera)
 	m_backGround->RotationToCamera(camera);
 	AddModel(m_backGround);
 	
-	auto numberExample = new UIModel();
-	numberExample->SetUIXY(3, 1);
-	numberExample->SetUIPosition(camera);
-	numberExample->SetToNumber(0);
-	numberExample->RotationToCamera(camera);
-	AddUIModel(numberExample);
-	
-	/*
-	auto number1 = new ModelClass();
-	number1->SetPosition(0.5f, 2.0f, 0.5f);
-	number1->SetToNumber(1);
-	number1->SetRotation(-1.0f, -3.14f / 4.0f, 0.0f);
-	AddModel(number1);
-	
-	auto number2 = new ModelClass();
-	number2->SetPosition(1.0f, 2.0f, 1.0f);
-	number2->SetToNumber(2);
-	number2->SetRotation(-0.8f, -3.14f / 4.0f, 0.0f);
-	AddModel(number2);
-	
-	auto number3 = new ModelClass();
-	number3->SetPosition(1.5f, 2.0f, 1.5f);
-	number3->SetToNumber(3);
-	number3->SetRotation(-0.6f, -3.14f / 4.0f, 0.0f);
-	AddModel(number3);
-
-	auto number4 = new ModelClass();
-	number4->SetPosition(2.0f, 2.0f, 2.0f);
-	number4->SetToNumber(4);
-	number4->SetRotation(-0.4f, -3.14f / 4.0f, 0.0f);
-	AddModel(number4);
-*/
 	//초기에 하나 있는 블록 생성
 	m_lastBlock = new ModelClass();
 	m_lastBlock->SetToCube(m_boxSize);
@@ -234,6 +202,8 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 
 				m_isEnd = true;
 			}
+
+
 		}
 	}
 
@@ -249,7 +219,8 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 		m_backGround->SetScale(viewSize/10, 1, viewSize/10);
 		camera.SetProjection(viewSize, viewSize);
 	}
-	
+
+	UpdateUI(camera);
 }
 
 float GameScene::GetHeight()
@@ -260,6 +231,31 @@ float GameScene::GetHeight()
 int GameScene::GetCount()
 {
 	return m_countAccumulation;
+}
+
+void GameScene::UpdateUI(Camera & camera)
+{
+	Scene::UpdateUI(camera); //clear
+
+	char showString[20];
+	sprintf_s(showString, "%d", m_countAccumulation);
+	float scale = camera.GetViewSizeWidth() / 10.0f;
+	float startPosX = camera.GetViewSizeWidth() / 2 - strlen(showString) * UIModel::LETTERWIDTH * scale/ 2.0f;
+
+
+	for (int i = 0; i < strlen(showString); i++)
+	{
+		char tmp[2] = {0,0};
+		tmp[0] = showString[i];
+		int num = atoi(tmp);
+		auto numberExample = new UIModel();
+		numberExample->SetUIXY( (startPosX + i * UIModel::LETTERWIDTH * scale )/ camera.GetViewSizeWidth() , 0.9f);
+		numberExample->SetUIPosition(camera);
+		numberExample->SetToNumber(num);
+		numberExample->SetScale(scale, scale, scale);
+		numberExample->RotationToCamera(camera);
+		AddUIModel(numberExample);
+	}
 }
 
 void GameScene::ChangeDirection()

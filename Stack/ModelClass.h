@@ -26,7 +26,6 @@ public:
 	void SetSample();
 	void SetToCube(XMFLOAT3 boxSize);
 	void SetToRectangle(float width, float height, XMFLOAT3 normal);
-	void SetToNumber(int n);
 	void SetTextureName(WCHAR* textureName);
 	void SetColor(float r, float g, float b, float a);
 	void SetRGB(float r, float g, float b);
