@@ -14,11 +14,10 @@ const float GameScene::DEFAULT_VIEW_HEIGHT = 10.0f;
 void GameScene::Start(Camera& camera)
 {
 	srand(time(NULL));
-	float r = (float)rand() / (RAND_MAX + 1) + 0.5f;
-	float g = (float)rand() / (RAND_MAX + 1) + 0.5f;
-	float b = (float)rand() / (RAND_MAX + 1) + 0.5f;
+	m_randomSeed = rand();
+	XMFLOAT4 rgba = MakeCircularRGB(m_randomSeed);
 
-	m_color = { r, g, b };
+	m_color = { rgba.x , rgba.y, rgba.z };
 
 	//카운트 초기화
 	m_currentHeight = m_curPos.y + m_boxSize.y;
@@ -136,7 +135,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				splicedBlock->SetToCube(visibleBlockSize);
 				splicedBlock->SetPosition(visibleBlockPos);
 				splicedBlock->SetRGB(m_color.x, m_color.y, m_color.z);
-				splicedBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+				splicedBlock->SetTextureName(ConstVars::PLANE_TEX_FILE);
 				AddModel(splicedBlock);
 
 				//잘린 사라지는 블럭 생성
@@ -144,7 +143,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				transModel->SetToCube(vanishingBlockSize);
 				transModel->SetPosition(vanishingBlockPos);
 				transModel->SetRGB(m_color.x, m_color.y, m_color.z);
-				transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+				transModel->SetTextureName(ConstVars::PLANE_TEX_FILE);
 				transModel->AddMoveToScheduler(0.0f, -1.0f, 0.0f, 0.5f);
 				AddModel(transModel);
 
@@ -160,10 +159,8 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				m_curPos.z = visibleBlockPos.z;
 
 				//색상 변경.
-				m_color.x = m_color.x + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
-				m_color.y = m_color.y + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
-				m_color.z = m_color.z + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
-
+				auto newRGBA = MakeCircularRGB(m_randomSeed + m_countAccumulation);
+				m_color = {newRGBA.x, newRGBA.y, newRGBA.z};
 				//새 블록 움직이는 방향 설정
 				ChangeDirection();
 				
@@ -174,7 +171,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 					{ m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
 				newBlock->SetPosition(newPosition);
 				newBlock->SetRGB(m_color.x, m_color.y, m_color.z);
-				newBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+				newBlock->SetTextureName(ConstVars::PLANE_TEX_FILE);
 				AddModel(newBlock);
 
 				m_currentBlock = newBlock;
@@ -185,7 +182,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				auto r = dy / v.y;
 				m_backGround->MoveBy(-v.x * r, -v.y * r, -v.z * r); 
 				m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
-				m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
+				m_backGround->SetRGB(m_color.x-0.2f, m_color.y-0.2f, m_color.z-0.2f);
 				m_backGround->SetToRectangle(camera.GetViewSizeWidth(), camera.GetViewSizeHeight(), { 0.0f, 1.0f, 0.0f });
 
 				m_currentHeight += dy;

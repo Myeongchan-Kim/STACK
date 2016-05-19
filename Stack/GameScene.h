@@ -31,4 +31,5 @@ private:
 
 	float m_currentHeight = 0.0f;
 	int m_countAccumulation = 0;
+	int m_randomSeed;
 };
