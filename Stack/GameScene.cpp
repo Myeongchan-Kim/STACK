@@ -8,6 +8,9 @@
 #include <time.h>
 #include "UIModel.h"
 
+const float GameScene::DEFAULT_VIEW_WIDTH = 10.0f;
+const float GameScene::DEFAULT_VIEW_HEIGHT = 10.0f;
+
 void GameScene::Start(Camera& camera)
 {
 	srand(time(NULL));
@@ -22,8 +25,8 @@ void GameScene::Start(Camera& camera)
 	m_countAccumulation = 0;
 
 	//카메라 위치및 방향 지정.
-	float viewWidth = 10.0f;
-	float viewHeight = 10.0f;
+	float viewWidth = DEFAULT_VIEW_WIDTH;
+	float viewHeight = DEFAULT_VIEW_HEIGHT;
 	camera.SetProjection(viewWidth, viewHeight);
 	camera.SetCameraPos(8.0f, 10.0f, -8.0f);
 	camera.SetCameraTarget(0.0f, 0.0f, 0.0f);
@@ -239,7 +242,7 @@ void GameScene::UpdateUI(Camera & camera)
 
 	char showString[20];
 	sprintf_s(showString, "%d", m_countAccumulation);
-	float scale = camera.GetViewSizeWidth() / 10.0f;
+	float scale = camera.GetViewSizeWidth() / DEFAULT_VIEW_WIDTH;
 	float startPosX = camera.GetViewSizeWidth() / 2 - strlen(showString) * UIModel::LETTERWIDTH * scale/ 2.0f;
 
 

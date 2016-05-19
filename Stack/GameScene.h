@@ -12,6 +12,9 @@ public:
 	int GetCount();
 	void UpdateUI(Camera& camera) override;
 
+	static const float DEFAULT_VIEW_WIDTH;
+	static const float DEFAULT_VIEW_HEIGHT;
+
 private:
 	void ChangeDirection();
 
