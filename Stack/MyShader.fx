@@ -44,7 +44,7 @@ VertexOut VS(VertexIn vIn)
 float4 PS(VertexOut vOut) : SV_TARGET
 {
 	float4 finalColor = 0;
-	float bright = saturate(dot((float4) - lightDir, vOut.normal) * 0.5 + 0.5);
+	float bright = saturate(dot((float4) - lightDir, vOut.normal) * 0.7 + 0.3);
 
 	finalColor = bright * vOut.color;
 	finalColor.a = vOut.color.a;

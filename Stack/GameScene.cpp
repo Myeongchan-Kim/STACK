@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "ConstVars.h"
 #include <time.h>
+#include "UIModel.h"
 
 void GameScene::Start(Camera& camera)
 {
@@ -16,14 +17,59 @@ void GameScene::Start(Camera& camera)
 
 	m_color = { r, g, b };
 
+	//카운트 초기화
+	m_currentHeight = m_curPos.y + m_boxSize.y;
+	m_countAccumulation = 0;
+
+	//카메라 위치및 방향 지정.
+	float viewWidth = 10.0f;
+	float viewHeight = 10.0f;
+	camera.SetProjection(viewWidth, viewHeight);
+	camera.SetCameraPos(8.0f, 10.0f, -8.0f);
+	camera.SetCameraTarget(0.0f, 0.0f, 0.0f);
+
 	//배경 초기화
 	m_backGround = new ModelClass();
-	m_backGround->SetPosition(-7.0f, m_curPos.y - 12, 7.0f);
+	auto dir = camera.GetVewDir();
+	m_backGround->SetPosition(camera.GetPosition().x + dir.x *10, camera.GetPosition().y + dir.y * 10, camera.GetPosition().z + dir.z * 10);
 	m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
 	m_backGround->SetTextureName(ConstVars::PLANE_TEX_FILE);
-	m_backGround->SetToRectangle(20.0f, 20.0f, { 0.0f, 1.0f, 0.0f });
+	m_backGround->SetToRectangle(viewWidth, viewHeight, { 0.0f, 1.0f, 0.0f });
+	m_backGround->RotationToCamera(camera);
 	AddModel(m_backGround);
+	
+	auto numberExample = new UIModel();
+	numberExample->SetUIXY(3, 1);
+	numberExample->SetUIPosition(camera);
+	numberExample->SetToNumber(0);
+	numberExample->RotationToCamera(camera);
+	AddUIModel(numberExample);
+	
+	/*
+	auto number1 = new ModelClass();
+	number1->SetPosition(0.5f, 2.0f, 0.5f);
+	number1->SetToNumber(1);
+	number1->SetRotation(-1.0f, -3.14f / 4.0f, 0.0f);
+	AddModel(number1);
+	
+	auto number2 = new ModelClass();
+	number2->SetPosition(1.0f, 2.0f, 1.0f);
+	number2->SetToNumber(2);
+	number2->SetRotation(-0.8f, -3.14f / 4.0f, 0.0f);
+	AddModel(number2);
+	
+	auto number3 = new ModelClass();
+	number3->SetPosition(1.5f, 2.0f, 1.5f);
+	number3->SetToNumber(3);
+	number3->SetRotation(-0.6f, -3.14f / 4.0f, 0.0f);
+	AddModel(number3);
 
+	auto number4 = new ModelClass();
+	number4->SetPosition(2.0f, 2.0f, 2.0f);
+	number4->SetToNumber(4);
+	number4->SetRotation(-0.4f, -3.14f / 4.0f, 0.0f);
+	AddModel(number4);
+*/
 	//초기에 하나 있는 블록 생성
 	m_lastBlock = new ModelClass();
 	m_lastBlock->SetToCube(m_boxSize);
@@ -31,28 +77,23 @@ void GameScene::Start(Camera& camera)
 	m_lastBlock->SetRGB(m_color.x, m_color.y, m_color.z);
 	AddModel(m_lastBlock);
 
-	m_curPos.y += 1.0f;
+	m_curPos.y += m_boxSize.y;
+
+	//처음은 z축으로 블록 이동
+	m_curMoveDir = { 0, 0, 4 };
 
 	//현재 블록 생성
 	m_currentBlock = new ModelClass();
 	m_currentBlock->SetToCube(m_boxSize);
-	m_currentBlock->SetPosition(m_curPos);
+	XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
+	m_currentBlock->SetPosition(newPosition);
 	m_currentBlock->SetRGB(m_color.x, m_color.y, m_color.z);
 	AddModel(m_currentBlock);
-	
-	//처음은 z축으로 블록 이동
-	m_curMoveDir = { 0, 0, 4 };
-
-	//카메라 위치및 방향 지정.
-	camera.SetProjection(7, 7);
-	camera.SetCameraPos(8.0f, 10.0f, -8.0f);
-	camera.SetCameraTarget(0.0f, 0.0f, 0.0f);
-
 }
 
 void GameScene::Update(float dt, InputClass& input, Camera& camera)
 {
-	float dy = 1.0f;
+	float dy = m_boxSize.y;
 	//배경 사각형 설정
 
 	if(!m_isEnd)
@@ -60,9 +101,8 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 		if (!m_currentBlock->IsOnMove()) {
 			//m_curMoveDir = { 0, 0, 4 };
 			//m_curMoveDir = { 4, 0, 0 };
-			m_currentBlock->AddMoveToScheduler(m_curMoveDir.x, m_curMoveDir.y, m_curMoveDir.z, 0.5f);
 			m_currentBlock->AddMoveToScheduler(m_curMoveDir.x * -2, m_curMoveDir.y, m_curMoveDir.z * -2, 1.0f);
-			m_currentBlock->AddMoveToScheduler(m_curMoveDir.x, m_curMoveDir.y, m_curMoveDir.z,  0.5f);
+			m_currentBlock->AddMoveToScheduler(m_curMoveDir.x * 2, m_curMoveDir.y, m_curMoveDir.z * 2,  1.0f);
 		}
 
 
@@ -84,19 +124,19 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				m_currentBlock->StopMove();
 
 				//잘린 후 두 블럭의 크기, 위치 지정.
-				Vector3 visibleBlockSize = { m_boxSize.x - lengthX, m_boxSize.y, m_boxSize.z - lengthZ };
-				Vector3 visibleBlockPos = { 
+				XMFLOAT3 visibleBlockSize = { m_boxSize.x - lengthX, m_boxSize.y, m_boxSize.z - lengthZ };
+				XMFLOAT3 visibleBlockPos = { 
 					m_lastBlock->GetPosition().x + (deltaPositionX) / 2 , 
 					m_currentBlock->GetPosition().y, 
 					m_lastBlock->GetPosition().z + (deltaPositionZ)/ 2 };
 
-				Vector3 vanishingBlockSize;
-				Vector3 vanishingBlockPos = {
+				XMFLOAT3 vanishingBlockSize;
+				XMFLOAT3 vanishingBlockPos = {
 					m_lastBlock->GetPosition().x,
 					m_currentBlock->GetPosition().y,
 					m_lastBlock->GetPosition().z };
 
-				if (m_curMoveDir.x > 0)
+				if (m_curMoveDir.x < 0)
 				{
 					vanishingBlockSize = { lengthX, m_boxSize.y,  m_boxSize.z };
 
@@ -153,24 +193,32 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				m_color.y = m_color.y + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
 				m_color.z = m_color.z + ((((float)rand()) / (RAND_MAX + 1)) * 2 - 1) * 0.05f;
 
+				//새 블록 움직이는 방향 설정
+				ChangeDirection();
+				
 				//새 블록 생성.
 				ModelClass* newBlock = new ModelClass();
 				newBlock->SetToCube(m_boxSize);
-				newBlock->SetPosition(m_curPos);
+				XMFLOAT3 newPosition = 
+					{ m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
+				newBlock->SetPosition(newPosition);
 				newBlock->SetRGB(m_color.x, m_color.y, m_color.z);
 				newBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
 				AddModel(newBlock);
 
 				m_currentBlock = newBlock;
 				
-				//새 블록 움직이는 방향 설정
-				ChangeDirection();
-
 				//background & camera move
+				camera.MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
+				XMFLOAT3 v = camera.GetVewDir();
+				auto r = dy / v.y;
+				m_backGround->MoveBy(-v.x * r, -v.y * r, -v.z * r); 
 				m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
 				m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
-				m_backGround->SetToRectangle(20.0f, 20.0f, { 0.0f, 1.0f, 0.0f });
-				camera.MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
+				m_backGround->SetToRectangle(camera.GetViewSizeWidth(), camera.GetViewSizeHeight(), { 0.0f, 1.0f, 0.0f });
+
+				m_currentHeight += dy;
+				m_countAccumulation++;
 			}
 			else
 			{
@@ -186,34 +234,40 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 
 				m_isEnd = true;
 			}
-
-
 		}
 	}
 
 	else
 	{
-		static float elapsedTime = 0.0f;
+		static float elapsedTime = 1.0f;
 		elapsedTime += dt;
-		if (elapsedTime > 0 && elapsedTime < 1)
+		
+		if (elapsedTime > 2)
 			return;
 
-		if (elapsedTime > 10)
-			return;
-		float moveratio = (elapsedTime-1) / 3 + 0.3;
-
-		camera.SetCameraTarget(m_curPos.x * moveratio, (m_curPos.y / 2) * moveratio, m_curPos.z * moveratio);
-		camera.SetProjection(20 * moveratio, 20 * moveratio);
+		float viewSize = elapsedTime * m_currentHeight;
+		m_backGround->SetScale(viewSize/10, 1, viewSize/10);
+		camera.SetProjection(viewSize, viewSize);
 	}
 	
 }
 
+float GameScene::GetHeight()
+{
+	return m_currentHeight;
+}
+
+int GameScene::GetCount()
+{
+	return m_countAccumulation;
+}
+
 void GameScene::ChangeDirection()
 {
-	if (m_curMoveDir.x > 0)
+	if (m_curMoveDir.x < 0)
 		m_curMoveDir = { 0, 0, 4 };
 	else
-		m_curMoveDir = { 4, 0, 0 };
+		m_curMoveDir = { -4, 0, 0 };
 }
 
 bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)

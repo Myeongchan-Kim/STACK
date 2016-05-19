@@ -6,6 +6,7 @@
 #include "WICTextureLoader.h"
 #include "ConstVars.h"
 #include "VanishingBlock.h"
+#include "UIModel.h"
 #include "Scene.h"
 
 Renderer::Renderer()
@@ -211,7 +212,7 @@ void Renderer::CalculateMatrixForBox(float deltaTime, ModelClass* model)
 	XMFLOAT3 rot = model->GetRotation(); 
 	XMFLOAT3 pos = model->GetPosition();
 
-	XMMATRIX scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	XMMATRIX scale = XMMatrixScaling(model->GetScaleX(), model->GetScaleY(), model->GetScaleZ());
 	XMMATRIX rotation = XMMatrixRotationX(rot.x) *XMMatrixRotationY(rot.y) *XMMatrixRotationZ(rot.z);
 	XMMATRIX trans = XMMatrixTranslation(pos.x, pos.y, pos.z);
 
@@ -374,6 +375,13 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 		else
 			AddTransparentModel(model);
 	}
+	for (auto model : curScene->m_UImodel)
+	{
+		if (model->GetTransparency() == 0)
+			AddModel(model);
+		else
+			AddTransparentModel(model);
+	}
 
 	//model position 계산
 	float ClearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
@@ -390,7 +398,6 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 
 	// Z buffer writing 활성화 State 설정.
 	
-
 	for (auto& model : m_modelList)
 	{
 		m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForNormalModel, 0);
@@ -408,14 +415,11 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 		m_immediateContext->OMSetBlendState(m_blendState, 0, 0xffffffff);
 
 		SetBuffers(model, deltaTime);
-
 		m_colorTech->GetPassByIndex(0)->Apply(0, m_immediateContext);
 		
-
 		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
 	}
 
-	
 	m_swapChain->Present(0, 0);
 
 	return true;

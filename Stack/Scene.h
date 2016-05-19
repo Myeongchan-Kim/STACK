@@ -2,6 +2,7 @@
 #include <list>
 #include "Renderer.h"
 
+class UIModel;
 class ModelClass;
 class InputClass;
 class Camera;
@@ -11,6 +12,7 @@ class Scene
 public:
 	~Scene();
 	void AddModel(ModelClass* model);
+	void AddUIModel(UIModel* model);
 	void RemoveModel(std::function<bool(ModelClass*)> compare);
 	virtual void Start(Camera& camera) = 0;
 	virtual void Update(float dt, InputClass& input, Camera& camera) = 0;
@@ -23,6 +25,7 @@ private:
 
 private:
 	std::list<ModelClass*> m_modelsToBeRendered;
+	std::list<UIModel*> m_UImodel;
 	bool m_started = false;
 
 

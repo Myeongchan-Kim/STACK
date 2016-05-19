@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "InputClass.h"
 #include "ModelClass.h"
+#include "UIModel.h"
 #include "VanishingBlock.h"
 #include "Camera.h"
 #include <algorithm>    // std::remove_if
@@ -22,13 +23,29 @@ void Scene::Play(float deltaTime, InputClass& input, Camera& camera)
 	{
 		model->Play(deltaTime);
 	}
+
+	for (auto& model : m_UImodel)
+	{
+		model->SetUIPosition(camera);
+	}
 }
 
 
 
 Scene::~Scene()
 {
-	m_modelsToBeRendered.remove_if([](ModelClass* model)->bool { return true; });
+	for (auto& model : m_modelsToBeRendered)
+	{
+		delete model;
+		model = nullptr;
+	}
+	m_modelsToBeRendered.clear();
+	for (auto& model : m_UImodel)
+	{
+		delete model;
+		model = nullptr;
+	}
+	m_UImodel.clear();
 }
 
 void Scene::AddModel(ModelClass* model)
@@ -36,6 +53,10 @@ void Scene::AddModel(ModelClass* model)
 	m_modelsToBeRendered.push_back(model);
 }
 
+void Scene::AddUIModel(UIModel* model)
+{
+	m_UImodel.push_back(model);
+}
 
 void Scene::RemoveModel(std::function<bool(ModelClass*)> compare)
 {

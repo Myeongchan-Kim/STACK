@@ -1,8 +1,8 @@
 #include "Object.h"
+#include "Camera.h"
 
 
-
-Object::Object()
+Object::Object() : m_xRot(0.0f), m_yRot(0.0f), m_zRot(0.0f), m_rgba(0.8f, 0.8f, 0.8f, 1.0f), m_scale(1.0f, 1.0f, 1.0f, 1.0f)
 {
 }
 
@@ -63,4 +63,45 @@ void Object::Play(float dt)
 const XMFLOAT3  const Object::GetPosition()
 {
 	return XMFLOAT3{ m_pos.x, m_pos.y, m_pos.z };
+}
+
+void Object::SetPosition(float x, float y, float z)
+{
+	m_pos.x = x;
+	m_pos.y = y;
+	m_pos.z = z;
+}
+
+void Object::SetPosition(XMFLOAT3 pos)
+{
+	m_pos.x = pos.x;
+	m_pos.y = pos.y;
+	m_pos.z = pos.z;
+}
+
+void Object::SetRotation(float x, float y, float z)
+{
+	m_xRot = x;
+	m_yRot = y;
+	m_zRot = z;
+}
+
+void Object::SetScale(float x, float y, float z)
+{
+	m_scale = { x,y,z, 1.0f };
+}
+
+float Object::GetScaleX()
+{
+	return m_scale.x;
+}
+
+float Object::GetScaleY()
+{
+	return m_scale.y;
+}
+
+float Object::GetScaleZ()
+{
+	return m_scale.z;
 }
