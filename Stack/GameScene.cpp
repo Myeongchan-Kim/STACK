@@ -49,6 +49,9 @@ void GameScene::Start(Camera& camera)
 	camera.SetCameraPos(8.0f, 10.0f, -8.0f);
 	camera.SetCameraTarget(0.0f, 0.0f, 0.0f);
 
+	ModelClass* example = new ModelClass("Object/number2.obj");
+	example->SetPosition(2, 1, 1);
+	AddModel(example);
 
 }
 

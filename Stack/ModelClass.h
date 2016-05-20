@@ -10,6 +10,10 @@ struct Vector3 {
 	float z;
 };
 
+struct Vector2 {
+	float x;
+	float y;
+};
 
 class MyVertex;
 class ModelClass :public Object
