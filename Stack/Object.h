@@ -44,7 +44,7 @@ public:
 
 	struct GravityMove : public Move
 	{
-		GravityMove(XMFLOAT3 initialV, float remainTime) : Move(remainTime), initialV(initialV) {};
+		GravityMove(XMFLOAT3 initialV, float remainTime) : Move(remainTime), initialV(initialV), v(initialV) {};
 		const XMFLOAT3 initialV;
 		XMFLOAT3 v;
 		const float G = 9.8;

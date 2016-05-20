@@ -183,7 +183,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				transModel->SetPosition(vanishingBlockPos);
 				transModel->SetRGB(m_color.x, m_color.y, m_color.z);
 				transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
-				transModel->AddLinearMoveToScheduler(0.0f, -1.0f, 0.0f, 0.5f);
+				transModel->AddGravityMoveToScheduler({deltaPositionX, 0.0f, deltaPositionZ}, 1.0f);
 				AddModel(transModel);
 
 				//새로 만드는 박스 높이를 한단계증가.

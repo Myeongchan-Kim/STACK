@@ -28,6 +28,8 @@ void Object::AddLinearMoveToScheduler(float x, float y, float z, float time)
 
 void Object::AddGravityMoveToScheduler(XMFLOAT3 initialV, float time)
 {
+	GravityMove* move = new GravityMove(initialV, time);
+	m_moveList.push_back(move);
 }
 
 void Object::StopMove()
@@ -40,8 +42,11 @@ void Object::Play(float dt)
 	//이동 해야하는것 처리.
 	if (!m_moveList.empty())
 	{
-		XMFLOAT3 move = (*m_moveList.begin())->GetDeltaPosition(dt);
+		XMFLOAT3& move = (*m_moveList.begin())->GetDeltaPosition(dt);
 		MoveBy(move.x, move.y, move.z);
+		(*m_moveList.begin())->remainTime -= dt;
+
+
 		auto negative = [](Move* m) 
 		{ 
 			bool result = m->remainTime <= 0.0f;
@@ -118,12 +123,12 @@ XMFLOAT3 Object::LinearMove::GetDeltaPosition(float dt)
 	{
 		dPos = { x,y,z };
 	}
-
-	remainTime -= dt;
 	return dPos;
 }
 
 XMFLOAT3 Object::GravityMove::GetDeltaPosition(float dt)
 {
-	return XMFLOAT3();
+	v.y -= G*dt;	
+	XMFLOAT3 resultDeltaPos = { v.x * dt, v.y * dt, v.z * dt};
+	return resultDeltaPos;
 }
