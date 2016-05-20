@@ -164,7 +164,9 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 
 				//현재 블록 지우기.
 				RemoveModel([=](ModelClass* model) -> bool {
-					return model == m_currentBlock;
+					bool result = (model == m_currentBlock);
+					if( result) delete model;
+					return result;
 				});
 
 				//새로 만드는 박스 크기를 잘린 보이는 블록과 같게 지정.
@@ -228,13 +230,13 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 
 	else
 	{
-		static float elapsedTime = 1.0f;
+		static float elapsedTime = 0.0f;
 		elapsedTime += dt;
 		
-		if (elapsedTime > 2)
+		if (elapsedTime > 1.0f)
 			return;
 
-		float viewSize = elapsedTime * m_currentHeight;
+		float viewSize = 10.0f + elapsedTime * m_currentHeight;
 		m_backGround->SetScale(viewSize/10, 1, viewSize/10);
 		camera.SetProjection(viewSize, viewSize);
 	}
@@ -324,7 +326,7 @@ bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
 
 bool GameScene::IsExactFit(ModelClass * ubox, ModelClass * dbox)
 {
-	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 20.0f;
+	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 10.0f;
 	if (
 		ubox->GetPosition().x > dbox->GetPosition().x - allowDelta &&
 		ubox->GetPosition().x < dbox->GetPosition().x + allowDelta &&
