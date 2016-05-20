@@ -36,10 +36,7 @@ HRESULT ModelClass::CreateVertexBuffer(ID3D11Device* device)
 	initData.pSysMem = &m_vertices[0];				//초기화하기 위한 버퍼 배열 포인터
 
 	if (m_vertexBuffer)
-	{
 		ReleaseVB();
-		m_vertexBuffer == nullptr;
-	}
 
 	return device->CreateBuffer(&bd,			//생성할 버퍼의 정보를 담은 구조체
 		&initData,								//버퍼 초기화시 필요한 데이터
@@ -60,7 +57,7 @@ HRESULT ModelClass::CreateIndexBuffer(ID3D11Device* device)
 	ZeroMemory(&initData, sizeof(initData));
 	initData.pSysMem = &m_indices[0];						//초기화하기 위한 버퍼 배열 포인터
 	if(m_indexBuffer)
-		m_indexBuffer->Release();
+		ReleaseIB();
 	return device->CreateBuffer(&ibd,				//생성할 버퍼의 정보를 담은 구조체
 		&initData,									//버퍼 초기화시 필요한 데이터
 		&m_indexBuffer);							//생성된 버퍼
@@ -172,11 +169,14 @@ void ModelClass::SetToCube(XMFLOAT3 boxSize)
 	XMFLOAT3 front	= { +0.00f, +0.00f, -0.33f };
 	XMFLOAT3 back	= { +0.00f, +0.00f, +0.33f };
 
+	static int seed = 0;
+	++seed;
+	seed %= 5;
 	//top area
 	auto v1 = MyVertex({ pos[0 + 2 + 1] , m_rgba, up,{ 0.0f, 0.0f } });
-	auto v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, up,{ 1.0f, 0.0f } });
-	auto v3 = MyVertex({ pos[4 + 2 + 0] , m_rgba, up,{ 1.0f, 1.0f } });
-	auto v4 = MyVertex({ pos[0 + 2 + 0] , m_rgba, up,{ 0.0f, 1.0f } });
+	auto v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, up,{ boxSize.x / 10.0f, 0.0f } });
+	auto v3 = MyVertex({ pos[4 + 2 + 0] , m_rgba, up,{ boxSize.x / 10.0f, boxSize.z / 10.0f } });
+	auto v4 = MyVertex({ pos[0 + 2 + 0] , m_rgba, up,{ 0.0f, boxSize.z / 10.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//bottom area
@@ -187,10 +187,10 @@ void ModelClass::SetToCube(XMFLOAT3 boxSize)
 	AddRectangle(v1, v2, v3, v4);
 
 	//right area
-	v1 = MyVertex({ pos[4 + 2 + 0] , m_rgba, right,{ 0.0f, 0.0f } });
-	v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, right,{ 1.0f, 0.0f } });
-	v3 = MyVertex({ pos[4 + 0 + 1] , m_rgba, right,{ 1.0f, 1.0f } });
-	v4 = MyVertex({ pos[4 + 0 + 0] , m_rgba, right,{ 0.0f, 1.0f } });
+	v1 = MyVertex({ pos[4 + 2 + 0] , m_rgba, right,{ 0.0f + seed / 5.0f, 0.0f + seed / 5.0f } });
+	v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, right,{ boxSize.z / 10.0f + seed / 5.0f, 0.0f + seed / 5.0f } });
+	v3 = MyVertex({ pos[4 + 0 + 1] , m_rgba, right,{ boxSize.z / 10.0f + seed / 5.0f, boxSize.y / 10.0f + seed / 5.0f } });
+	v4 = MyVertex({ pos[4 + 0 + 0] , m_rgba, right,{ 0.0f + seed / 5.0f, boxSize.y / 10.0f + seed / 5.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//left area
@@ -201,10 +201,10 @@ void ModelClass::SetToCube(XMFLOAT3 boxSize)
 	AddRectangle(v1, v2, v3, v4);
 
 	//front area
-	v1 = MyVertex({ pos[0 + 2 + 0] , m_rgba, front,{ 0.0f, 0.0f } });
-	v2 = MyVertex({ pos[4 + 2 + 0] , m_rgba, front,{ 1.0f, 0.0f } });
-	v3 = MyVertex({ pos[4 + 0 + 0] , m_rgba, front,{ 1.0f, 1.0f } });
-	v4 = MyVertex({ pos[0 + 0 + 0] , m_rgba, front,{ 0.0f, 1.0f } });
+	v1 = MyVertex({ pos[0 + 2 + 0] , m_rgba, front,{ 0.0f + seed / 5.0f, 0.0f + seed / 5.0f } });
+	v2 = MyVertex({ pos[4 + 2 + 0] , m_rgba, front,{ boxSize.x / 10.0f + seed / 5.0f, 0.0f + seed / 5.0f } });
+	v3 = MyVertex({ pos[4 + 0 + 0] , m_rgba, front,{ boxSize.x / 10.0f + seed / 5.0f, boxSize.y / 10.0f + seed / 5.0f } });
+	v4 = MyVertex({ pos[0 + 0 + 0] , m_rgba, front,{ 0.0f + seed / 5.0f, boxSize.y / 10.0f + seed / 5.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//back area
