@@ -51,14 +51,13 @@ void GameScene::Start(Camera& camera)
 	//처음은 z축으로 블록 이동
 	m_curMoveDir = { 0, 0, 4 };
 
-	//카메라 위치및 방향 지정.
-	camera.SetProjection(7, 7);
-	camera.SetCameraPos(8.0f, 10.0f, -8.0f);
-	camera.SetCameraTarget(0.0f, 0.0f, 0.0f);
-
+	
+	/*
 	ModelClass* example = new ModelClass("Object/number2.obj");
 	example->SetPosition(2, 1, 1);
 	AddModel(example);
+	*/
+
 	//현재 블록 생성
 	XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
 	m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
@@ -75,8 +74,8 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 		if (!m_currentBlock->IsOnMove()) {
 			//m_curMoveDir = { 0, 0, 4 };
 			//m_curMoveDir = { 4, 0, 0 };
-			m_currentBlock->AddMoveToScheduler(m_curMoveDir.x * -2, m_curMoveDir.y, m_curMoveDir.z * -2, 1.0f);
-			m_currentBlock->AddMoveToScheduler(m_curMoveDir.x * 2, m_curMoveDir.y, m_curMoveDir.z * 2,  1.0f);
+			m_currentBlock->AddLinearMoveToScheduler(m_curMoveDir.x * -2, m_curMoveDir.y, m_curMoveDir.z * -2, 1.0f);
+			m_currentBlock->AddLinearMoveToScheduler(m_curMoveDir.x * 2, m_curMoveDir.y, m_curMoveDir.z * 2,  1.0f);
 		}
 
 
@@ -184,7 +183,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				transModel->SetPosition(vanishingBlockPos);
 				transModel->SetRGB(m_color.x, m_color.y, m_color.z);
 				transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
-				transModel->AddMoveToScheduler(0.0f, -1.0f, 0.0f, 0.5f);
+				transModel->AddGravityMoveToScheduler({deltaPositionX, 0.0f, deltaPositionZ}, 2.0f);
 				AddModel(transModel);
 
 				//새로 만드는 박스 높이를 한단계증가.
@@ -236,7 +235,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 		if (elapsedTime > 1.0f)
 			return;
 
-		float viewSize = 10.0f + elapsedTime * m_currentHeight;
+		float viewSize = 10.0f + elapsedTime * m_currentHeight * 1.5f;
 		m_backGround->SetScale(viewSize/10, 1, viewSize/10);
 		camera.SetProjection(viewSize, viewSize);
 	}
@@ -285,7 +284,7 @@ void GameScene::MoveCameraAndBackground(Camera & camera, float dy)
 	XMFLOAT3 v = camera.GetVewDir();
 	auto r = dy / v.y;
 	m_backGround->MoveBy(-v.x * r, -v.y * r, -v.z * r);
-	m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
+	m_backGround->AddLinearMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
 	m_backGround->SetRGB(m_color.x - 0.2f, m_color.y - 0.2f, m_color.z - 0.2f);
 	m_backGround->SetToRectangle(camera.GetViewSizeWidth(), camera.GetViewSizeHeight(), { 0.0f, 1.0f, 0.0f });
 }
@@ -302,10 +301,15 @@ ModelClass * GameScene::MakeNewBlock(XMFLOAT3 Position, XMFLOAT3 boxSize)
 
 void GameScene::ChangeDirection()
 {
+	float moveVelocity = log(m_countAccumulation + 1) + 3;
 	if (m_curMoveDir.x < 0)
-		m_curMoveDir = { 0, 0, 4 };
+	{	
+		m_curMoveDir = { 0, 0, moveVelocity };
+	}
 	else
-		m_curMoveDir = { -4, 0, 0 };
+	{
+		m_curMoveDir = { -moveVelocity, 0, 0 };
+	}
 }
 
 bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
@@ -326,7 +330,7 @@ bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
 
 bool GameScene::IsExactFit(ModelClass * ubox, ModelClass * dbox)
 {
-	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 10.0f;
+	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 30.0f;
 	if (
 		ubox->GetPosition().x > dbox->GetPosition().x - allowDelta &&
 		ubox->GetPosition().x < dbox->GetPosition().x + allowDelta &&
