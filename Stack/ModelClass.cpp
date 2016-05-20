@@ -1,6 +1,8 @@
 #include <dxgi.h>
 #include <d3dcompiler.h>
 #include <algorithm>
+#include <fstream>
+#include <vector>
 #include "ModelClass.h"
 #include "MyVertex.h"
 #include "WICTextureLoader.h"
@@ -10,6 +12,217 @@ ModelClass::ModelClass() : m_indexBuffer(nullptr), m_vertexBuffer(nullptr), m_te
 m_vertexIsChanged(true)
 {
 
+}
+
+ModelClass::ModelClass(std::string filename) : m_indexBuffer(nullptr), m_vertexBuffer(nullptr), m_textureName(ConstVars::PLANE_TEX_FILE)
+
+{
+	std::ifstream fin;
+	char input;
+
+	struct face {
+
+		int ver1;
+		int tex1;
+		int nor1;
+		int ver2;
+		int tex2;
+		int nor2;
+		int ver3;
+		int tex3;
+		int nor3;
+	};
+
+	std::vector<Vector3> vertices;
+	std::vector<Vector2> texcoords;
+	std::vector<Vector3> normals;
+	std::vector<face> faces;
+
+	// Initialize the counts.
+	int vertexCount = 0;
+	int textureCount = 0;
+	int normalCount = 0;
+	int faceCount = 0;
+
+	// Open the file.
+	fin.open(filename);
+
+	// Check if it was successful in opening the file.
+	if (fin.fail() == true)
+	{
+		return;
+	}
+	while (!fin.eof())
+	{
+		char input;
+		fin.get(input);
+		if (input == 'v')
+		{
+			fin.get(input);
+			if (input == ' ')
+			{
+				float x;
+				float y;
+				float z;
+				fin >> x >> y >> z;
+
+				vertices.push_back(Vector3{ x,y,z });
+				vertexCount++;
+			}
+			else if (input == 't')
+			{
+				float x;
+				float y;
+				fin >> x >> y;
+				texcoords.push_back(Vector2{ x,y });
+				textureCount++;
+			}
+			else if (input == 'n')
+			{
+				float x;
+				float y;
+				float z;
+				fin >> x >> y >> z;
+
+				normals.push_back(Vector3{ x,y,z });
+				normalCount++;
+			}
+		}
+		else if (input == 'f')
+		{
+			fin.get(input);
+			if (input == ' ')
+			{
+				char input1, input2;
+
+				int v1, v2, v3;
+				int t1, t2, t3;
+				int n1, n2, n3;
+
+				fin >> v1 >> input1 >> t1 >> input2 >> n1
+					>> v2 >> input1 >> t2 >> input2 >> n2
+					>> v3 >> input1 >> t3 >> input2 >> n3;
+
+				faces.push_back(face{
+				v1, t1, n1,
+				v2, t2, n2,
+				v3, t3, n3
+				});
+				faceCount++;
+			}
+		}
+	}
+	fin.close();
+
+	for (int i = 0 ; i < faceCount; i++)
+	{
+		XMFLOAT3	pos1 = 
+		{
+			vertices[faces[i].ver1-1].x,
+			vertices[faces[i].ver1-1].y,
+			vertices[faces[i].ver1-1].z,
+		};
+
+		XMFLOAT4	color1 =
+		{
+			1,1,1,1
+		};
+
+		XMFLOAT3	normal1 =
+		{
+			normals[faces[i].nor1-1].x,
+			normals[faces[i].nor1-1].y,
+			normals[faces[i].nor1-1].z
+		};
+
+		XMFLOAT2	tex1 =
+		{
+			texcoords[faces[i].tex1-1].x,
+			texcoords[faces[i].tex1-1].y
+		};
+
+		XMFLOAT3	pos2 =
+		{
+			vertices[faces[i].ver2-1].x,
+			vertices[faces[i].ver2-1].y,
+			vertices[faces[i].ver2-1].z,
+		};
+
+		XMFLOAT4	color2 =
+		{
+			1,1,1,1
+		};
+
+		XMFLOAT3	normal2 =
+		{
+			normals[faces[i].nor2-1].x,
+			normals[faces[i].nor2-1].y,
+			normals[faces[i].nor2-1].z
+		};
+
+		XMFLOAT2	tex2 =
+		{
+			texcoords[faces[i].tex2-1].x,
+			texcoords[faces[i].tex2-1].y
+		};
+
+		XMFLOAT3	pos3 =
+		{
+			vertices[faces[i].ver3-1].x,
+			vertices[faces[i].ver3-1].y,
+			vertices[faces[i].ver3-1].z,
+		};
+
+		XMFLOAT4	color3 =
+		{
+			1,1,1,1
+		};
+
+		XMFLOAT3	normal3 =
+		{
+			normals[faces[i].nor3-1].x,
+			normals[faces[i].nor3-1].y,
+			normals[faces[i].nor3-1].z
+		};
+
+		XMFLOAT2	tex3 =
+		{
+			texcoords[faces[i].tex3-1].x,
+			texcoords[faces[i].tex3-1].y
+		};
+
+		MyVertex vertex1
+		{
+			pos1,
+			color1,
+			normal1,
+			tex1
+		};
+
+		MyVertex vertex2
+		{
+			pos2,
+			color2,
+			normal2,
+			tex2
+		};
+
+		MyVertex vertex3
+		{
+			pos3,
+			color3,
+			normal3,
+			tex3
+		};
+
+		m_vertices.push_back(vertex1);
+		m_vertices.push_back(vertex2);
+		m_vertices.push_back(vertex3);
+
+		m_indices.push_back(i*3);
+		m_indices.push_back(i*3+1);
+		m_indices.push_back(i*3+2);
+	}
 }
 
 ModelClass::~ModelClass()

@@ -5,6 +5,7 @@
 #include "VanishingBlock.h"
 #include "Camera.h"
 #include "ConstVars.h"
+#include <Model.h>
 #include <time.h>
 #include "UIModel.h"
 
@@ -50,6 +51,14 @@ void GameScene::Start(Camera& camera)
 	//처음은 z축으로 블록 이동
 	m_curMoveDir = { 0, 0, 4 };
 
+	//카메라 위치및 방향 지정.
+	camera.SetProjection(7, 7);
+	camera.SetCameraPos(8.0f, 10.0f, -8.0f);
+	camera.SetCameraTarget(0.0f, 0.0f, 0.0f);
+
+	ModelClass* example = new ModelClass("Object/number2.obj");
+	example->SetPosition(2, 1, 1);
+	AddModel(example);
 	//현재 블록 생성
 	XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
 	m_currentBlock = MakeNewBlock(newPosition, m_boxSize);

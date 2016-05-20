@@ -5,12 +5,23 @@
 #include "Camera.h"
 #include "Object.h"
 using namespace DirectX;
+struct Vector3 {
+	float x;
+	float y;
+	float z;
+};
+
+struct Vector2 {
+	float x;
+	float y;
+};
 
 class MyVertex;
 class ModelClass :public Object
 {
 public:
 	ModelClass();
+	ModelClass(std::string filename);
 	virtual ~ModelClass();
 	HRESULT CreateVertexBuffer(ID3D11Device* device);
 	HRESULT CreateIndexBuffer(ID3D11Device* device);
