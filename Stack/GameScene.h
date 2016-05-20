@@ -19,6 +19,7 @@ private:
 	void ChangeDirection();
 
 	bool IsOn(ModelClass* b1, ModelClass* b2);
+	bool IsExactFit(ModelClass* ubox, ModelClass* dbox);
 	ModelClass* m_currentBlock = nullptr;
 	ModelClass* m_lastBlock = nullptr;
 	XMFLOAT3 m_curPos = { 0.0f, 0.0f, 0.0f };
@@ -27,7 +28,8 @@ private:
 
 	ModelClass* m_backGround = nullptr;
 	XMFLOAT3 m_color;
-	XMFLOAT3 m_boxSize = { 4, 1.0, 4 };
+	static const XMFLOAT3 DEFAULT_BOXSIZE;
+	XMFLOAT3 m_boxSize = DEFAULT_BOXSIZE;
 
 	float m_currentHeight = 0.0f;
 	int m_countAccumulation = 0;

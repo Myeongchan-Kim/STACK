@@ -162,7 +162,8 @@ void ModelClass::SetToCube(XMFLOAT3 boxSize)
 	}
 	
 	//color
-	
+	m_rgba;
+
 	//normal vector
 	XMFLOAT3 left	= { -0.33f, +0.00f, +0.00f };
 	XMFLOAT3 right	= { +0.33f, +0.00f, +0.00f };

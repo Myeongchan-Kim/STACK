@@ -10,6 +10,7 @@
 
 const float GameScene::DEFAULT_VIEW_WIDTH = 10.0f;
 const float GameScene::DEFAULT_VIEW_HEIGHT = 10.0f;
+const XMFLOAT3 GameScene::DEFAULT_BOXSIZE = { 4, 1.0, 4 };
 
 void GameScene::Start(Camera& camera)
 {
@@ -80,17 +81,61 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 
 		if (input.IsKeyDown(VK_SPACE))
 		{
-
-			if (IsOn(m_currentBlock, m_lastBlock))
+			if (IsExactFit(m_currentBlock, m_lastBlock))
 			{
-				float lengthZ = m_currentBlock->GetPosition().z - m_lastBlock->GetPosition().z;
-				float lengthX = m_currentBlock->GetPosition().x - m_lastBlock->GetPosition().x;
-				float deltaPositionZ = lengthZ;
-				float deltaPositionX = lengthX;
-				if (lengthZ < 0)
-					lengthZ = -lengthZ;
-				if (lengthX < 0)
-					lengthX = -lengthX;
+				//현재블럭 멈춤.
+				m_currentBlock->StopMove();
+				m_currentBlock->SetPosition(
+					m_lastBlock->GetPosition().x, 
+					m_lastBlock->GetPosition().y + dy, 
+					m_lastBlock->GetPosition().z);
+				//색상 변경.
+				auto newRGBA = MakeCircularRGB(m_randomSeed + m_countAccumulation);
+				m_color = { newRGBA.x, newRGBA.y, newRGBA.z };
+				
+				//새 블록 움직이는 방향 설정
+				ChangeDirection();
+				
+				//밑단 블럭을 잘린 보이는 블록으로 지정.
+				m_lastBlock = m_currentBlock;;
+
+				//새로 만드는 박스 높이를 한단계증가.
+				m_curPos.y += dy;
+				
+				//새 블록 생성.
+				ModelClass* newBlock = new ModelClass();
+				newBlock->SetToCube(m_boxSize);
+				XMFLOAT3 newPosition =
+				{ m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
+				newBlock->SetPosition(newPosition);
+				newBlock->SetRGB(m_color.x, m_color.y, m_color.z);
+				newBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+				AddModel(newBlock);
+
+				m_currentBlock = newBlock;
+
+				//background & camera move
+				camera.MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
+				XMFLOAT3 v = camera.GetVewDir();
+				auto r = dy / v.y;
+				m_backGround->MoveBy(-v.x * r, -v.y * r, -v.z * r);
+				m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
+				m_backGround->SetRGB(m_color.x - 0.2f, m_color.y - 0.2f, m_color.z - 0.2f);
+				m_backGround->SetToRectangle(camera.GetViewSizeWidth(), camera.GetViewSizeHeight(), { 0.0f, 1.0f, 0.0f });
+
+				m_currentHeight += dy;
+				m_countAccumulation++;
+			}
+			else if (IsOn(m_currentBlock, m_lastBlock))
+			{
+				float deltaPositionZ = m_currentBlock->GetPosition().z - m_lastBlock->GetPosition().z;
+				float deltaPositionX = m_currentBlock->GetPosition().x - m_lastBlock->GetPosition().x;
+				float lengthZ = deltaPositionZ;
+				float lengthX = deltaPositionX;
+				if (deltaPositionZ < 0)
+					lengthZ = -deltaPositionZ;
+				if (deltaPositionX < 0)
+					lengthX = -deltaPositionX;
 
 				//현재블럭 멈춤.
 				m_currentBlock->StopMove();
@@ -279,8 +324,21 @@ bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
 		b1->GetPosition().z > b2->GetPosition().z - m_boxSize.z &&
 		b1->GetPosition().z < b2->GetPosition().z + m_boxSize.z
 	)
-	{
 		return true;
-	}
-	return false;
+	else
+		return false;
+}
+
+bool GameScene::IsExactFit(ModelClass * ubox, ModelClass * dbox)
+{
+	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 20.0f;
+	if (
+		ubox->GetPosition().x > dbox->GetPosition().x - allowDelta &&
+		ubox->GetPosition().x < dbox->GetPosition().x + allowDelta &&
+		ubox->GetPosition().z > dbox->GetPosition().z - allowDelta &&
+		ubox->GetPosition().z < dbox->GetPosition().z + allowDelta 
+		)
+		return true;
+	else
+		return false;
 }
