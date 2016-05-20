@@ -42,7 +42,7 @@ void Camera::SetCameraTarget(float x, float y, float z)
 
 void Camera::MoveCameraFor(float x, float y, float z, float time)
 {
-	AddMoveToScheduler(x, y, z, time);
+	AddLinearMoveToScheduler(x, y, z, time);
 }
 
 XMMATRIX Camera::GetView()
