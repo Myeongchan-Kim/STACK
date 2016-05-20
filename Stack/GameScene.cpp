@@ -37,7 +37,7 @@ void GameScene::Start(Camera& camera)
 	auto dir = camera.GetVewDir();
 	m_backGround->SetPosition(camera.GetPosition().x + dir.x *10, camera.GetPosition().y + dir.y * 10, camera.GetPosition().z + dir.z * 10);
 	m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
-	m_backGround->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+	m_backGround->SetTextureName(ConstVars::PLANE_TEX_FILE);
 	m_backGround->SetToRectangle(viewWidth, viewHeight, { 0.0f, 1.0f, 0.0f });
 	m_backGround->RotationToCamera(camera);
 	AddModel(m_backGround);
