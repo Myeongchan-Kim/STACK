@@ -11,6 +11,8 @@ public:
 	float GetHeight();
 	int GetCount();
 	void UpdateUI(Camera& camera) override;
+	void MoveCameraAndBackground(Camera& camera, float dy);
+	ModelClass* MakeNewBlock(XMFLOAT3 positoin , XMFLOAT3 boxSize);
 
 	static const float DEFAULT_VIEW_WIDTH;
 	static const float DEFAULT_VIEW_HEIGHT;

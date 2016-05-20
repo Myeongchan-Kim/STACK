@@ -42,11 +42,7 @@ void GameScene::Start(Camera& camera)
 	AddModel(m_backGround);
 	
 	//초기에 하나 있는 블록 생성
-	m_lastBlock = new ModelClass();
-	m_lastBlock->SetToCube(m_boxSize);
-	m_lastBlock->SetPosition(m_curPos);
-	m_lastBlock->SetRGB(m_color.x, m_color.y, m_color.z);
-	m_lastBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+	m_lastBlock = MakeNewBlock(m_curPos, m_boxSize);
 	AddModel(m_lastBlock);
 
 	m_curPos.y += m_boxSize.y;
@@ -55,12 +51,8 @@ void GameScene::Start(Camera& camera)
 	m_curMoveDir = { 0, 0, 4 };
 
 	//현재 블록 생성
-	m_currentBlock = new ModelClass();
-	m_currentBlock->SetToCube(m_boxSize);
 	XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
-	m_currentBlock->SetPosition(newPosition);
-	m_currentBlock->SetRGB(m_color.x, m_color.y, m_color.z);
-	m_currentBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+	m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
 	AddModel(m_currentBlock);
 }
 
@@ -85,10 +77,12 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 			{
 				//현재블럭 멈춤.
 				m_currentBlock->StopMove();
+
 				m_currentBlock->SetPosition(
 					m_lastBlock->GetPosition().x, 
 					m_lastBlock->GetPosition().y + dy, 
 					m_lastBlock->GetPosition().z);
+
 				//색상 변경.
 				auto newRGBA = MakeCircularRGB(m_randomSeed + m_countAccumulation);
 				m_color = { newRGBA.x, newRGBA.y, newRGBA.z };
@@ -103,26 +97,13 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				m_curPos.y += dy;
 				
 				//새 블록 생성.
-				ModelClass* newBlock = new ModelClass();
-				newBlock->SetToCube(m_boxSize);
-				XMFLOAT3 newPosition =
-				{ m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
-				newBlock->SetPosition(newPosition);
-				newBlock->SetRGB(m_color.x, m_color.y, m_color.z);
-				newBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
-				AddModel(newBlock);
-
-				m_currentBlock = newBlock;
+				XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
+				m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
+				AddModel(m_currentBlock);
 
 				//background & camera move
-				camera.MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
-				XMFLOAT3 v = camera.GetVewDir();
-				auto r = dy / v.y;
-				m_backGround->MoveBy(-v.x * r, -v.y * r, -v.z * r);
-				m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
-				m_backGround->SetRGB(m_color.x - 0.2f, m_color.y - 0.2f, m_color.z - 0.2f);
-				m_backGround->SetToRectangle(camera.GetViewSizeWidth(), camera.GetViewSizeHeight(), { 0.0f, 1.0f, 0.0f });
-
+				MoveCameraAndBackground(camera, dy);
+				
 				m_currentHeight += dy;
 				m_countAccumulation++;
 			}
@@ -177,13 +158,14 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 					return model == m_currentBlock;
 				});
 
+				//새로 만드는 박스 크기를 잘린 보이는 블록과 같게 지정.
+				m_boxSize = visibleBlockSize;
+
 				//잘린보이는 블럭 생성
-				ModelClass* splicedBlock = new ModelClass();
-				splicedBlock->SetToCube(visibleBlockSize);
-				splicedBlock->SetPosition(visibleBlockPos);
-				splicedBlock->SetRGB(m_color.x, m_color.y, m_color.z);
-				splicedBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+				ModelClass* splicedBlock = MakeNewBlock(visibleBlockPos, visibleBlockSize);
 				AddModel(splicedBlock);
+				//밑단 블럭을 잘린블록으로 지정.
+				m_lastBlock = splicedBlock;
 
 				//잘린 사라지는 블럭 생성
 				ModelClass* transModel = new VanishingBlock();
@@ -193,12 +175,6 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
 				transModel->AddMoveToScheduler(0.0f, -1.0f, 0.0f, 0.5f);
 				AddModel(transModel);
-
-				//밑단 블럭을 잘린 보이는 블록으로 지정.
-				m_lastBlock = splicedBlock;
-
-				//새로 만드는 박스 크기를 잘린 보이는 블록과 같게 지정.
-				m_boxSize = visibleBlockSize;
 
 				//새로 만드는 박스 높이를 한단계증가.
 				m_curPos.y += dy;
@@ -212,25 +188,12 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				ChangeDirection();
 				
 				//새 블록 생성.
-				ModelClass* newBlock = new ModelClass();
-				newBlock->SetToCube(m_boxSize);
-				XMFLOAT3 newPosition = 
-					{ m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
-				newBlock->SetPosition(newPosition);
-				newBlock->SetRGB(m_color.x, m_color.y, m_color.z);
-				newBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
-				AddModel(newBlock);
-
-				m_currentBlock = newBlock;
+				XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
+				m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
+				AddModel(m_currentBlock);
 				
 				//background & camera move
-				camera.MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
-				XMFLOAT3 v = camera.GetVewDir();
-				auto r = dy / v.y;
-				m_backGround->MoveBy(-v.x * r, -v.y * r, -v.z * r); 
-				m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
-				m_backGround->SetRGB(m_color.x-0.2f, m_color.y-0.2f, m_color.z-0.2f);
-				m_backGround->SetToRectangle(camera.GetViewSizeWidth(), camera.GetViewSizeHeight(), { 0.0f, 1.0f, 0.0f });
+				MoveCameraAndBackground(camera, dy);
 
 				m_currentHeight += dy;
 				m_countAccumulation++;
@@ -303,6 +266,27 @@ void GameScene::UpdateUI(Camera & camera)
 		numberExample->RotationToCamera(camera);
 		AddUIModel(numberExample);
 	}
+}
+
+void GameScene::MoveCameraAndBackground(Camera & camera, float dy)
+{
+	camera.MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
+	XMFLOAT3 v = camera.GetVewDir();
+	auto r = dy / v.y;
+	m_backGround->MoveBy(-v.x * r, -v.y * r, -v.z * r);
+	m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
+	m_backGround->SetRGB(m_color.x - 0.2f, m_color.y - 0.2f, m_color.z - 0.2f);
+	m_backGround->SetToRectangle(camera.GetViewSizeWidth(), camera.GetViewSizeHeight(), { 0.0f, 1.0f, 0.0f });
+}
+
+ModelClass * GameScene::MakeNewBlock(XMFLOAT3 Position, XMFLOAT3 boxSize)
+{
+	ModelClass* newBlock = new ModelClass();
+	newBlock->SetToCube(boxSize);
+	newBlock->SetPosition(Position);
+	newBlock->SetRGB(m_color.x, m_color.y, m_color.z);
+	newBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+	return newBlock;
 }
 
 void GameScene::ChangeDirection()
