@@ -35,7 +35,7 @@ void GameScene::Start(Camera& camera)
 	auto dir = camera.GetVewDir();
 	m_backGround->SetPosition(camera.GetPosition().x + dir.x *10, camera.GetPosition().y + dir.y * 10, camera.GetPosition().z + dir.z * 10);
 	m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
-	m_backGround->SetTextureName(ConstVars::PLANE_TEX_FILE);
+	m_backGround->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
 	m_backGround->SetToRectangle(viewWidth, viewHeight, { 0.0f, 1.0f, 0.0f });
 	m_backGround->RotationToCamera(camera);
 	AddModel(m_backGround);
@@ -45,6 +45,7 @@ void GameScene::Start(Camera& camera)
 	m_lastBlock->SetToCube(m_boxSize);
 	m_lastBlock->SetPosition(m_curPos);
 	m_lastBlock->SetRGB(m_color.x, m_color.y, m_color.z);
+	m_lastBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
 	AddModel(m_lastBlock);
 
 	m_curPos.y += m_boxSize.y;
@@ -58,6 +59,7 @@ void GameScene::Start(Camera& camera)
 	XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
 	m_currentBlock->SetPosition(newPosition);
 	m_currentBlock->SetRGB(m_color.x, m_color.y, m_color.z);
+	m_currentBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
 	AddModel(m_currentBlock);
 }
 
@@ -135,7 +137,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				splicedBlock->SetToCube(visibleBlockSize);
 				splicedBlock->SetPosition(visibleBlockPos);
 				splicedBlock->SetRGB(m_color.x, m_color.y, m_color.z);
-				splicedBlock->SetTextureName(ConstVars::PLANE_TEX_FILE);
+				splicedBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
 				AddModel(splicedBlock);
 
 				//잘린 사라지는 블럭 생성
@@ -143,7 +145,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				transModel->SetToCube(vanishingBlockSize);
 				transModel->SetPosition(vanishingBlockPos);
 				transModel->SetRGB(m_color.x, m_color.y, m_color.z);
-				transModel->SetTextureName(ConstVars::PLANE_TEX_FILE);
+				transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
 				transModel->AddMoveToScheduler(0.0f, -1.0f, 0.0f, 0.5f);
 				AddModel(transModel);
 
@@ -171,7 +173,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 					{ m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
 				newBlock->SetPosition(newPosition);
 				newBlock->SetRGB(m_color.x, m_color.y, m_color.z);
-				newBlock->SetTextureName(ConstVars::PLANE_TEX_FILE);
+				newBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
 				AddModel(newBlock);
 
 				m_currentBlock = newBlock;
