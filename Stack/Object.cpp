@@ -9,7 +9,13 @@ Object::Object() : m_xRot(0.0f), m_yRot(0.0f), m_zRot(0.0f), m_rgba(0.8f, 0.8f, 
 
 Object::~Object()
 {
-	
+	for (auto move : m_moveList)
+	{
+		delete move;
+		move = nullptr;
+	}
+
+	m_moveList.clear();
 }
 
 
