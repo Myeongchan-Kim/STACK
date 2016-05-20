@@ -6,7 +6,8 @@
 #include "WICTextureLoader.h"
 #include "ConstVars.h"
 
-ModelClass::ModelClass() : m_indexBuffer(nullptr), m_vertexBuffer(nullptr), m_textureName(ConstVars::PLANE_TEX_FILE)
+ModelClass::ModelClass() : m_indexBuffer(nullptr), m_vertexBuffer(nullptr), m_textureName(ConstVars::PLANE_TEX_FILE),
+m_vertexIsChanged(true)
 {
 
 }
@@ -20,6 +21,9 @@ ModelClass::~ModelClass()
 
 HRESULT ModelClass::CreateVertexBuffer(ID3D11Device* device)
 {
+	if (m_vertexIsChanged == false)
+		return S_OK;
+
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
 	bd.ByteWidth = m_vertices.size() * sizeof(MyVertex);			//버퍼 크기
@@ -38,6 +42,7 @@ HRESULT ModelClass::CreateVertexBuffer(ID3D11Device* device)
 	if (m_vertexBuffer)
 		ReleaseVB();
 
+	m_vertexIsChanged = false;
 	return device->CreateBuffer(&bd,			//생성할 버퍼의 정보를 담은 구조체
 		&initData,								//버퍼 초기화시 필요한 데이터
 		&m_vertexBuffer);						//생성된 버퍼
@@ -46,6 +51,9 @@ HRESULT ModelClass::CreateVertexBuffer(ID3D11Device* device)
 
 HRESULT ModelClass::CreateIndexBuffer(ID3D11Device* device)
 {
+	if (m_indexBuffer)
+		return S_OK;
+
 	D3D11_BUFFER_DESC ibd;
 	ZeroMemory(&ibd, sizeof(ibd));
 	ibd.ByteWidth = m_indices.size() * sizeof(WORD);				//버퍼 크기
@@ -277,6 +285,7 @@ void ModelClass::AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex
 	m_indices.push_back(square[0]);
 }
 
+
 DirectX::XMFLOAT3 ModelClass::GetRotation()
 {
 	return DirectX::XMFLOAT3({m_xRot, m_yRot, m_zRot});
@@ -298,6 +307,7 @@ void ModelClass::SetColor(float r, float g, float b, float a)
 	{
 		vertex.color = m_rgba;
 	}
+	m_vertexIsChanged = true;
 }
 
 void ModelClass::SetRGB(float r, float g, float b)
