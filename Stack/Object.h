@@ -12,7 +12,8 @@ public:
 	virtual ~Object();
 
 	virtual void Play(float dt);
-	virtual void AddMoveToScheduler(float x, float y, float z, float time);
+	virtual void AddLinearMoveToScheduler(float x, float y, float z, float time);
+	virtual void AddGravityMoveToScheduler(XMFLOAT3 initialV, float time);
 	void StopMove();
 	bool IsOnMove() { return m_moveList.size() > 0; }
 	virtual void MoveBy(float x, float y, float z);
@@ -25,11 +26,30 @@ public:
 	float GetScaleX();
 	float GetScaleY();
 	float GetScaleZ();
-
-	struct LinearMove
+	
+	struct Move
 	{
-		float x, y, z;
+		Move(float remainTime) :remainTime(remainTime) {};
+		virtual ~Move() {};
+		virtual XMFLOAT3 GetDeltaPosition(float dt) = 0 ;
 		float remainTime;
+	};
+
+	struct LinearMove : public Move
+	{
+		LinearMove(float x, float y, float z, float remainTime):Move(remainTime), x(x),y(y),z(z) {};
+		float x, y, z;
+		XMFLOAT3 GetDeltaPosition(float dt) override;
+	};
+
+	struct GravityMove : public Move
+	{
+		GravityMove(XMFLOAT3 initialV, float remainTime) : Move(remainTime), initialV(initialV) {};
+		const XMFLOAT3 initialV;
+		XMFLOAT3 v;
+		const float G = 9.8;
+		float elapsedTime = 0.0f;
+		XMFLOAT3 GetDeltaPosition(float dt) override;
 	};
 
 protected:
@@ -39,6 +59,6 @@ protected:
 	float					m_xRot;
 	float					m_yRot;
 	float					m_zRot;
-	std::list<LinearMove>	m_moveList;
+	std::list<Move*>	m_moveList;
 };
 

@@ -20,9 +20,14 @@ void Object::MoveBy(float x, float y, float z)
 	m_pos.z += z;
 }
 
-void Object::AddMoveToScheduler(float x, float y, float z, float time)
+void Object::AddLinearMoveToScheduler(float x, float y, float z, float time)
 {
-	m_moveList.push_back({ x, y, z, time });
+	LinearMove* move = new LinearMove(x, y, z, time);
+	m_moveList.push_back(move);
+}
+
+void Object::AddGravityMoveToScheduler(XMFLOAT3 initialV, float time)
+{
 }
 
 void Object::StopMove()
@@ -35,29 +40,20 @@ void Object::Play(float dt)
 	//이동 해야하는것 처리.
 	if (!m_moveList.empty())
 	{
-		LinearMove& move = *m_moveList.begin();
-
-		XMFLOAT3 velocity = { move.x / move.remainTime, move.y / move.remainTime, move.z / move.remainTime };
-
-		if (move.remainTime >= dt)
-		{
-			MoveBy(velocity.x * dt, velocity.y * dt, velocity.z * dt);
-			move.x -= velocity.x * dt;
-			move.y -= velocity.y * dt;
-			move.z -= velocity.z * dt;
-		}
-		else
-		{
-			MoveBy(move.x, move.y, move.z);
-		}
-
-		move.remainTime -= dt;
-
-		auto negative = [](const LinearMove& m) { return m.remainTime <= 0.0f; };
+		XMFLOAT3 move = (*m_moveList.begin())->GetDeltaPosition(dt);
+		MoveBy(move.x, move.y, move.z);
+		auto negative = [](Move* m) 
+		{ 
+			bool result = m->remainTime <= 0.0f;
+			if (result)
+			{
+				delete m;
+				m = nullptr;
+			}
+			return  result;
+		};
 		m_moveList.remove_if(negative);
-	}
-		
-
+	}	
 }
 
 
@@ -105,4 +101,29 @@ float Object::GetScaleY()
 float Object::GetScaleZ()
 {
 	return m_scale.z;
+}
+
+XMFLOAT3 Object::LinearMove::GetDeltaPosition(float dt)
+{
+	XMFLOAT3 velocity = { x / remainTime, y / remainTime, z / remainTime };
+	XMFLOAT3 dPos;
+	if (remainTime >= dt)
+	{
+		dPos = { velocity.x * dt, velocity.y * dt, velocity.z * dt };
+		x -= velocity.x * dt;
+		y -= velocity.y * dt;
+		z -= velocity.z * dt;
+	}
+	else
+	{
+		dPos = { x,y,z };
+	}
+
+	remainTime -= dt;
+	return dPos;
+}
+
+XMFLOAT3 Object::GravityMove::GetDeltaPosition(float dt)
+{
+	return XMFLOAT3();
 }

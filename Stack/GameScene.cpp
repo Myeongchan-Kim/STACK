@@ -74,8 +74,8 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 		if (!m_currentBlock->IsOnMove()) {
 			//m_curMoveDir = { 0, 0, 4 };
 			//m_curMoveDir = { 4, 0, 0 };
-			m_currentBlock->AddMoveToScheduler(m_curMoveDir.x * -2, m_curMoveDir.y, m_curMoveDir.z * -2, 1.0f);
-			m_currentBlock->AddMoveToScheduler(m_curMoveDir.x * 2, m_curMoveDir.y, m_curMoveDir.z * 2,  1.0f);
+			m_currentBlock->AddLinearMoveToScheduler(m_curMoveDir.x * -2, m_curMoveDir.y, m_curMoveDir.z * -2, 1.0f);
+			m_currentBlock->AddLinearMoveToScheduler(m_curMoveDir.x * 2, m_curMoveDir.y, m_curMoveDir.z * 2,  1.0f);
 		}
 
 
@@ -183,7 +183,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				transModel->SetPosition(vanishingBlockPos);
 				transModel->SetRGB(m_color.x, m_color.y, m_color.z);
 				transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
-				transModel->AddMoveToScheduler(0.0f, -1.0f, 0.0f, 0.5f);
+				transModel->AddLinearMoveToScheduler(0.0f, -1.0f, 0.0f, 0.5f);
 				AddModel(transModel);
 
 				//새로 만드는 박스 높이를 한단계증가.
@@ -284,7 +284,7 @@ void GameScene::MoveCameraAndBackground(Camera & camera, float dy)
 	XMFLOAT3 v = camera.GetVewDir();
 	auto r = dy / v.y;
 	m_backGround->MoveBy(-v.x * r, -v.y * r, -v.z * r);
-	m_backGround->AddMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
+	m_backGround->AddLinearMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
 	m_backGround->SetRGB(m_color.x - 0.2f, m_color.y - 0.2f, m_color.z - 0.2f);
 	m_backGround->SetToRectangle(camera.GetViewSizeWidth(), camera.GetViewSizeHeight(), { 0.0f, 1.0f, 0.0f });
 }
