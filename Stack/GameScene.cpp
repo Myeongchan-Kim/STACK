@@ -52,11 +52,13 @@ void GameScene::Start(Camera& camera)
 	m_curMoveDir = { 0, 0, 4 };
 
 	
-	/*
-	ModelClass* example = new ModelClass("Object/number2.obj");
+	
+	ModelClass* example = new ModelClass("Object/number0.obj");
 	example->SetPosition(2, 1, 1);
+	example->SetScale(0.1f, 0.1f, 0.1f);
+	example->SetRGB(1, 1, 0);
 	AddModel(example);
-	*/
+	
 
 	//현재 블록 생성
 	XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };

@@ -16,6 +16,7 @@ struct Vector2 {
 	float y;
 };
 
+
 class MyVertex;
 class ModelClass :public Object
 {

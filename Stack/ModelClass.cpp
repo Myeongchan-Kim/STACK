@@ -18,25 +18,22 @@ ModelClass::ModelClass(std::string filename) : m_indexBuffer(nullptr), m_vertexB
 
 {
 	std::ifstream fin;
-	char input;
 
-	struct face {
 
-		int ver1;
-		int tex1;
-		int nor1;
-		int ver2;
-		int tex2;
-		int nor2;
-		int ver3;
-		int tex3;
-		int nor3;
+	struct VertexInfo {
+		int pos;
+		int tex;
+		int nor;
+	};
+
+	struct Face {
+		VertexInfo verts[3];
 	};
 
 	std::vector<Vector3> vertices;
 	std::vector<Vector2> texcoords;
 	std::vector<Vector3> normals;
-	std::vector<face> faces;
+	std::vector<Face> faces;
 
 	// Initialize the counts.
 	int vertexCount = 0;
@@ -91,138 +88,113 @@ ModelClass::ModelClass(std::string filename) : m_indexBuffer(nullptr), m_vertexB
 		else if (input == 'f')
 		{
 			fin.get(input);
+
+			
 			if (input == ' ')
 			{
-				char input1, input2;
+				if (textureCount == 0)
+				{
+					char input1, input2;
 
-				int v1, v2, v3;
-				int t1, t2, t3;
-				int n1, n2, n3;
+					VertexInfo v1;
+					VertexInfo v2;
+					VertexInfo v3;
 
-				fin >> v1 >> input1 >> t1 >> input2 >> n1
-					>> v2 >> input1 >> t2 >> input2 >> n2
-					>> v3 >> input1 >> t3 >> input2 >> n3;
+					fin >> v1.pos >> input1 >> input2 >> v1.nor
+						>> v2.pos >> input1 >> input2 >> v2.nor
+						>> v3.pos >> input1 >> input2 >> v3.nor;
 
-				faces.push_back(face{
-				v1, t1, n1,
-				v2, t2, n2,
-				v3, t3, n3
-				});
-				faceCount++;
+					Face f;
+					f.verts[0] = v1;
+					f.verts[1] = v2;
+					f.verts[2] = v3;
+
+					faces.emplace_back(f);
+					faceCount++;
+				}
+				else
+				{
+					char input1, input2;
+
+					VertexInfo v1;
+					VertexInfo v2;
+					VertexInfo v3;
+
+					fin >> v1.pos >> input1 >> v1.tex >> input2 >> v1.nor
+						>> v2.pos >> input1 >> v2.tex >> input2 >> v2.nor
+						>> v3.pos >> input1 >> v3.tex >> input2 >> v3.nor;
+
+					Face f;
+					f.verts[0] = v1;
+					f.verts[1] = v2;
+					f.verts[2] = v3;
+
+					faces.emplace_back(f);
+					faceCount++;
+				}
 			}
+			
 		}
 	}
 	fin.close();
 
-	for (int i = 0 ; i < faceCount; i++)
+	int count = 0;
+	for (auto& face : faces)
 	{
-		XMFLOAT3	pos1 = 
+		for (int i = 0; i < 3; i++)
 		{
-			vertices[faces[i].ver1-1].x,
-			vertices[faces[i].ver1-1].y,
-			vertices[faces[i].ver1-1].z,
-		};
 
-		XMFLOAT4	color1 =
-		{
-			1,1,1,1
-		};
+			XMFLOAT3	pos =
+			{
+				vertices[face.verts[i].pos - 1].x,
+				vertices[face.verts[i].pos - 1].y,
+				vertices[face.verts[i].pos - 1].z,
+			};
 
-		XMFLOAT3	normal1 =
-		{
-			normals[faces[i].nor1-1].x,
-			normals[faces[i].nor1-1].y,
-			normals[faces[i].nor1-1].z
-		};
+			XMFLOAT4	color =
+			{
+				1,1,1,1
+			};
 
-		XMFLOAT2	tex1 =
-		{
-			texcoords[faces[i].tex1-1].x,
-			texcoords[faces[i].tex1-1].y
-		};
+			XMFLOAT3	normal =
+			{
+				normals[face.verts[i].nor - 1].x,
+				normals[face.verts[i].nor - 1].y,
+				normals[face.verts[i].nor - 1].z
+			};
+			XMFLOAT2	tex;
+			if (texcoords.empty())
+			{
+				 tex =
+				{
+					0.0f,
+					0.0f
+				};
+			}
+			else
+			{
+				tex =
+				{
+					texcoords[face.verts[i].tex - 1].x,
+					texcoords[face.verts[i].tex - 1].y
+				};
+			}
 
-		XMFLOAT3	pos2 =
-		{
-			vertices[faces[i].ver2-1].x,
-			vertices[faces[i].ver2-1].y,
-			vertices[faces[i].ver2-1].z,
-		};
+			struct MyVertex vertex = 
+			{
+				pos,
+				color,
+				normal,
+				tex
+			};
 
-		XMFLOAT4	color2 =
-		{
-			1,1,1,1
-		};
+			m_vertices.push_back(vertex);
 
-		XMFLOAT3	normal2 =
-		{
-			normals[faces[i].nor2-1].x,
-			normals[faces[i].nor2-1].y,
-			normals[faces[i].nor2-1].z
-		};
-
-		XMFLOAT2	tex2 =
-		{
-			texcoords[faces[i].tex2-1].x,
-			texcoords[faces[i].tex2-1].y
-		};
-
-		XMFLOAT3	pos3 =
-		{
-			vertices[faces[i].ver3-1].x,
-			vertices[faces[i].ver3-1].y,
-			vertices[faces[i].ver3-1].z,
-		};
-
-		XMFLOAT4	color3 =
-		{
-			1,1,1,1
-		};
-
-		XMFLOAT3	normal3 =
-		{
-			normals[faces[i].nor3-1].x,
-			normals[faces[i].nor3-1].y,
-			normals[faces[i].nor3-1].z
-		};
-
-		XMFLOAT2	tex3 =
-		{
-			texcoords[faces[i].tex3-1].x,
-			texcoords[faces[i].tex3-1].y
-		};
-
-		MyVertex vertex1
-		{
-			pos1,
-			color1,
-			normal1,
-			tex1
-		};
-
-		MyVertex vertex2
-		{
-			pos2,
-			color2,
-			normal2,
-			tex2
-		};
-
-		MyVertex vertex3
-		{
-			pos3,
-			color3,
-			normal3,
-			tex3
-		};
-
-		m_vertices.push_back(vertex1);
-		m_vertices.push_back(vertex2);
-		m_vertices.push_back(vertex3);
-
-		m_indices.push_back(i*3);
-		m_indices.push_back(i*3+1);
-		m_indices.push_back(i*3+2);
+			m_indices.push_back(count * 3 + i);
+		}
+		count++;
 	}
+
 }
 
 ModelClass::~ModelClass()
