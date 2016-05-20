@@ -37,7 +37,7 @@ void GameScene::Start(Camera& camera)
 	auto dir = camera.GetVewDir();
 	m_backGround->SetPosition(camera.GetPosition().x + dir.x *10, camera.GetPosition().y + dir.y * 10, camera.GetPosition().z + dir.z * 10);
 	m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
-	m_backGround->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+	m_backGround->SetTextureName(ConstVars::PLANE_TEX_FILE);
 	m_backGround->SetToRectangle(viewWidth, viewHeight, { 0.0f, 1.0f, 0.0f });
 	m_backGround->RotationToCamera(camera);
 	AddModel(m_backGround);
@@ -52,11 +52,13 @@ void GameScene::Start(Camera& camera)
 	m_curMoveDir = { 0, 0, 4 };
 
 	
-	/*
-	ModelClass* example = new ModelClass("Object/number2.obj");
+	
+	ModelClass* example = new ModelClass("Object/number0.obj");
 	example->SetPosition(2, 1, 1);
+	example->SetScale(0.1f, 0.1f, 0.1f);
+	example->SetRGB(1, 1, 0);
 	AddModel(example);
-	*/
+	
 
 	//현재 블록 생성
 	XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
