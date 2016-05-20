@@ -67,9 +67,6 @@ float4 TransparentPS(VertexOut vOut): SV_TARGET
 
 	float4 result;
 	result = 0.3*texColor + 0.7*finalColor;
-	result.r = result.r * finalColor.a;
-	result.g = result.g * finalColor.a;
-	result.b = result.b * finalColor.a;
 	result.a = finalColor.a;
 	return result;
 };

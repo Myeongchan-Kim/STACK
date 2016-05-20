@@ -38,6 +38,7 @@ public:
 
 protected:
 	void AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4);
+	bool m_vertexIsChanged = true;
 
 	WCHAR*						m_textureName;
 
