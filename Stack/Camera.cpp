@@ -55,14 +55,43 @@ XMMATRIX Camera::GetView()
 
 DirectX::XMMATRIX Camera::GetProjection()
 {
-	 	
 	return m_projection;
 }
 
+float Camera::GetViewSizeWidth()
+{
+	return m_width;
+}
+
+float Camera::GetViewSizeHeight()
+{
+	return m_height;
+}
+
+
+XMFLOAT3 Camera::GetVewDir()
+{
+	XMFLOAT3 viewDir(m_target.x -  m_pos.x, m_target.y - m_pos.y, m_target.z - m_pos.z);
+	return viewDir;
+}
+
+XMFLOAT3 Camera::GetNormalNiewDIr()
+{
+	auto vecLen = [](XMFLOAT3 v)
+	{
+		return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
+	};
+	auto normalize = [=](XMFLOAT3 v)
+	{
+		return XMFLOAT3({ v.x / vecLen(v), v.y / vecLen(v), v.z / vecLen(v) });
+	};
+	return normalize(GetVewDir());;
+}
 
 void Camera::SetProjection(float width, float height)
 {
-
+	m_width = width;
+	m_height = height;
 	m_projection = XMMatrixOrthographicLH(width, height, 0.1f, 1000.0f); // near plane, far plane
 }
 

@@ -20,5 +20,5 @@ void VanishingBlock::Play(float dt)
 	//투명도 처리
 	float lastTime = GetLifeTime();
 	SetLifeTime(lastTime - dt);
-	SetAlpha(m_lifeTime / MAX_LIFETIME);
+	SetAlpha(sqrt(m_lifeTime / MAX_LIFETIME));
 }

@@ -72,6 +72,9 @@
     <ClCompile Include="Scene.cpp">
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="UIModel.cpp">
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -112,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>소스 파일\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UIModel.h">
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
