@@ -28,11 +28,6 @@ void Scene::Play(float deltaTime, InputClass& input, Camera& camera)
 	{
 		model->SetUIPosition(camera);
 	}
-
-	auto isAlphaZero = [](ModelClass*& m) {
-		return m->GetColor().w < 0.01f;
-	};
-	m_modelsToBeRendered.remove_if(isAlphaZero);
 }
 
 
