@@ -59,7 +59,11 @@ void GameScene::Start(Camera& camera)
 	*/
 
 	//현재 블록 생성
-	XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
+	XMFLOAT3 newPosition = { 
+		m_curPos.x + m_curMoveDir.x, 
+		m_curPos.y + m_curMoveDir.y, 
+		m_curPos.z + m_curMoveDir.z 
+	};
 	m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
 	AddModel(m_currentBlock);
 }
@@ -105,7 +109,12 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				m_curPos.y += dy;
 				
 				//새 블록 생성.
-				XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
+				XMFLOAT3 newPosition = { 
+					m_curPos.x + m_curMoveDir.x, 
+					m_curPos.y + m_curMoveDir.y, 
+					m_curPos.z + m_curMoveDir.z 
+				};
+
 				m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
 				AddModel(m_currentBlock);
 
