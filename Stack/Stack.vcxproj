@@ -160,6 +160,7 @@
     <ClCompile Include="MyTime.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SystemClass.cpp" />
+    <ClCompile Include="UIModel.cpp" />
     <ClCompile Include="VanishingBlock.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
@@ -175,6 +176,7 @@
     <ClInclude Include="MyTime.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SystemClass.h" />
+    <ClInclude Include="UIModel.h" />
     <ClInclude Include="VanishingBlock.h" />
   </ItemGroup>
   <ItemGroup>

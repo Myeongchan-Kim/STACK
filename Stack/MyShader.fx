@@ -44,7 +44,7 @@ VertexOut VS(VertexIn vIn)
 float4 PS(VertexOut vOut) : SV_TARGET
 {
 	float4 finalColor = 0;
-	float bright = saturate(dot((float4) - lightDir, vOut.normal) * 0.5 + 0.5);
+	float bright = saturate(dot((float4) - lightDir, vOut.normal) * 0.7 + 0.3);
 
 	finalColor = bright * vOut.color;
 	finalColor.a = vOut.color.a;
@@ -52,6 +52,24 @@ float4 PS(VertexOut vOut) : SV_TARGET
 
 	float4 result;
 	result = 0.3*texColor + 0.7*finalColor;
+	result.a = finalColor.a;
+	return result;
+};
+
+float4 TransparentPS(VertexOut vOut): SV_TARGET
+{
+	float4 finalColor = 0;
+	float bright = saturate(dot((float4) - lightDir, vOut.normal) * 0.7 + 0.3);
+
+	finalColor = bright * vOut.color;
+	finalColor.a = vOut.color.a;
+	float4 texColor = texDiffuse.Sample(samLinear, vOut.tex);
+
+	float4 result;
+	result = 0.3*texColor + 0.7*finalColor;
+	result.r = result.r * finalColor.a;
+	result.g = result.g * finalColor.a;
+	result.b = result.b * finalColor.a;
 	result.a = finalColor.a;
 	return result;
 };
@@ -73,5 +91,11 @@ technique11 ColorTech
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetPixelShader(CompileShader(ps_5_0, PS()));
 
+	}
+
+	pass P1
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetPixelShader(CompileShader(ps_5_0, TransparentPS()));
 	}
 };

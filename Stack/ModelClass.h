@@ -2,6 +2,7 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <vector>
+#include "Camera.h"
 #include "Object.h"
 using namespace DirectX;
 struct Vector3 {
@@ -34,23 +35,19 @@ public:
 	UINT indexSize() { return m_indices.size(); };
 
 	void SetSample();
-	void SetToCube(Vector3 boxSize);
+	void SetToCube(XMFLOAT3 boxSize);
 	void SetToRectangle(float width, float height, XMFLOAT3 normal);
-
-	void SetPosition(float x, float y, float z);
-	void SetPosition(Vector3 pos);
+	void SetTextureName(WCHAR* textureName);
 	void SetColor(float r, float g, float b, float a);
 	void SetRGB(float r, float g, float b);
 	void SetAlpha(float a);
-	void SetRotation(float x, float y, float z);
-	void SetTextureName(WCHAR* textureName);
+	void RotationToCamera(Camera& c);
 
 	DirectX::XMFLOAT3 GetRotation();
 	inline DirectX::XMFLOAT4 GetColor() { return m_rgba; };
 	WCHAR*& GetTextureName() { return m_textureName; };
 
 protected:
-	void UpdateBackgroundColor();
 	void AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4);
 
 	WCHAR*						m_textureName;
@@ -61,8 +58,4 @@ protected:
 	std::vector<WORD>			m_indices;
 	int							m_transparency = 0;
 
-	DirectX::XMFLOAT4			m_rgba;
-	float						m_xRot;
-	float						m_yRot;
-	float						m_zRot;
 };

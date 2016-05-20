@@ -36,7 +36,7 @@ private:
 	void SetBuffers(ModelClass* model, float deltaTime);
 	void CreateRenderState();
 
-	XMFLOAT4 lightDirection = { 0.0f, -1.0f, -0.3f, 1.0f };
+	XMFLOAT4 lightDirection = { -0.3f, -1.0f, -0.2f, 1.0f };
 	XMFLOAT4 lightColor = {1.0f, 1.0f, 1.0f, 1.0f};
 	Camera				m_camera;
 	int					m_width;

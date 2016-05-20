@@ -8,14 +8,12 @@
 #include "WICTextureLoader.h"
 #include "ConstVars.h"
 
-ModelClass::ModelClass() : m_xRot(0.0f), m_yRot(0.0f), m_zRot(0.0f),
-							m_rgba(0.8f, 0.8f, 0.8f, 1.0f), m_indexBuffer(nullptr), m_vertexBuffer(nullptr), m_textureName(ConstVars::PLANE_TEX_FILE)
+ModelClass::ModelClass() : m_indexBuffer(nullptr), m_vertexBuffer(nullptr), m_textureName(ConstVars::PLANE_TEX_FILE)
 {
 
 }
 
-ModelClass::ModelClass(std::string filename) : m_xRot(0.0f), m_yRot(0.0f), m_zRot(0.0f),
-												m_rgba(0.8f, 0.8f, 0.8f, 1.0f), m_indexBuffer(nullptr), m_vertexBuffer(nullptr), m_textureName(ConstVars::PLANE_TEX_FILE)
+ModelClass::ModelClass(std::string filename) : m_indexBuffer(nullptr), m_vertexBuffer(nullptr), m_textureName(ConstVars::PLANE_TEX_FILE)
 
 {
 	std::ifstream fin;
@@ -228,6 +226,8 @@ ModelClass::ModelClass(std::string filename) : m_xRot(0.0f), m_yRot(0.0f), m_zRo
 
 ModelClass::~ModelClass()
 {
+	m_vertexBuffer->Release();
+	m_indexBuffer->Release();
 }
 
 
@@ -248,8 +248,12 @@ HRESULT ModelClass::CreateVertexBuffer(ID3D11Device* device)
 	}
 	initData.pSysMem = &m_vertices[0];				//초기화하기 위한 버퍼 배열 포인터
 
-	if(m_vertexBuffer)
+	if (m_vertexBuffer)
+	{
 		ReleaseVB();
+		m_vertexBuffer == nullptr;
+	}
+
 	return device->CreateBuffer(&bd,			//생성할 버퍼의 정보를 담은 구조체
 		&initData,								//버퍼 초기화시 필요한 데이터
 		&m_vertexBuffer);						//생성된 버퍼
@@ -288,6 +292,7 @@ void ModelClass::ReleaseVB()
 	if (m_vertexBuffer != nullptr)
 	{
 		m_vertexBuffer->Release();
+		m_vertexBuffer == nullptr;
 	}
 }
 
@@ -296,6 +301,7 @@ void ModelClass::ReleaseIB()
 	if (m_indexBuffer != nullptr)
 	{
 		m_indexBuffer->Release();
+		m_indexBuffer == nullptr;
 	}
 }
 
@@ -346,7 +352,7 @@ void ModelClass::SetSample()
 	}
 }
 
-void ModelClass::SetToCube(Vector3 boxSize)
+void ModelClass::SetToCube(XMFLOAT3 boxSize)
 {
 	float widthX = boxSize.x;
 	float height = boxSize.y; 
@@ -369,7 +375,8 @@ void ModelClass::SetToCube(Vector3 boxSize)
 	}
 	
 	//color
-	
+	m_rgba;
+
 	//normal vector
 	XMFLOAT3 left	= { -0.33f, +0.00f, +0.00f };
 	XMFLOAT3 right	= { +0.33f, +0.00f, +0.00f };
@@ -434,17 +441,17 @@ void ModelClass::SetToRectangle(float width, float height, XMFLOAT3 normal)
 	pos[2] = { +width / 2 ,0.0f, -height / 2, };
 	pos[3] = { -width / 2 ,0.0f, - height / 2, };
 	
-	auto dot = [](XMFLOAT3 v1, XMFLOAT3 v2)
-	{
-		return (v1.x * v2.x + v1.y*v2.y + v1.z*v2.z);
-	};
-	auto rotation = [&](float& x, float &y, float rad)
-	{
-		x = x * cosf(rad) + y * sinf(rad);
-		y = -x * sinf(rad) + y * cosf(rad);
-	};
-	auto radAxisY = acosf(dot({ normal.x, 0.0f, normal.z }, standardNormal) / sqrt(normal.x * normal.x + normal.z * normal.z)); // Y축으로의 회전량
-	auto radAxisZ = acosf(dot({ normal.x, normal.y, 0.0f }, standardNormal) / sqrt(normal.x * normal.x + normal.y * normal.y)); // Z축으로의 회전량
+	//auto dot = [](XMFLOAT3 v1, XMFLOAT3 v2)
+	//{
+	//	return (v1.x * v2.x + v1.y*v2.y + v1.z*v2.z);
+	//};
+	//auto rotation = [&](float& x, float &y, float rad)
+	//{
+	//	x = x * cosf(rad) + y * sinf(rad);
+	//	y = -x * sinf(rad) + y * cosf(rad);
+	//};
+	//auto radAxisY = acosf(dot({ normal.x, 0.0f, normal.z }, standardNormal) / sqrt(normal.x * normal.x + normal.z * normal.z)); // Y축으로의 회전량
+	//auto radAxisZ = acosf(dot({ normal.x, normal.y, 0.0f }, standardNormal) / sqrt(normal.x * normal.x + normal.y * normal.y)); // Z축으로의 회전량
 
 	MyVertex v1 = { pos[0],{ m_rgba.x - 0.3f,m_rgba.y - 0.3f,m_rgba.z - 0.3f, 1.0f }, normal,{ 0.0f, 0.0f } };
 	MyVertex v2 = { pos[1], m_rgba, normal,{ 1.0f, 0.0f } };
@@ -452,10 +459,7 @@ void ModelClass::SetToRectangle(float width, float height, XMFLOAT3 normal)
 	MyVertex v4 = { pos[3],{ m_rgba.x - 0.8f,m_rgba.y - 0.8f,m_rgba.z - 0.8f, 1.0f }, normal,{ 0.0f, 1.0f } };
 
 	AddRectangle(v1, v2, v3, v4);
-}
 
-void ModelClass::UpdateBackgroundColor()
-{
 }
 
 void ModelClass::AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex& v4)
@@ -496,20 +500,6 @@ void ModelClass::SetTextureName(WCHAR * textureName)
 	m_textureName = textureName;
 }
 
-void ModelClass::SetPosition(float x, float y, float z)
-{
-	m_pos.x = x;
-	m_pos.y = y;
-	m_pos.z = z;
-}
-
-void ModelClass::SetPosition(Vector3 pos)
-{
-	m_pos.x = pos.x;
-	m_pos.y = pos.y;
-	m_pos.z = pos.z;
-}
-
 void ModelClass::SetColor(float r, float g, float b, float a)
 {
 	m_rgba.x = r;
@@ -533,9 +523,40 @@ void ModelClass::SetAlpha(float a)
 	SetColor(m_rgba.x, m_rgba.y, m_rgba.z, a);
 }
 
-void ModelClass::SetRotation(float x, float y, float z)
+void ModelClass::RotationToCamera(Camera& c)
 {
-	m_xRot = x;
-	m_yRot = y;
-	m_zRot = z;
+	XMFLOAT3 destVec = c.GetVewDir();
+	//destVec.x = -destVec.x;
+	//destVec.y = -destVec.y;
+	//destVec.z = -destVec.z;
+
+	XMFLOAT3 srcVec = { 0.0f, 1.0f, 0.0f };
+	auto dot = [](XMFLOAT3 v1, XMFLOAT3 v2)
+	{
+		return (v1.x * v2.x + v1.y*v2.y + v1.z*v2.z);
+	};
+	auto rotation = [&](float& x, float &y, float rad)
+	{
+		x = x * cosf(rad) + y * sinf(rad);
+		y = -x * sinf(rad) + y * cosf(rad);
+	}; 
+	auto vecLen = [](XMFLOAT3 v)
+	{
+		return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
+	};
+
+	auto getAngle = [=](XMFLOAT3 v1, XMFLOAT3 v2)
+	{
+		return acosf(dot(v1, v2) / vecLen(v1) / vecLen(v2));
+	};
+
+	XMFLOAT3 afterRotX = destVec;
+	afterRotX.x = 0.0f;
+
+	auto radAxisX = getAngle(srcVec, afterRotX);
+	auto radAxisY = getAngle(afterRotX, destVec);
+
+	//시바.. 그냥 하드코딩...
+	SetRotation(-3.141592f / 4.0f, -3.141592f / 4.0f, 0.0f);
 }
+
