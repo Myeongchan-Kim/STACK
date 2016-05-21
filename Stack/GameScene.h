@@ -7,6 +7,7 @@ class GameScene :
 public:
 
 	virtual void Start(Camera& camera) override;
+	void SetSounds();
 	virtual void Update(float dt, InputClass& input, Camera& camera) override;
 	float GetHeight();
 	int GetCount();
@@ -41,5 +42,8 @@ private:
 	float m_currentHeight = 0.0f;
 	int m_countAccumulation = 0;
 	int m_randomSeed;
+	int m_exactFitCount = 0;
+	std::string m_scaleSounds[8];
+
 
 };

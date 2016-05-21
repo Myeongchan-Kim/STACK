@@ -167,6 +167,13 @@ void SystemClass::Run()
 	return;
 }
 
+void SystemClass::StopSound(std::string fileName)
+{
+	std::string stopCmd = "stop sound/ting.wav";
+	mciSendStringA(stopCmd.c_str(), NULL, 0, 0);
+}
+
+//This function cannot play same file simutaneously, but not for different file.
 void SystemClass::PlaySoundFile(std::string fileName)
 {
 	std::string openCmd = "open " + fileName + " type mpegvideo alias wav";

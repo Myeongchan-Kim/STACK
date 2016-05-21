@@ -64,7 +64,20 @@ void GameScene::Start(Camera& camera)
 
 	LoadUI();
 	UpdateUI(camera);
-	SystemClass::GetInstance()->PlaySoundFile("sound/ting.wav");
+	SetSounds();
+}
+
+void GameScene::SetSounds()
+{
+	m_scaleSounds[0] = "sound/do.mp3";
+	m_scaleSounds[1] = "sound/re.mp3";
+	m_scaleSounds[2] = "sound/mi.mp3";
+	m_scaleSounds[3] = "sound/fa.mp3";
+	m_scaleSounds[4] = "sound/sol.mp3";
+	m_scaleSounds[5] = "sound/la.mp3";
+	m_scaleSounds[6] = "sound/ti.mp3";
+	m_scaleSounds[7] = "sound/do2.mp3";
+
 }
 
 void GameScene::Update(float dt, InputClass& input, Camera& camera)
@@ -86,6 +99,9 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 		{
 			if (IsExactFit(m_currentBlock, m_lastBlock))
 			{
+				std::string sound = m_scaleSounds[m_exactFitCount++ % 8];
+				SystemClass::GetInstance()->StopSound(sound);
+				SystemClass::GetInstance()->PlaySoundFile(sound);
 				//ÇöÀçºí·° ¸ØÃã.
 				m_currentBlock->StopMove();
 
@@ -127,6 +143,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 			}
 			else if (IsOn(m_currentBlock, m_lastBlock))
 			{
+				m_exactFitCount = 0;
 				float deltaPositionZ = m_currentBlock->GetPosition().z - m_lastBlock->GetPosition().z;
 				float deltaPositionX = m_currentBlock->GetPosition().x - m_lastBlock->GetPosition().x;
 				float lengthZ = deltaPositionZ;
@@ -222,6 +239,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 			}
 			else
 			{
+				m_exactFitCount = 0;
 				ModelClass* transModel = new VanishingBlock();
 				transModel->SetToCube(m_boxSize);
 				transModel->SetPosition(m_currentBlock->GetPosition().x, m_curPos.y, m_currentBlock->GetPosition().z);
