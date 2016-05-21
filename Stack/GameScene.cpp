@@ -64,7 +64,7 @@ void GameScene::Start(Camera& camera)
 
 	LoadUI();
 	UpdateUI(camera);
-	SystemClass::GetInstance()->PlaySound("sound/ting.wav");
+	SystemClass::GetInstance()->PlaySoundFile("sound/ting.wav");
 }
 
 void GameScene::Update(float dt, InputClass& input, Camera& camera)

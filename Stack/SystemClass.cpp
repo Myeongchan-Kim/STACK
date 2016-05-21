@@ -167,14 +167,16 @@ void SystemClass::Run()
 	return;
 }
 
-void SystemClass::PlaySound(std::string fileName)
+void SystemClass::PlaySoundFile(std::string fileName)
 {
-	const std::wstring input(fileName.begin(), fileName.end());
-	std::wstring openCmd = L"open " + input + L" type mpegvideo alias wav";
+	std::string openCmd = "open " + fileName + " type mpegvideo alias wav";
 
-	mciSendString(openCmd.c_str(), NULL, 0, 0);
-	std::wstring playCmd = L"play " + input;
-	mciSendString(playCmd.c_str(), NULL, 0, 0);
+	mciSendStringA(openCmd.c_str(), NULL, 0, 0);
+	std::string playCmd = "play " + fileName;
+	mciSendStringA(playCmd.c_str(), NULL, 0, 0);
+// 	
+// 	std::string volumeCmd = "setaudio " + fileName + " volume to " + std::to_string(volume);
+// 	mciSendStringA(volumeCmd.c_str(), NULL, 0, 0);
 }
 
 /*

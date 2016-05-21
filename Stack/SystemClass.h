@@ -21,7 +21,7 @@ public:
 	bool Initialize();
 	void Shutdown();
 	void Run();
-	void PlaySound(std::string fileName);
+	void PlaySoundFile(std::string fileName, int volume);
 
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
