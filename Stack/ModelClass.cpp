@@ -603,14 +603,14 @@ void ModelClass::SetToRectangle(float width, float height, XMFLOAT3 normal)
 	m_vertices.clear();
 	m_indices.clear();
 
-	XMFLOAT3 standardNormal = { 0.0f, 1.0f, 0.0f };
 	XMFLOAT3 pos[4];
 	XMFLOAT4 rgba;
-	pos[0] = { -width / 2 ,0.0f, +height / 2, };
-	pos[1] = { +width / 2 ,0.0f, +height / 2, };
-	pos[2] = { +width / 2 ,0.0f, -height / 2, };
-	pos[3] = { -width / 2 ,0.0f, - height / 2, };
+	pos[0] = { -width / 2 , +height / 2, 0.0f };
+	pos[1] = { +width / 2 , +height / 2, 0.0f };
+	pos[2] = { +width / 2 , -height / 2, 0.0f };
+	pos[3] = { -width / 2 , -height / 2, 0.0f, };
 	
+	//XMFLOAT3 standardNormal = { 0.0f, 1.0f, 0.0f };
 	//auto dot = [](XMFLOAT3 v1, XMFLOAT3 v2)
 	//{
 	//	return (v1.x * v2.x + v1.y*v2.y + v1.z*v2.z);
@@ -730,6 +730,6 @@ void ModelClass::RotationToCamera(Camera& c)
 
 	//시바.. 그냥 하드코딩...
 	//SetRotation(-3.141592f / 4.0f, -3.141592f / 4.0f, 0.0f);
-	SetRotation(0.0f, -3.141592f / 4.0f, 0.0f);
+	SetRotation(3.141592f / 4.0f, -3.141592f / 4.0f, 0.0f);
 }
 
