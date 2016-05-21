@@ -10,6 +10,8 @@ public:
 	virtual void Update(float dt, InputClass& input, Camera& camera) override;
 	float GetHeight();
 	int GetCount();
+
+	void LoadUI();
 	void UpdateUI(Camera& camera) override;
 	void UpdateUIPos(Camera& camera);
 	void MoveCameraAndBackground(Camera& camera, float dy);
@@ -34,6 +36,8 @@ private:
 	static const XMFLOAT3 DEFAULT_BOXSIZE;
 	XMFLOAT3 m_boxSize = DEFAULT_BOXSIZE;
 
+
+	PreLoadedData* m_uiPool[10];
 	float m_currentHeight = 0.0f;
 	int m_countAccumulation = 0;
 	int m_randomSeed;

@@ -14,7 +14,6 @@ public:
 	float GetUIY();
 
 	void SetUIPosition(Camera& cam);
-	void SetToPolygon(std::string filename);
 	void SetToNumber(int n);
 
 	static const float LETTERWIDTH;

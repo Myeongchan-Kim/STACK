@@ -61,6 +61,8 @@ void GameScene::Start(Camera& camera)
 	m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
 	AddModel(m_currentBlock);
 
+
+	LoadUI();
 	UpdateUI(camera);
 }
 
@@ -260,6 +262,17 @@ int GameScene::GetCount()
 	return m_countAccumulation;
 }
 
+void GameScene::LoadUI()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		char fileName[20] = { 0, };
+		sprintf_s(fileName, "Object/number0.obj");
+		fileName[13] = '0' + i;
+		m_uiPool[i] = ModelClass::PreLoadFromFile(fileName);
+	}
+}
+
 void GameScene::UpdateUI(Camera & camera)
 {
 	Scene::UpdateUI(camera); //clear
@@ -272,28 +285,13 @@ void GameScene::UpdateUI(Camera & camera)
 
 	for (int i = 0; i < strlen(showString); i++)
 	{
-		char fileName[20] = { 0, };
-		sprintf_s(fileName, "Object/number0.obj");
-		fileName[13] = showString[i];
-		auto CountNum = new UIModel();
-		CountNum->SetUIXY((startPosX + i * UIModel::LETTERWIDTH * scale) / camera.GetViewSizeWidth(), 0.9f);
-		CountNum->SetUIPosition(camera);
-		CountNum->SetToPolygon(fileName);
-		CountNum->SetScale(scale * 0.05, scale * 0.05, scale * 0.05);
-		CountNum->RotationToCamera(camera);
-		AddUIModel(CountNum);
-
-		/*
-		char tmp[2] = {0,0};
-		tmp[0] = showString[i];
-		int num = atoi(tmp);
-		auto numberExample = new UIModel();
-		numberExample->SetUIXY( (startPosX + i * UIModel::LETTERWIDTH * scale )/ camera.GetViewSizeWidth() , 0.9f);
-		numberExample->SetUIPosition(camera);
-		numberExample->SetToNumber(num);
-		numberExample->SetScale(scale, scale, scale);
-		numberExample->RotationToCamera(camera);
-		AddUIModel(numberExample);*/
+		int number = showString[i] - '0';
+		auto numberModel = new UIModel();
+		numberModel->SetUIXY((startPosX + i * UIModel::LETTERWIDTH * scale) / camera.GetViewSizeWidth(), 0.9f);
+		numberModel->LoadFromPreLoadedData(m_uiPool[number]);
+		numberModel->SetScale(scale * 0.05, scale * 0.05, scale * 0.05);
+		numberModel->RotationToCamera(camera);
+		AddUIModel(numberModel);
 	}
 }
 
