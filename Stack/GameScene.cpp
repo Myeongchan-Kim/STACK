@@ -15,6 +15,15 @@ const XMFLOAT3 GameScene::DEFAULT_BOXSIZE = { 4, 1.0, 4 };
 
 void GameScene::Start(Camera& camera)
 {
+	//createUI();
+	/*
+	UIModel* example = new UIModel();
+	example->SetToPolygon("Object/number8.obj");
+	example->SetUIPosition(camera);
+	example->SetScale(scale, scale, scale);
+	example->SetRGB(1, 1, 0);
+	AddUIModel(example);*/
+
 	srand(time(NULL));
 	m_randomSeed = rand();
 	XMFLOAT4 rgba = MakeCircularRGB(m_randomSeed);
@@ -52,18 +61,16 @@ void GameScene::Start(Camera& camera)
 	m_curMoveDir = { 0, 0, 4 };
 
 	
-	
-	ModelClass* example = new ModelClass("Object/number0.obj");
-	example->SetPosition(2, 1, 1);
-	example->SetScale(0.1f, 0.1f, 0.1f);
-	example->SetRGB(1, 1, 0);
-	AddModel(example);
-	
-
 	//현재 블록 생성
-	XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
+	XMFLOAT3 newPosition = { 
+		m_curPos.x + m_curMoveDir.x, 
+		m_curPos.y + m_curMoveDir.y, 
+		m_curPos.z + m_curMoveDir.z 
+	};
 	m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
 	AddModel(m_currentBlock);
+
+	UpdateUI(camera);
 }
 
 void GameScene::Update(float dt, InputClass& input, Camera& camera)
@@ -107,7 +114,12 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				m_curPos.y += dy;
 				
 				//새 블록 생성.
-				XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
+				XMFLOAT3 newPosition = { 
+					m_curPos.x + m_curMoveDir.x, 
+					m_curPos.y + m_curMoveDir.y, 
+					m_curPos.z + m_curMoveDir.z 
+				};
+
 				m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
 				AddModel(m_currentBlock);
 
@@ -116,6 +128,8 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				
 				m_currentHeight += dy;
 				m_countAccumulation++;
+				UpdateUI(camera);
+				UpdateUIPos(camera);
 			}
 			else if (IsOn(m_currentBlock, m_lastBlock))
 			{
@@ -209,6 +223,8 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 
 				m_currentHeight += dy;
 				m_countAccumulation++;
+				UpdateUI(camera);
+				UpdateUIPos(camera);
 			}
 			else
 			{
@@ -224,8 +240,6 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 
 				m_isEnd = true;
 			}
-
-
 		}
 	}
 
@@ -240,9 +254,9 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 		float viewSize = 10.0f + elapsedTime * m_currentHeight * 1.5f;
 		m_backGround->SetScale(viewSize/10, 1, viewSize/10);
 		camera.SetProjection(viewSize, viewSize);
+		UpdateUIPos(camera);
 	}
 
-	UpdateUI(camera);
 }
 
 float GameScene::GetHeight()
@@ -267,6 +281,19 @@ void GameScene::UpdateUI(Camera & camera)
 
 	for (int i = 0; i < strlen(showString); i++)
 	{
+		char fileName[20] = { 0, };
+		sprintf_s(fileName, "Object/number0.obj");
+		fileName[13] = showString[i];
+		auto numberExample = new UIModel();
+		numberExample->SetUIXY((startPosX + i * UIModel::LETTERWIDTH * scale) / camera.GetViewSizeWidth(), 0.9f);
+		numberExample->SetUIPosition(camera);
+
+		numberExample->SetToPolygon(fileName);
+		numberExample->SetScale(scale * 0.05, scale * 0.05, scale * 0.05);
+		numberExample->RotationToCamera(camera);
+		AddUIModel(numberExample);
+
+		/*
 		char tmp[2] = {0,0};
 		tmp[0] = showString[i];
 		int num = atoi(tmp);
@@ -276,9 +303,20 @@ void GameScene::UpdateUI(Camera & camera)
 		numberExample->SetToNumber(num);
 		numberExample->SetScale(scale, scale, scale);
 		numberExample->RotationToCamera(camera);
-		AddUIModel(numberExample);
+		AddUIModel(numberExample);*/
 	}
 }
+
+void GameScene::UpdateUIPos(Camera & camera)
+{
+	float scale = camera.GetViewSizeWidth() / DEFAULT_VIEW_WIDTH;
+	for (auto& model : m_UImodel)
+	{
+		model->SetScale(scale *  0.05, scale* 0.05, scale*  0.05);
+	}
+}
+
+
 
 void GameScene::MoveCameraAndBackground(Camera & camera, float dy)
 {
