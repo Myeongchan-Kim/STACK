@@ -11,4 +11,5 @@ struct MyVertex
 	XMFLOAT2	tex;
 
 	bool operator==(const MyVertex& rv);
+	void operator=(const MyVertex& rv);
 };

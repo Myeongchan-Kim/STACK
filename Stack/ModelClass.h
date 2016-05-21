@@ -4,6 +4,8 @@
 #include <vector>
 #include "Camera.h"
 #include "Object.h"
+
+class MyVertex;
 using namespace DirectX;
 struct Vector3 {
 	float x;
@@ -16,13 +18,19 @@ struct Vector2 {
 	float y;
 };
 
+struct PreLoadedData {
+	std::vector<MyVertex>		vertices;
+	std::vector<WORD>			indices;
+};
 
-class MyVertex;
 class ModelClass :public Object
 {
 public:
 	ModelClass();
 	virtual ~ModelClass();
+	static PreLoadedData* PreLoadFromFile(std::string filename);
+	void LoadFromPreLoadedData(PreLoadedData* data);
+	void LoadFromFile(std::string filename);
 	HRESULT CreateVertexBuffer(ID3D11Device* device);
 	HRESULT CreateIndexBuffer(ID3D11Device* device);
 	ID3D11Buffer*& GetVB() { return m_vertexBuffer; };
