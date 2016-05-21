@@ -307,7 +307,7 @@ void UIModel::SetUIPosition(Camera & camera)
 	mat *= XMMatrixRotationX(-m_xRot);
 
 	//XZ평면에서 움직임
-	mat *= XMMatrixTranslation(deltaX, 0.0f, deltaY);
+	mat *= XMMatrixTranslation(deltaX, deltaY, 0.0f);
 
 	//다시 원래 각도로 돌리는 행렬
 	mat *= XMMatrixRotationX(m_xRot);

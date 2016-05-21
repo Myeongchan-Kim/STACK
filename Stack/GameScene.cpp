@@ -15,15 +15,6 @@ const XMFLOAT3 GameScene::DEFAULT_BOXSIZE = { 4, 1.0, 4 };
 
 void GameScene::Start(Camera& camera)
 {
-	//createUI();
-	/*
-	UIModel* example = new UIModel();
-	example->SetToPolygon("Object/number8.obj");
-	example->SetUIPosition(camera);
-	example->SetScale(scale, scale, scale);
-	example->SetRGB(1, 1, 0);
-	AddUIModel(example);*/
-
 	srand(time(NULL));
 	m_randomSeed = rand();
 	XMFLOAT4 rgba = MakeCircularRGB(m_randomSeed);
@@ -129,7 +120,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				m_currentHeight += dy;
 				m_countAccumulation++;
 				UpdateUI(camera);
-				UpdateUIPos(camera);
+				//UpdateUIPos(camera);
 			}
 			else if (IsOn(m_currentBlock, m_lastBlock))
 			{
@@ -224,7 +215,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				m_currentHeight += dy;
 				m_countAccumulation++;
 				UpdateUI(camera);
-				UpdateUIPos(camera);
+				//UpdateUIPos(camera);
 			}
 			else
 			{
@@ -252,7 +243,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 			return;
 
 		float viewSize = 10.0f + elapsedTime * m_currentHeight * 1.5f;
-		m_backGround->SetScale(viewSize/10, 1, viewSize/10);
+		m_backGround->SetScale(viewSize/10, viewSize / 10, viewSize/10);
 		camera.SetProjection(viewSize, viewSize);
 		UpdateUIPos(camera);
 	}
@@ -276,7 +267,7 @@ void GameScene::UpdateUI(Camera & camera)
 	char showString[20];
 	sprintf_s(showString, "%d", m_countAccumulation);
 	float scale = camera.GetViewSizeWidth() / DEFAULT_VIEW_WIDTH;
-	float startPosX = camera.GetViewSizeWidth() / 2 - strlen(showString) * UIModel::LETTERWIDTH * scale/ 2.0f;
+	float startPosX = camera.GetViewSizeWidth() / 2 - (strlen(showString) - 0.5) * UIModel::LETTERWIDTH * scale/ 2.0f;
 
 
 	for (int i = 0; i < strlen(showString); i++)
@@ -284,14 +275,13 @@ void GameScene::UpdateUI(Camera & camera)
 		char fileName[20] = { 0, };
 		sprintf_s(fileName, "Object/number0.obj");
 		fileName[13] = showString[i];
-		auto numberExample = new UIModel();
-		numberExample->SetUIXY((startPosX + i * UIModel::LETTERWIDTH * scale) / camera.GetViewSizeWidth(), 0.9f);
-		numberExample->SetUIPosition(camera);
-
-		numberExample->SetToPolygon(fileName);
-		numberExample->SetScale(scale * 0.05, scale * 0.05, scale * 0.05);
-		numberExample->RotationToCamera(camera);
-		AddUIModel(numberExample);
+		auto CountNum = new UIModel();
+		CountNum->SetUIXY((startPosX + i * UIModel::LETTERWIDTH * scale) / camera.GetViewSizeWidth(), 0.9f);
+		CountNum->SetUIPosition(camera);
+		CountNum->SetToPolygon(fileName);
+		CountNum->SetScale(scale * 0.05, scale * 0.05, scale * 0.05);
+		CountNum->RotationToCamera(camera);
+		AddUIModel(CountNum);
 
 		/*
 		char tmp[2] = {0,0};
@@ -312,7 +302,8 @@ void GameScene::UpdateUIPos(Camera & camera)
 	float scale = camera.GetViewSizeWidth() / DEFAULT_VIEW_WIDTH;
 	for (auto& model : m_UImodel)
 	{
-		model->SetScale(scale *  0.05, scale* 0.05, scale*  0.05);
+		model->RotationToCamera(camera);
+		model->SetScale(scale * 0.05, scale * 0.05, scale * 0.05);
 	}
 }
 
