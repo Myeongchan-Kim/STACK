@@ -7,3 +7,13 @@ bool MyVertex::operator==(const MyVertex& rv)
 		&& (normal.x == rv.normal.x && normal.y == rv.normal.y && normal.z == rv.normal.z)
 		&& (tex.x == rv.tex.x && tex.y == rv.tex.y);
 }
+
+
+void MyVertex::operator=(const MyVertex& rv)
+{
+
+	pos = rv.pos;
+	color = rv.color;
+	normal = rv.normal;
+	tex = rv.tex;
+}
