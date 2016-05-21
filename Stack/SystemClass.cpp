@@ -166,6 +166,17 @@ void SystemClass::Run()
 
 	return;
 }
+
+void SystemClass::PlaySound(std::string fileName)
+{
+	const std::wstring input(fileName.begin(), fileName.end());
+	std::wstring openCmd = L"open " + input + L" type mpegvideo alias wav";
+
+	mciSendString(openCmd.c_str(), NULL, 0, 0);
+	std::wstring playCmd = L"play " + input;
+	mciSendString(playCmd.c_str(), NULL, 0, 0);
+}
+
 /*
 	The following Frame function is where all the processing for our application is done.
 	So far it is fairly simple, we check the input object to see if the user has pressed escape and wants to quit.
