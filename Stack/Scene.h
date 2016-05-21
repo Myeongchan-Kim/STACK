@@ -16,7 +16,7 @@ public:
 	void RemoveModel(std::function<bool(ModelClass*)> compare);
 	virtual void Start(Camera& camera) = 0;
 	virtual void Update(float dt, InputClass& input, Camera& camera) = 0;
-	virtual void UpdateUI(Camera& camera);
+	virtual void UpdateUIString(Camera& camera);
 	
 	XMFLOAT4 MakeCircularRGB(int seed);
 protected:

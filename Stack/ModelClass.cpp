@@ -15,8 +15,10 @@ m_vertexIsChanged(true)
 }
 ModelClass::~ModelClass()
 {
-	m_vertexBuffer->Release();
-	m_indexBuffer->Release();
+	if(m_vertexBuffer != nullptr)
+		m_vertexBuffer->Release();
+	if(m_indexBuffer != nullptr)
+		m_indexBuffer->Release();
 }
 
 PreLoadedData* ModelClass::PreLoadFromFile(std::string filename)
@@ -459,7 +461,7 @@ void ModelClass::ReleaseVB()
 	if (m_vertexBuffer != nullptr)
 	{
 		m_vertexBuffer->Release();
-		m_vertexBuffer == nullptr;
+		m_vertexBuffer = nullptr;
 	}
 }
 
@@ -468,7 +470,7 @@ void ModelClass::ReleaseIB()
 	if (m_indexBuffer != nullptr)
 	{
 		m_indexBuffer->Release();
-		m_indexBuffer == nullptr;
+		m_indexBuffer = nullptr;
 	}
 }
 

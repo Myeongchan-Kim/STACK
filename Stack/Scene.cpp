@@ -65,7 +65,7 @@ void Scene::RemoveModel(std::function<bool(ModelClass*)> compare)
 }
 
 
-void Scene::UpdateUI(Camera& camera)
+void Scene::UpdateUIString(Camera& camera)
 {
 	for (auto model : m_UImodel)
 	{

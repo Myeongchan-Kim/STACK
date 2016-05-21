@@ -12,7 +12,7 @@ public:
 	int GetCount();
 
 	void LoadUI();
-	void UpdateUI(Camera& camera) override;
+	void UpdateUIString(Camera& camera) override;
 	void UpdateUIPos(Camera& camera);
 	void MoveCameraAndBackground(Camera& camera, float dy);
 	ModelClass* MakeNewBlock(XMFLOAT3 positoin , XMFLOAT3 boxSize);

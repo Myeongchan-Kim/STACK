@@ -63,7 +63,7 @@ void GameScene::Start(Camera& camera)
 
 
 	LoadUI();
-	UpdateUI(camera);
+	UpdateUIString(camera);
 }
 
 void GameScene::Update(float dt, InputClass& input, Camera& camera)
@@ -121,8 +121,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 				
 				m_currentHeight += dy;
 				m_countAccumulation++;
-				UpdateUI(camera);
-				//UpdateUIPos(camera);
+				UpdateUIString(camera);
 			}
 			else if (IsOn(m_currentBlock, m_lastBlock))
 			{
@@ -216,7 +215,7 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 
 				m_currentHeight += dy;
 				m_countAccumulation++;
-				UpdateUI(camera);
+				UpdateUIString(camera);
 				//UpdateUIPos(camera);
 			}
 			else
@@ -273,9 +272,9 @@ void GameScene::LoadUI()
 	}
 }
 
-void GameScene::UpdateUI(Camera & camera)
+void GameScene::UpdateUIString(Camera & camera)
 {
-	Scene::UpdateUI(camera); //clear
+	Scene::UpdateUIString(camera); //clear
 
 	char showString[20];
 	sprintf_s(showString, "%d", m_countAccumulation);
@@ -289,6 +288,7 @@ void GameScene::UpdateUI(Camera & camera)
 		auto numberModel = new UIModel();
 		numberModel->SetUIXY((startPosX + i * UIModel::LETTERWIDTH * scale) / camera.GetViewSizeWidth(), 0.9f);
 		numberModel->LoadFromPreLoadedData(m_uiPool[number]);
+		numberModel->SetRGB(3.0f, 3.0f, 3.0f);
 		numberModel->SetScale(scale * 0.05, scale * 0.05, scale * 0.05);
 		numberModel->RotationToCamera(camera);
 		AddUIModel(numberModel);
