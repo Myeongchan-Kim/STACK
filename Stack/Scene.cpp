@@ -67,11 +67,11 @@ void Scene::RemoveModel(std::function<bool(ModelClass*)> compare)
 
 void Scene::UpdateUI(Camera& camera)
 {
-// 	for (auto model : m_UImodel)
-// 	{
-// 		delete model;
-// 		model = nullptr;
-// 	}
+	for (auto model : m_UImodel)
+	{
+		delete model;
+		model = nullptr;
+	}
 	//Set UI string
 	m_UImodel.clear();
 }
