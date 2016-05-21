@@ -11,6 +11,7 @@ public:
 	float GetHeight();
 	int GetCount();
 	void UpdateUI(Camera& camera) override;
+	void UpdateUIPos(Camera& camera);
 	void MoveCameraAndBackground(Camera& camera, float dy);
 	ModelClass* MakeNewBlock(XMFLOAT3 positoin , XMFLOAT3 boxSize);
 
@@ -36,4 +37,5 @@ private:
 	float m_currentHeight = 0.0f;
 	int m_countAccumulation = 0;
 	int m_randomSeed;
+
 };
