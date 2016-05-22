@@ -732,6 +732,6 @@ void ModelClass::RotationToCamera(Camera& c)
 
 	//시바.. 그냥 하드코딩...
 	//SetRotation(-3.141592f / 4.0f, -3.141592f / 4.0f, 0.0f);
-	SetRotation(3.141592f / 4.0f, -3.141592f / 4.0f, 0.0f);
+	SetRotation(3.141592f / 4.3f, -3.141592f / 4.0f, 0.0f);
 }
 
