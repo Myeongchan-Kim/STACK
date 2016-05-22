@@ -308,12 +308,7 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 					vanishingBlockPos.z += (visibleBlockSize.z / 2 + vanishingBlockSize.z);
 			}
 
-			//현재 블록 지우기.
-			RemoveModel([=](ModelClass* model) -> bool {
-				bool result = (model == m_currentBlock);
-				if (result) delete model;
-				return result;
-			});
+			
 
 			//새로 만드는 박스 크기를 잘린 보이는 블록과 같게 지정.
 			m_boxSize = visibleBlockSize;
@@ -343,6 +338,17 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 			m_color = { newRGBA.x, newRGBA.y, newRGBA.z };
 			//새 블록 움직이는 방향 설정
 			ChangeDirection();
+
+			//현재 블록, 투명블록 지우기.
+			RemoveModel([=](ModelClass* model) -> bool {
+				bool curBlock = (model == m_currentBlock);
+				if (curBlock)
+					delete model;
+				bool vaniBlock = (model->GetTransparency() && !model->IsOnMove());
+				if(vaniBlock)
+					delete model;
+				return curBlock || vaniBlock;
+			});
 
 			//새 블록 생성.
 			XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
