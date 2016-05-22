@@ -412,7 +412,7 @@ bool GameScene::UpdateRestarting(float dt, InputClass & input, Camera & camera)
 	{
 		if (model == m_backGround)
 			continue;
-		model->AddGravityMoveToScheduler({ float(rand() % 10), float(rand() % 10), float(rand() % 10) }, destructionTime);
+		model->AddGravityMoveToScheduler({ float(rand() % 20) - 10.0f, float(rand() % 5), float(rand() % 20) - 10.0f }, destructionTime * 2);
 	}
 	static float elapsedTime = 0.0f;
 	elapsedTime += dt;
