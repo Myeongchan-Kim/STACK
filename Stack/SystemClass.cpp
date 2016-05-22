@@ -166,6 +166,26 @@ void SystemClass::Run()
 
 	return;
 }
+
+void SystemClass::StopSound(std::string fileName)
+{
+	std::string stopCmd = "stop sound/ting.wav";
+	mciSendStringA(stopCmd.c_str(), NULL, 0, 0);
+}
+
+//This function cannot play same file simutaneously, but not for different file.
+void SystemClass::PlaySoundFile(std::string fileName)
+{
+	std::string openCmd = "open " + fileName + " type mpegvideo alias wav";
+
+	mciSendStringA(openCmd.c_str(), NULL, 0, 0);
+	std::string playCmd = "play " + fileName;
+	mciSendStringA(playCmd.c_str(), NULL, 0, 0);
+// 	
+// 	std::string volumeCmd = "setaudio " + fileName + " volume to " + std::to_string(volume);
+// 	mciSendStringA(volumeCmd.c_str(), NULL, 0, 0);
+}
+
 /*
 	The following Frame function is where all the processing for our application is done.
 	So far it is fairly simple, we check the input object to see if the user has pressed escape and wants to quit.
