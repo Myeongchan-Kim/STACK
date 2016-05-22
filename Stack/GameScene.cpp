@@ -13,6 +13,14 @@ const float GameScene::DEFAULT_VIEW_WIDTH = 10.0f;
 const float GameScene::DEFAULT_VIEW_HEIGHT = 10.0f;
 const XMFLOAT3 GameScene::DEFAULT_BOXSIZE = { 4, 1.0, 4 };
 
+GameScene::~GameScene()
+{
+	for (auto& file : m_scaleSounds)
+	{
+		SystemClass::GetInstance()->CloseSoundFile(file);
+	}
+}
+
 void GameScene::Start(Camera& camera)
 {
 	srand(time(NULL));
@@ -65,6 +73,7 @@ void GameScene::Start(Camera& camera)
 	LoadUI();
 	UpdateUIString(camera);
 	SetSounds();
+
 }
 
 void GameScene::SetSounds()
@@ -77,6 +86,11 @@ void GameScene::SetSounds()
 	m_scaleSounds[5] = "sound/la.mp3";
 	m_scaleSounds[6] = "sound/ti.mp3";
 	m_scaleSounds[7] = "sound/do2.mp3";
+
+	for (auto file : m_scaleSounds)
+	{
+		SystemClass::GetInstance()->PreLoadSoundFile(file);
+	}
 }
 
 void GameScene::Update(float dt, InputClass& input, Camera& camera)
@@ -99,7 +113,6 @@ void GameScene::Update(float dt, InputClass& input, Camera& camera)
 			if (IsExactFit(m_currentBlock, m_lastBlock))
 			{
 				std::string sound = m_scaleSounds[m_exactFitCount++ % 8];
-				SystemClass::GetInstance()->StopSound(sound);
 				SystemClass::GetInstance()->PlaySoundFile(sound);
 				//ÇöÀçºí·° ¸ØÃã.
 				m_currentBlock->StopMove();
@@ -377,7 +390,7 @@ bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
 
 bool GameScene::IsExactFit(ModelClass * ubox, ModelClass * dbox)
 {
-	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 30.0f;
+	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 1.0f;
 	if (
 		ubox->GetPosition().x > dbox->GetPosition().x - allowDelta &&
 		ubox->GetPosition().x < dbox->GetPosition().x + allowDelta &&

@@ -24,6 +24,8 @@ public:
 	void StopSound(std::string fileName);
 	void PlaySoundFile(std::string fileName);
 
+	void CloseSoundFile(std::string fileName);
+	void PreLoadSoundFile(std::string fileName);
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
 private:
