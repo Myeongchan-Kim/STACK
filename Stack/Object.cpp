@@ -137,7 +137,7 @@ XMFLOAT3 Object::GravityMove::GetDeltaPosition(float dt)
 	v.y -= G*dt;	
 	XMFLOAT3 resultDeltaPos = { v.x * dt, v.y * dt, v.z * dt};
 	XMFLOAT3 rot = parent->GetRotation();
-	parent->SetRotation(rot.x + v.z * dt * 2.0f, 0.0f , rot.z - v.x * dt * 2.0f);
+	parent->SetRotation(rot.x + v.z * dt, 0.0f , rot.z - v.x * dt);
 	return resultDeltaPos;
 }
 
