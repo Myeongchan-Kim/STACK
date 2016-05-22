@@ -4,6 +4,7 @@
 class Scene;
 class InputClass;
 class Renderer;
+#include <string>
 #include "MyTime.h"
 
 const bool FULL_SCREEN = false;
@@ -20,6 +21,8 @@ public:
 	bool Initialize();
 	void Shutdown();
 	void Run();
+	void StopSound(std::string fileName);
+	void PlaySoundFile(std::string fileName);
 
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
