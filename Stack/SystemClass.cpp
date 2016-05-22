@@ -41,6 +41,8 @@ SystemClass::~SystemClass()
 
 void SystemClass::SetScene(Scene* scene)
 {
+	if (m_currentScene)
+		delete m_currentScene;
 	m_currentScene = scene;
 }
 
@@ -176,14 +178,22 @@ void SystemClass::StopSound(std::string fileName)
 //This function cannot play same file simutaneously, but not for different file.
 void SystemClass::PlaySoundFile(std::string fileName)
 {
-	std::string openCmd = "open " + fileName + " type mpegvideo alias wav";
-
-	mciSendStringA(openCmd.c_str(), NULL, 0, 0);
 	std::string playCmd = "play " + fileName;
 	mciSendStringA(playCmd.c_str(), NULL, 0, 0);
-// 	
-// 	std::string volumeCmd = "setaudio " + fileName + " volume to " + std::to_string(volume);
-// 	mciSendStringA(volumeCmd.c_str(), NULL, 0, 0);
+
+}
+
+void SystemClass::CloseSoundFile(std::string fileName) {
+	std::string closeCmd = "close " + fileName;
+	mciSendStringA(closeCmd.c_str(), NULL, 0, 0);
+}
+
+void SystemClass::PreLoadSoundFile(std::string fileName)
+{
+	//fileName.substr(3, )
+	std::string openCmd = "open " + fileName + " type mpegvideo alias mp3";
+
+	mciSendStringA(openCmd.c_str(), NULL, 0, 0);
 }
 
 /*
