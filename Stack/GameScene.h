@@ -8,7 +8,7 @@ public:
 	~GameScene();
 	virtual void Start(Camera& camera) override;
 	void SetSounds();
-	virtual void Update(float dt, InputClass& input, Camera& camera) override;
+	virtual bool Update(float dt, InputClass& input, Camera& camera) override;
 	float GetHeight();
 	int GetCount();
 
@@ -18,18 +18,33 @@ public:
 	void MoveCameraAndBackground(Camera& camera, float dy);
 	ModelClass* MakeNewBlock(XMFLOAT3 positoin , XMFLOAT3 boxSize);
 
+
 	static const float DEFAULT_VIEW_WIDTH;
 	static const float DEFAULT_VIEW_HEIGHT;
 
 private:
 	void ChangeDirection();
+	bool UpdatePlayState(float dt, InputClass& input, Camera& camera);
+	bool UpdateEndingState(float dt, InputClass& input, Camera& camera);
+	bool UpdateEndDoneState(float dt, InputClass& input, Camera& camera);
+	bool UpdateRestarting(float dt, InputClass& input, Camera& camera);
 
 	bool IsOn(ModelClass* b1, ModelClass* b2);
 	bool IsExactFit(ModelClass* ubox, ModelClass* dbox);
 	ModelClass* m_currentBlock = nullptr;
 	ModelClass* m_lastBlock = nullptr;
 	XMFLOAT3 m_curPos = { 0.0f, 0.0f, 0.0f };
+	
 	bool m_isEnd = false; //엔딩모드냐 아니냐
+	bool m_isReadyToNewStart = false;
+	enum playState
+	{
+		isPlaying,
+		isEnding,
+		isEndingDone,
+		isRestarting
+	} m_playState;
+
 	XMFLOAT3 m_curMoveDir = { 0.0f, 0.0f, 0.0f };
 
 	ModelClass* m_backGround = nullptr;

@@ -45,7 +45,6 @@ void GameScene::Start(Camera& camera)
 	auto dir = camera.GetVewDir();
 	m_backGround->SetPosition(camera.GetPosition().x + dir.x *10, camera.GetPosition().y + dir.y * 10, camera.GetPosition().z + dir.z * 10);
 	m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
-	m_backGround->SetTextureName(ConstVars::PLANE_TEX_FILE);
 	m_backGround->SetToRectangle(viewWidth, viewHeight, { 0.0f, 1.0f, 0.0f });
 	m_backGround->RotationToCamera(camera);
 	AddModel(m_backGround);
@@ -73,7 +72,7 @@ void GameScene::Start(Camera& camera)
 	LoadUI();
 	UpdateUIString(camera);
 	SetSounds();
-
+	m_playState = isPlaying;
 }
 
 void GameScene::SetSounds()
@@ -93,193 +92,28 @@ void GameScene::SetSounds()
 	}
 }
 
-void GameScene::Update(float dt, InputClass& input, Camera& camera)
+bool GameScene::Update(float dt, InputClass& input, Camera& camera)
 {
-	float dy = m_boxSize.y;
+	bool result;
 	//배경 사각형 설정
-
-	if(!m_isEnd)
+	switch (m_playState)
 	{
-		if (!m_currentBlock->IsOnMove()) {
-			//m_curMoveDir = { 0, 0, 4 };
-			//m_curMoveDir = { 4, 0, 0 };
-			m_currentBlock->AddLinearMoveToScheduler(m_curMoveDir.x * -2, m_curMoveDir.y, m_curMoveDir.z * -2, 1.0f);
-			m_currentBlock->AddLinearMoveToScheduler(m_curMoveDir.x * 2, m_curMoveDir.y, m_curMoveDir.z * 2,  1.0f);
-		}
-
-
-		if (input.IsKeyDown(VK_SPACE))
-		{
-			if (IsExactFit(m_currentBlock, m_lastBlock))
-			{
-				std::string sound = m_scaleSounds[m_exactFitCount++ % 8];
-				SystemClass::GetInstance()->PlaySoundFile(sound);
-				//현재블럭 멈춤.
-				m_currentBlock->StopMove();
-
-				m_currentBlock->SetPosition(
-					m_lastBlock->GetPosition().x, 
-					m_lastBlock->GetPosition().y + dy, 
-					m_lastBlock->GetPosition().z);
-
-				//색상 변경.
-				auto newRGBA = MakeCircularRGB(m_randomSeed + m_countAccumulation);
-				m_color = { newRGBA.x, newRGBA.y, newRGBA.z };
-				
-				//새 블록 움직이는 방향 설정
-				ChangeDirection();
-				
-				//밑단 블럭을 잘린 보이는 블록으로 지정.
-				m_lastBlock = m_currentBlock;;
-
-				//새로 만드는 박스 높이를 한단계증가.
-				m_curPos.y += dy;
-				
-				//새 블록 생성.
-				XMFLOAT3 newPosition = { 
-					m_curPos.x + m_curMoveDir.x, 
-					m_curPos.y + m_curMoveDir.y, 
-					m_curPos.z + m_curMoveDir.z 
-				};
-
-				m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
-				AddModel(m_currentBlock);
-
-				//background & camera move
-				MoveCameraAndBackground(camera, dy);
-				
-				m_currentHeight += dy;
-				m_countAccumulation++;
-				UpdateUIString(camera);
-			}
-			else if (IsOn(m_currentBlock, m_lastBlock))
-			{
-				m_exactFitCount = 0;
-				float deltaPositionZ = m_currentBlock->GetPosition().z - m_lastBlock->GetPosition().z;
-				float deltaPositionX = m_currentBlock->GetPosition().x - m_lastBlock->GetPosition().x;
-				float lengthZ = deltaPositionZ;
-				float lengthX = deltaPositionX;
-				if (deltaPositionZ < 0)
-					lengthZ = -deltaPositionZ;
-				if (deltaPositionX < 0)
-					lengthX = -deltaPositionX;
-
-				//현재블럭 멈춤.
-				m_currentBlock->StopMove();
-
-				//잘린 후 두 블럭의 크기, 위치 지정.
-				XMFLOAT3 visibleBlockSize = { m_boxSize.x - lengthX, m_boxSize.y, m_boxSize.z - lengthZ };
-				XMFLOAT3 visibleBlockPos = { 
-					m_lastBlock->GetPosition().x + (deltaPositionX) / 2 , 
-					m_currentBlock->GetPosition().y, 
-					m_lastBlock->GetPosition().z + (deltaPositionZ)/ 2 };
-
-				XMFLOAT3 vanishingBlockSize;
-				XMFLOAT3 vanishingBlockPos = {
-					m_lastBlock->GetPosition().x,
-					m_currentBlock->GetPosition().y,
-					m_lastBlock->GetPosition().z };
-
-				if (m_curMoveDir.x < 0)
-				{
-					vanishingBlockSize = { lengthX, m_boxSize.y,  m_boxSize.z };
-
-					if (deltaPositionX < 0)
-						vanishingBlockPos.x -= (visibleBlockSize.x / 2 + vanishingBlockSize.x);
-					else
-						vanishingBlockPos.x += (visibleBlockSize.x / 2 + vanishingBlockSize.x);
-				}
-				else
-				{
-					vanishingBlockSize = { m_boxSize.x, m_boxSize.y,  lengthZ };
-
-					if (deltaPositionZ < 0)
-						vanishingBlockPos.z -= (visibleBlockSize.z / 2 + vanishingBlockSize.z);
-					else
-						vanishingBlockPos.z += (visibleBlockSize.z / 2 + vanishingBlockSize.z);
-				}
-
-				//현재 블록 지우기.
-				RemoveModel([=](ModelClass* model) -> bool {
-					bool result = (model == m_currentBlock);
-					if( result) delete model;
-					return result;
-				});
-
-				//새로 만드는 박스 크기를 잘린 보이는 블록과 같게 지정.
-				m_boxSize = visibleBlockSize;
-
-				//잘린보이는 블럭 생성
-				ModelClass* splicedBlock = MakeNewBlock(visibleBlockPos, visibleBlockSize);
-				AddModel(splicedBlock);
-				//밑단 블럭을 잘린블록으로 지정.
-				m_lastBlock = splicedBlock;
-
-				//잘린 사라지는 블럭 생성
-				ModelClass* transModel = new VanishingBlock();
-				transModel->SetToCube(vanishingBlockSize);
-				transModel->SetPosition(vanishingBlockPos);
-				transModel->SetRGB(m_color.x, m_color.y, m_color.z);
-				transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
-				transModel->AddGravityMoveToScheduler({deltaPositionX, 0.0f, deltaPositionZ}, 2.0f);
-				AddModel(transModel);
-
-				//새로 만드는 박스 높이를 한단계증가.
-				m_curPos.y += dy;
-				m_curPos.x = visibleBlockPos.x;
-				m_curPos.z = visibleBlockPos.z;
-
-				//색상 변경.
-				auto newRGBA = MakeCircularRGB(m_randomSeed + m_countAccumulation);
-				m_color = {newRGBA.x, newRGBA.y, newRGBA.z};
-				//새 블록 움직이는 방향 설정
-				ChangeDirection();
-				
-				//새 블록 생성.
-				XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
-				m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
-				AddModel(m_currentBlock);
-				
-				//background & camera move
-				MoveCameraAndBackground(camera, dy);
-
-				m_currentHeight += dy;
-				m_countAccumulation++;
-				UpdateUIString(camera);
-				//UpdateUIPos(camera);
-			}
-			else
-			{
-				m_exactFitCount = 0;
-				ModelClass* transModel = new VanishingBlock();
-				transModel->SetToCube(m_boxSize);
-				transModel->SetPosition(m_currentBlock->GetPosition().x, m_curPos.y, m_currentBlock->GetPosition().z);
-				transModel->SetRGB(m_color.x, m_color.y, m_color.z);
-				transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
-				AddModel(transModel);
-				RemoveModel([=](ModelClass* model) -> bool {
-					return model == m_currentBlock;
-				});
-
-				m_isEnd = true;
-			}
-		}
+	case GameScene::isPlaying:
+		result = UpdatePlayState( dt, input,camera);
+		break;
+	case GameScene::isEnding:
+		result = UpdateEndingState(dt, input, camera);
+		break;
+	case GameScene::isEndingDone:
+		result = UpdateEndDoneState(dt, input, camera);
+		break;
+	case GameScene::isRestarting:
+		result = UpdateRestarting(dt, input, camera);
+		break;
+	default:
+		break;
 	}
-
-	else
-	{
-		static float elapsedTime = 0.0f;
-		elapsedTime += dt;
-		
-		if (elapsedTime > 1.0f)
-			return;
-
-		float viewSize = 10.0f + elapsedTime * m_currentHeight * 1.5f;
-		m_backGround->SetScale(viewSize/10, viewSize / 10, viewSize/10);
-		camera.SetProjection(viewSize, viewSize);
-		UpdateUIPos(camera);
-	}
-
+	return result;
 }
 
 float GameScene::GetHeight()
@@ -372,6 +206,224 @@ void GameScene::ChangeDirection()
 	}
 }
 
+bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
+{
+	float dy = m_boxSize.y;
+
+	if (!m_currentBlock->IsOnMove()) { //반복해서 상자가 왔다갔다 하게 함.
+		//m_curMoveDir = { 0, 0, 4 };
+		//m_curMoveDir = { 4, 0, 0 };
+		m_currentBlock->AddLinearMoveToScheduler(m_curMoveDir.x * -2, m_curMoveDir.y, m_curMoveDir.z * -2, 1.0f);
+		m_currentBlock->AddLinearMoveToScheduler(m_curMoveDir.x * 2, m_curMoveDir.y, m_curMoveDir.z * 2, 1.0f);
+	}
+
+	if (input.IsKeyDown(VK_SPACE))
+	{
+		if (IsExactFit(m_currentBlock, m_lastBlock))
+		{
+			std::string sound = m_scaleSounds[m_exactFitCount++ % 8];
+			SystemClass::GetInstance()->PlaySoundFile(sound);
+			//현재블럭 멈춤.
+			m_currentBlock->StopMove();
+
+			m_currentBlock->SetPosition(
+				m_lastBlock->GetPosition().x,
+				m_lastBlock->GetPosition().y + dy,
+				m_lastBlock->GetPosition().z);
+
+			//색상 변경.
+			auto newRGBA = MakeCircularRGB(m_randomSeed + m_countAccumulation);
+			m_color = { newRGBA.x, newRGBA.y, newRGBA.z };
+
+			//새 블록 움직이는 방향 설정
+			ChangeDirection();
+
+			//밑단 블럭을 잘린 보이는 블록으로 지정.
+			m_lastBlock = m_currentBlock;;
+
+			//새로 만드는 박스 높이를 한단계증가.
+			m_curPos.y += dy;
+
+			//새 블록 생성.
+			XMFLOAT3 newPosition = {
+				m_curPos.x + m_curMoveDir.x,
+				m_curPos.y + m_curMoveDir.y,
+				m_curPos.z + m_curMoveDir.z
+			};
+
+			m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
+			AddModel(m_currentBlock);
+
+			//background & camera move
+			MoveCameraAndBackground(camera, dy);
+
+			m_currentHeight += dy;
+			m_countAccumulation++;
+			UpdateUIString(camera);
+		}
+		else if (IsOn(m_currentBlock, m_lastBlock))
+		{
+			m_exactFitCount = 0;
+			float deltaPositionZ = m_currentBlock->GetPosition().z - m_lastBlock->GetPosition().z;
+			float deltaPositionX = m_currentBlock->GetPosition().x - m_lastBlock->GetPosition().x;
+			float lengthZ = deltaPositionZ;
+			float lengthX = deltaPositionX;
+			if (deltaPositionZ < 0)
+				lengthZ = -deltaPositionZ;
+			if (deltaPositionX < 0)
+				lengthX = -deltaPositionX;
+
+			//현재블럭 멈춤.
+			m_currentBlock->StopMove();
+
+			//잘린 후 두 블럭의 크기, 위치 지정.
+			XMFLOAT3 visibleBlockSize = { m_boxSize.x - lengthX, m_boxSize.y, m_boxSize.z - lengthZ };
+			XMFLOAT3 visibleBlockPos = {
+				m_lastBlock->GetPosition().x + (deltaPositionX) / 2 ,
+				m_currentBlock->GetPosition().y,
+				m_lastBlock->GetPosition().z + (deltaPositionZ) / 2 };
+
+			XMFLOAT3 vanishingBlockSize;
+			XMFLOAT3 vanishingBlockPos = {
+				m_lastBlock->GetPosition().x,
+				m_currentBlock->GetPosition().y,
+				m_lastBlock->GetPosition().z };
+
+			if (m_curMoveDir.x < 0)
+			{
+				vanishingBlockSize = { lengthX, m_boxSize.y,  m_boxSize.z };
+
+				if (deltaPositionX < 0)
+					vanishingBlockPos.x -= (visibleBlockSize.x / 2 + vanishingBlockSize.x);
+				else
+					vanishingBlockPos.x += (visibleBlockSize.x / 2 + vanishingBlockSize.x);
+			}
+			else
+			{
+				vanishingBlockSize = { m_boxSize.x, m_boxSize.y,  lengthZ };
+
+				if (deltaPositionZ < 0)
+					vanishingBlockPos.z -= (visibleBlockSize.z / 2 + vanishingBlockSize.z);
+				else
+					vanishingBlockPos.z += (visibleBlockSize.z / 2 + vanishingBlockSize.z);
+			}
+
+			//현재 블록 지우기.
+			RemoveModel([=](ModelClass* model) -> bool {
+				bool result = (model == m_currentBlock);
+				if (result) delete model;
+				return result;
+			});
+
+			//새로 만드는 박스 크기를 잘린 보이는 블록과 같게 지정.
+			m_boxSize = visibleBlockSize;
+
+			//잘린보이는 블럭 생성
+			ModelClass* splicedBlock = MakeNewBlock(visibleBlockPos, visibleBlockSize);
+			AddModel(splicedBlock);
+			//밑단 블럭을 잘린블록으로 지정.
+			m_lastBlock = splicedBlock;
+
+			//잘린 사라지는 블럭 생성
+			ModelClass* transModel = new VanishingBlock();
+			transModel->SetToCube(vanishingBlockSize);
+			transModel->SetPosition(vanishingBlockPos);
+			transModel->SetRGB(m_color.x, m_color.y, m_color.z);
+			transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+			transModel->AddGravityMoveToScheduler({ deltaPositionX, 0.0f, deltaPositionZ }, 2.0f);
+			AddModel(transModel);
+
+			//새로 만드는 박스 높이를 한단계증가.
+			m_curPos.y += dy;
+			m_curPos.x = visibleBlockPos.x;
+			m_curPos.z = visibleBlockPos.z;
+
+			//색상 변경.
+			auto newRGBA = MakeCircularRGB(m_randomSeed + m_countAccumulation);
+			m_color = { newRGBA.x, newRGBA.y, newRGBA.z };
+			//새 블록 움직이는 방향 설정
+			ChangeDirection();
+
+			//새 블록 생성.
+			XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
+			m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
+			AddModel(m_currentBlock);
+
+			//background & camera move
+			MoveCameraAndBackground(camera, dy);
+
+			m_currentHeight += dy;
+			m_countAccumulation++;
+			UpdateUIString(camera);
+			//UpdateUIPos(camera);
+		}
+		else
+		{
+			m_exactFitCount = 0;
+			ModelClass* transModel = new VanishingBlock();
+			transModel->SetToCube(m_boxSize);
+			transModel->SetPosition(m_currentBlock->GetPosition().x, m_curPos.y, m_currentBlock->GetPosition().z);
+			transModel->SetRGB(m_color.x, m_color.y, m_color.z);
+			transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+			AddModel(transModel);
+			RemoveModel([=](ModelClass* model) -> bool {
+				return model == m_currentBlock;
+			});
+
+			m_isEnd = true;
+			m_playState = isEnding;
+		}
+	}
+	return DONTKILL;
+}
+
+bool GameScene::UpdateEndingState(float dt, InputClass & input, Camera & camera)
+{
+	static float elapsedTime = 0.0f;
+	elapsedTime += dt;
+
+	if (elapsedTime > 1.0f)
+	{
+		elapsedTime = 0.0f;
+		m_playState = isEndingDone;
+	}
+	else 
+	{
+		float viewSize = 10.0f + elapsedTime * m_currentHeight * 1.5f;
+		m_backGround->SetScale(viewSize / 10, viewSize / 10, viewSize / 10);
+		camera.SetProjection(viewSize, viewSize);
+		UpdateUIPos(camera);
+	}
+	return DONTKILL;
+}
+
+bool GameScene::UpdateEndDoneState(float dt, InputClass & input, Camera & camera)
+{
+	if (input.IsKeyDown(VK_SPACE))
+		m_playState = isRestarting;
+	return DONTKILL;
+}
+
+bool GameScene::UpdateRestarting(float dt, InputClass & input, Camera & camera)
+{
+	m_playState = playState::isRestarting;
+	float destructionTime = 0.5f;;
+	for (auto& model : m_modelsToBeRendered)
+	{
+		if (model == m_backGround)
+			continue;
+		model->AddGravityMoveToScheduler({ float(rand() % 10), float(rand() % 10), float(rand() % 10) }, destructionTime);
+	}
+	static float elapsedTime = 0.0f;
+	elapsedTime += dt;
+	if (elapsedTime > destructionTime)
+	{
+		elapsedTime = 0.0f;
+		return KILLME;
+	}
+	return DONTKILL;
+}
+
 bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
 {
 	if (!b1 || !b2)
@@ -390,7 +442,7 @@ bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
 
 bool GameScene::IsExactFit(ModelClass * ubox, ModelClass * dbox)
 {
-	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 1.0f;
+	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 30.0f;
 	if (
 		ubox->GetPosition().x > dbox->GetPosition().x - allowDelta &&
 		ubox->GetPosition().x < dbox->GetPosition().x + allowDelta &&
