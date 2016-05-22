@@ -26,6 +26,7 @@ public:
 	float GetScaleX();
 	float GetScaleY();
 	float GetScaleZ();
+	XMFLOAT3 GetRotation();
 	
 	struct Move
 	{
@@ -44,10 +45,11 @@ public:
 
 	struct GravityMove : public Move
 	{
-		GravityMove(XMFLOAT3 initialV, float remainTime) : Move(remainTime), initialV(initialV), v(initialV) {};
+		GravityMove(XMFLOAT3 initialV, float remainTime, Object* parent) : Move(remainTime), initialV(initialV), v(initialV), parent(parent) {};
+		Object* parent;
 		const XMFLOAT3 initialV;
 		XMFLOAT3 v;
-		const float G = 20.0f;
+		const float G = 40.0f;
 		float elapsedTime = 0.0f;
 		XMFLOAT3 GetDeltaPosition(float dt) override;
 	};

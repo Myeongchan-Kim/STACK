@@ -663,10 +663,6 @@ void ModelClass::AddRectangle(MyVertex& v1, MyVertex& v2, MyVertex& v3, MyVertex
 }
 
 
-DirectX::XMFLOAT3 ModelClass::GetRotation()
-{
-	return DirectX::XMFLOAT3({m_xRot, m_yRot, m_zRot});
-}
 
 void ModelClass::SetTextureName(WCHAR * textureName)
 {

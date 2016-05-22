@@ -34,7 +34,7 @@ void Object::AddLinearMoveToScheduler(float x, float y, float z, float time)
 
 void Object::AddGravityMoveToScheduler(XMFLOAT3 initialV, float time)
 {
-	GravityMove* move = new GravityMove(initialV, time);
+	GravityMove* move = new GravityMove(initialV, time, this);
 	m_moveList.push_back(move);
 }
 
@@ -136,5 +136,12 @@ XMFLOAT3 Object::GravityMove::GetDeltaPosition(float dt)
 {
 	v.y -= G*dt;	
 	XMFLOAT3 resultDeltaPos = { v.x * dt, v.y * dt, v.z * dt};
+	XMFLOAT3 rot = parent->GetRotation();
+	parent->SetRotation(rot.x + v.z * dt * 2.0f, 0.0f , rot.z - v.x * dt * 2.0f);
 	return resultDeltaPos;
+}
+
+XMFLOAT3 Object::GetRotation()
+{
+	return DirectX::XMFLOAT3({ m_xRot, m_yRot, m_zRot });
 }

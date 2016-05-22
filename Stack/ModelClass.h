@@ -51,7 +51,6 @@ public:
 	void SetAlpha(float a);
 	void RotationToCamera(Camera& c);
 
-	DirectX::XMFLOAT3 GetRotation();
 	inline DirectX::XMFLOAT4 GetColor() { return m_rgba; };
 	WCHAR*& GetTextureName() { return m_textureName; };
 
