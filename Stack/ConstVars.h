@@ -1,6 +1,9 @@
 #pragma once
 #include <d3d11.h>
 
+#define KILLME true
+#define DONTKILL false
+
 namespace ConstVars
 {
 	static WCHAR* CONCREAT_TEX_FILE = L"texture/concrete.jpg";

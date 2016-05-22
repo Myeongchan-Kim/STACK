@@ -10,14 +10,15 @@
 
 
 //Only SystemClass calls this function
-void Scene::Play(float deltaTime, InputClass& input, Camera& camera)
+bool Scene::Play(float deltaTime, InputClass& input, Camera& camera)
 {
+	bool kill;
 	if (!m_started)
 	{
 		Start(camera);
 		m_started = true;
 	}
-	Update(deltaTime, input, camera);
+	kill = Update(deltaTime, input, camera);
 
 	for (auto& model : m_modelsToBeRendered)
 	{
@@ -28,6 +29,8 @@ void Scene::Play(float deltaTime, InputClass& input, Camera& camera)
 	{
 		model->SetUIPosition(camera);
 	}
+
+	return kill;
 }
 
 

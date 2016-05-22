@@ -23,12 +23,6 @@ GameScene::~GameScene()
 
 void GameScene::Start(Camera& camera)
 {
-	m_playState = playState::isRestarting;
-	for (auto& model : m_modelsToBeRendered)
-	{
-		model->AddGravityMoveToScheduler({ float(rand() % 10), float(rand() % 10), float(rand() % 10) }, 0.5f);
-	}
-
 	srand(time(NULL));
 	m_randomSeed = rand();
 	XMFLOAT4 rgba = MakeCircularRGB(m_randomSeed);
@@ -51,7 +45,6 @@ void GameScene::Start(Camera& camera)
 	auto dir = camera.GetVewDir();
 	m_backGround->SetPosition(camera.GetPosition().x + dir.x *10, camera.GetPosition().y + dir.y * 10, camera.GetPosition().z + dir.z * 10);
 	m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
-	m_backGround->SetTextureName(ConstVars::PLANE_TEX_FILE);
 	m_backGround->SetToRectangle(viewWidth, viewHeight, { 0.0f, 1.0f, 0.0f });
 	m_backGround->RotationToCamera(camera);
 	AddModel(m_backGround);
@@ -99,24 +92,28 @@ void GameScene::SetSounds()
 	}
 }
 
-void GameScene::Update(float dt, InputClass& input, Camera& camera)
+bool GameScene::Update(float dt, InputClass& input, Camera& camera)
 {
+	bool result;
 	//배경 사각형 설정
 	switch (m_playState)
 	{
 	case GameScene::isPlaying:
-		UpdatePlayState( dt, input,camera);
+		result = UpdatePlayState( dt, input,camera);
 		break;
 	case GameScene::isEnding:
-		UpdateEndingState(dt, input, camera);
+		result = UpdateEndingState(dt, input, camera);
 		break;
 	case GameScene::isEndingDone:
+		result = UpdateEndDoneState(dt, input, camera);
 		break;
 	case GameScene::isRestarting:
+		result = UpdateRestarting(dt, input, camera);
 		break;
 	default:
 		break;
 	}
+	return result;
 }
 
 float GameScene::GetHeight()
@@ -209,7 +206,7 @@ void GameScene::ChangeDirection()
 	}
 }
 
-void GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
+bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 {
 	float dy = m_boxSize.y;
 
@@ -374,19 +371,21 @@ void GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 			});
 
 			m_isEnd = true;
+			m_playState = isEnding;
 		}
 	}
+	return DONTKILL;
 }
 
-void GameScene::UpdateEndingState(float dt, InputClass & input, Camera & camera)
+bool GameScene::UpdateEndingState(float dt, InputClass & input, Camera & camera)
 {
 	static float elapsedTime = 0.0f;
 	elapsedTime += dt;
 
 	if (elapsedTime > 1.0f)
 	{
+		elapsedTime = 0.0f;
 		m_playState = isEndingDone;
-		return;
 	}
 	else 
 	{
@@ -395,7 +394,34 @@ void GameScene::UpdateEndingState(float dt, InputClass & input, Camera & camera)
 		camera.SetProjection(viewSize, viewSize);
 		UpdateUIPos(camera);
 	}
+	return DONTKILL;
+}
 
+bool GameScene::UpdateEndDoneState(float dt, InputClass & input, Camera & camera)
+{
+	if (input.IsKeyDown(VK_SPACE))
+		m_playState = isRestarting;
+	return DONTKILL;
+}
+
+bool GameScene::UpdateRestarting(float dt, InputClass & input, Camera & camera)
+{
+	m_playState = playState::isRestarting;
+	float destructionTime = 0.5f;;
+	for (auto& model : m_modelsToBeRendered)
+	{
+		if (model == m_backGround)
+			continue;
+		model->AddGravityMoveToScheduler({ float(rand() % 10), float(rand() % 10), float(rand() % 10) }, destructionTime);
+	}
+	static float elapsedTime = 0.0f;
+	elapsedTime += dt;
+	if (elapsedTime > destructionTime)
+	{
+		elapsedTime = 0.0f;
+		return KILLME;
+	}
+	return DONTKILL;
 }
 
 bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
@@ -416,7 +442,7 @@ bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
 
 bool GameScene::IsExactFit(ModelClass * ubox, ModelClass * dbox)
 {
-	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 1.0f;
+	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 30.0f;
 	if (
 		ubox->GetPosition().x > dbox->GetPosition().x - allowDelta &&
 		ubox->GetPosition().x < dbox->GetPosition().x + allowDelta &&

@@ -1,3 +1,4 @@
+#include "ConstVars.h"
 #include "SystemClass.h"
 #include "Camera.h"
 #include "VanishingBlock.h"
@@ -5,6 +6,7 @@
 #include "Scene.h"
 #include "Renderer.h"
 #include "InputClass.h"
+#include "GameScene.h"
 
 SystemClass* SystemClass::instance = nullptr;
 
@@ -222,7 +224,10 @@ bool SystemClass::Frame()
 	deltaTime = m_timer.GetElapsedTime();
 	
 	//Scene obj Play...
-	m_currentScene->Play(deltaTime, *m_input,m_renderer->GetCamera());
+	bool kill = m_currentScene->Play(deltaTime, *m_input,m_renderer->GetCamera());
+	if (kill == true) {
+		SetScene(new GameScene());
+	}
 
 	result = m_renderer->Frame(deltaTime, m_currentScene);
 

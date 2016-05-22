@@ -8,7 +8,7 @@ public:
 	~GameScene();
 	virtual void Start(Camera& camera) override;
 	void SetSounds();
-	virtual void Update(float dt, InputClass& input, Camera& camera) override;
+	virtual bool Update(float dt, InputClass& input, Camera& camera) override;
 	float GetHeight();
 	int GetCount();
 
@@ -24,8 +24,10 @@ public:
 
 private:
 	void ChangeDirection();
-	void UpdatePlayState(float dt, InputClass& input, Camera& camera);
-	void UpdateEndingState(float dt, InputClass& input, Camera& camera);
+	bool UpdatePlayState(float dt, InputClass& input, Camera& camera);
+	bool UpdateEndingState(float dt, InputClass& input, Camera& camera);
+	bool UpdateEndDoneState(float dt, InputClass& input, Camera& camera);
+	bool UpdateRestarting(float dt, InputClass& input, Camera& camera);
 
 	bool IsOn(ModelClass* b1, ModelClass* b2);
 	bool IsExactFit(ModelClass* ubox, ModelClass* dbox);
