@@ -5,7 +5,7 @@ class GameScene :
 	public Scene
 {
 public:
-
+	~GameScene();
 	virtual void Start(Camera& camera) override;
 	void SetSounds();
 	virtual void Update(float dt, InputClass& input, Camera& camera) override;
