@@ -15,8 +15,10 @@ m_vertexIsChanged(true)
 }
 ModelClass::~ModelClass()
 {
-	m_vertexBuffer->Release();
-	m_indexBuffer->Release();
+	if(m_vertexBuffer != nullptr)
+		m_vertexBuffer->Release();
+	if(m_indexBuffer != nullptr)
+		m_indexBuffer->Release();
 }
 
 PreLoadedData* ModelClass::PreLoadFromFile(std::string filename)
@@ -459,7 +461,7 @@ void ModelClass::ReleaseVB()
 	if (m_vertexBuffer != nullptr)
 	{
 		m_vertexBuffer->Release();
-		m_vertexBuffer == nullptr;
+		m_vertexBuffer = nullptr;
 	}
 }
 
@@ -468,7 +470,7 @@ void ModelClass::ReleaseIB()
 	if (m_indexBuffer != nullptr)
 	{
 		m_indexBuffer->Release();
-		m_indexBuffer == nullptr;
+		m_indexBuffer = nullptr;
 	}
 }
 
@@ -730,6 +732,6 @@ void ModelClass::RotationToCamera(Camera& c)
 
 	//시바.. 그냥 하드코딩...
 	//SetRotation(-3.141592f / 4.0f, -3.141592f / 4.0f, 0.0f);
-	SetRotation(3.141592f / 4.0f, -3.141592f / 4.0f, 0.0f);
+	SetRotation(3.141592f / 4.3f, -3.141592f / 4.0f, 0.0f);
 }
 

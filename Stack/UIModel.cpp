@@ -4,7 +4,7 @@
 #include "ConstVars.h"
 
 
-const float UIModel::LETTERWIDTH = 0.5f;
+const float UIModel::LETTERWIDTH = 0.55f;
 const float UIModel::LETTERHEIGHT = 1.0f;
 
 UIModel::UIModel() : ModelClass(), m_uiPosx(0), m_uiPosy(0), m_width(LETTERWIDTH), m_height(LETTERHEIGHT)
