@@ -34,6 +34,8 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	LoadTexture(ConstVars::CONCREAT_TEX_FILE);
 	LoadTexture(ConstVars::FEBRIC_TEX_FILE);
 	LoadTexture(ConstVars::PLANE_TEX_FILE);
+	LoadTexture(ConstVars::BLUE_TILE_TEX_FILE);
+	LoadTexture(ConstVars::COLORFUL_TILE_TEX_FILE);
 
 	return true;
 }

@@ -189,7 +189,7 @@ ModelClass * GameScene::MakeNewBlock(XMFLOAT3 Position, XMFLOAT3 boxSize)
 	newBlock->SetToCube(boxSize);
 	newBlock->SetPosition(Position);
 	newBlock->SetRGB(m_color.x, m_color.y, m_color.z);
-	newBlock->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+	newBlock->SetTextureName(ConstVars::BLUE_TILE_TEX_FILE);
 	return newBlock;
 }
 
@@ -308,12 +308,7 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 					vanishingBlockPos.z += (visibleBlockSize.z / 2 + vanishingBlockSize.z);
 			}
 
-			//현재 블록 지우기.
-			RemoveModel([=](ModelClass* model) -> bool {
-				bool result = (model == m_currentBlock);
-				if (result) delete model;
-				return result;
-			});
+			
 
 			//새로 만드는 박스 크기를 잘린 보이는 블록과 같게 지정.
 			m_boxSize = visibleBlockSize;
@@ -329,7 +324,7 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 			transModel->SetToCube(vanishingBlockSize);
 			transModel->SetPosition(vanishingBlockPos);
 			transModel->SetRGB(m_color.x, m_color.y, m_color.z);
-			transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+			transModel->SetTextureName(ConstVars::BLUE_TILE_TEX_FILE);
 			transModel->AddGravityMoveToScheduler({ deltaPositionX * 3, 0.0f, deltaPositionZ * 3}, 2.0f);
 			AddModel(transModel);
 
@@ -343,6 +338,17 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 			m_color = { newRGBA.x, newRGBA.y, newRGBA.z };
 			//새 블록 움직이는 방향 설정
 			ChangeDirection();
+
+			//현재 블록, 투명블록 지우기.
+			RemoveModel([=](ModelClass* model) -> bool {
+				bool curBlock = (model == m_currentBlock);
+				if (curBlock)
+					delete model;
+				bool vaniBlock = (model->GetTransparency() && !model->IsOnMove());
+				if(vaniBlock)
+					delete model;
+				return curBlock || vaniBlock;
+			});
 
 			//새 블록 생성.
 			XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
@@ -364,7 +370,7 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 			transModel->SetToCube(m_boxSize);
 			transModel->SetPosition(m_currentBlock->GetPosition().x, m_curPos.y, m_currentBlock->GetPosition().z);
 			transModel->SetRGB(m_color.x, m_color.y, m_color.z);
-			transModel->SetTextureName(ConstVars::CONCREAT_TEX_FILE);
+			transModel->SetTextureName(ConstVars::BLUE_TILE_TEX_FILE);
 			AddModel(transModel);
 			RemoveModel([=](ModelClass* model) -> bool {
 				return model == m_currentBlock;
