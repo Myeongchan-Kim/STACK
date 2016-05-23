@@ -559,9 +559,9 @@ void ModelClass::SetToCube(XMFLOAT3 boxSize)
 	seed %= 5;
 	//top area
 	auto v1 = MyVertex({ pos[0 + 2 + 1] , m_rgba, up,{ 0.0f, 0.0f } });
-	auto v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, up,{ boxSize.x / 10.0f, 0.0f } });
-	auto v3 = MyVertex({ pos[4 + 2 + 0] , m_rgba, up,{ boxSize.x / 10.0f, boxSize.z / 10.0f } });
-	auto v4 = MyVertex({ pos[0 + 2 + 0] , m_rgba, up,{ 0.0f, boxSize.z / 10.0f } });
+	auto v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, up,{ boxSize.x / 4.0f, 0.0f } });
+	auto v3 = MyVertex({ pos[4 + 2 + 0] , m_rgba, up,{ boxSize.x / 4.0f, boxSize.z / 4.0f } });
+	auto v4 = MyVertex({ pos[0 + 2 + 0] , m_rgba, up,{ 0.0f, boxSize.z / 4.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//bottom area
@@ -572,10 +572,10 @@ void ModelClass::SetToCube(XMFLOAT3 boxSize)
 	AddRectangle(v1, v2, v3, v4);
 
 	//right area
-	v1 = MyVertex({ pos[4 + 2 + 0] , m_rgba, right,{ 0.0f + seed / 5.0f, 0.0f + seed / 5.0f } });
-	v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, right,{ boxSize.z / 10.0f + seed / 5.0f, 0.0f + seed / 5.0f } });
-	v3 = MyVertex({ pos[4 + 0 + 1] , m_rgba, right,{ boxSize.z / 10.0f + seed / 5.0f, boxSize.y / 10.0f + seed / 5.0f } });
-	v4 = MyVertex({ pos[4 + 0 + 0] , m_rgba, right,{ 0.0f + seed / 5.0f, boxSize.y / 10.0f + seed / 5.0f } });
+	v1 = MyVertex({ pos[4 + 2 + 0] , m_rgba, right,{ 0.0f + seed / 1.0f, 0.0f + seed / 1.0f } });
+	v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, right,{ boxSize.z / 4.0f + seed / 1.0f, 0.0f + seed / 1.0f } });
+	v3 = MyVertex({ pos[4 + 0 + 1] , m_rgba, right,{ boxSize.z / 4.0f + seed / 1.0f, boxSize.y / 4.0f + seed / 1.0f } });
+	v4 = MyVertex({ pos[4 + 0 + 0] , m_rgba, right,{ 0.0f + seed / 1.0f, boxSize.y / 4.0f + seed / 1.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//left area
@@ -586,10 +586,10 @@ void ModelClass::SetToCube(XMFLOAT3 boxSize)
 	AddRectangle(v1, v2, v3, v4);
 
 	//front area
-	v1 = MyVertex({ pos[0 + 2 + 0] , m_rgba, front,{ 0.0f + seed / 5.0f, 0.0f + seed / 5.0f } });
-	v2 = MyVertex({ pos[4 + 2 + 0] , m_rgba, front,{ boxSize.x / 10.0f + seed / 5.0f, 0.0f + seed / 5.0f } });
-	v3 = MyVertex({ pos[4 + 0 + 0] , m_rgba, front,{ boxSize.x / 10.0f + seed / 5.0f, boxSize.y / 10.0f + seed / 5.0f } });
-	v4 = MyVertex({ pos[0 + 0 + 0] , m_rgba, front,{ 0.0f + seed / 5.0f, boxSize.y / 10.0f + seed / 5.0f } });
+	v1 = MyVertex({ pos[0 + 2 + 0] , m_rgba, front,{ 0.0f + seed / 1.0f, 0.0f + seed / 1.0f } });
+	v2 = MyVertex({ pos[4 + 2 + 0] , m_rgba, front,{ boxSize.x / 4.0f + seed / 1.0f, 0.0f + seed / 1.0f } });
+	v3 = MyVertex({ pos[4 + 0 + 0] , m_rgba, front,{ boxSize.x / 4.0f + seed / 1.0f, boxSize.y / 4.0f + seed / 1.0f } });
+	v4 = MyVertex({ pos[0 + 0 + 0] , m_rgba, front,{ 0.0f + seed / 1.0f, boxSize.y / 4.0f + seed / 1.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//back area

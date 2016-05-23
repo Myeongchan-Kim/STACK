@@ -9,5 +9,7 @@ namespace ConstVars
 	static WCHAR* CONCREAT_TEX_FILE = L"texture/concrete.jpg";
 	static WCHAR* FEBRIC_TEX_FILE = L"texture/febric.jpg";
 	static WCHAR* PLANE_TEX_FILE = L"texture/plane.jpg";
+	static WCHAR* BLUE_TILE_TEX_FILE = L"texture/blue_tile.jpg";
+	static WCHAR* COLORFUL_TILE_TEX_FILE = L"texture/colorful_tile.jpg";
 
 }
