@@ -13,7 +13,7 @@ Camera::~Camera()
 void Camera::InitCamera()
 {
 	m_projection = XMMatrixOrthographicLH(10, 10, 0.1f, 1000.0f); // near plane, far plane
-	m_pos = { 0.0f, 0.0f, 10.0f, 1.0f };
+	m_pos = { 0.0f, 0.0f, -10.0f, 1.0f };
 	m_target = { 0.0f, 0.0f, 0.0f, 1.0f };
 	m_up = { 0.0f, 1.0f, 0.0f, 0.0f };
 }
