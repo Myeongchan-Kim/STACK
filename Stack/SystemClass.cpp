@@ -233,7 +233,7 @@ bool SystemClass::Frame()
 	//Scene obj Play...
 	bool isOnPlay = m_currentScene->Play(deltaTime, *m_input,m_renderer->GetCamera());
 	if (isOnPlay == false) {
-
+		m_input->Reset();
 		return true;
 	}
 
