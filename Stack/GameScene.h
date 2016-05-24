@@ -1,5 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #include "Scene.h"
+
+class Logger;
+
 class GameScene :
 	public Scene
 {
@@ -11,6 +14,7 @@ public:
 	int GetCount();
 
 	void LoadUI();
+	void UpdateRecord(float dy);
 	void UpdateUIString(Camera& camera) override;
 	void UpdateUIPos(Camera& camera);
 	void MoveCameraAndBackground(Camera& camera, float dy);
@@ -35,7 +39,7 @@ private:
 	ModelClass* m_lastBlock = nullptr;
 	XMFLOAT3 m_curPos = { 0.0f, 0.0f, 0.0f };
 	
-	bool m_isEnd = false; //¿£µù¸ğµå³Ä ¾Æ´Ï³Ä
+	bool m_isEnd = false; //ì—”ë”©ëª¨ë“œëƒ ì•„ë‹ˆëƒ
 	bool m_isReadyToNewStart = false;
 	enum playState
 	{
@@ -55,9 +59,12 @@ private:
 	PreLoadedData* m_uiPool[10];
 	float m_currentHeight = 0.0f;
 	int m_countAccumulation = 0;
+	float m_maxHeight = 0.0f;
+	int m_maxCount = 0;
+
 	int m_randomSeed;
 	int m_exactFitCount = 0;
 	std::string m_scaleSounds[8];
-
+	Logger* m_logger = nullptr;
 
 };
