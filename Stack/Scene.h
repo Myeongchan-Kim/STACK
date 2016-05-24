@@ -1,7 +1,11 @@
 #pragma once
 #include <list>
-#include "ConstVars.h"
 #include "Renderer.h"
+#include "InputClass.h"
+#include "ModelClass.h"
+#include "UIModel.h"
+#include "Camera.h"
+#include "SystemClass.h"
 
 class UIModel;
 class ModelClass;
@@ -16,8 +20,12 @@ public:
 	void AddUIModel(UIModel* model);
 	void RemoveModel(std::function<bool(ModelClass*)> compare);
 	virtual void Start(Camera& camera) = 0;
+
+	//false를 반환하면 프로세스 종료됨.
 	virtual bool Update(float dt, InputClass& input, Camera& camera) = 0;
 	virtual void UpdateUIString(Camera& camera);
+	void ShutDownAll();
+	virtual void ShutDown() = 0;
 	
 	XMFLOAT4 MakeCircularRGB(int seed);
 protected:

@@ -75,6 +75,12 @@
     <ClCompile Include="UIModel.cpp">
       <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClCompile>
+    <ClCompile Include="ConstVars.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MainScene.cpp">
+      <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -118,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="UIModel.h">
       <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="MainScene.h">
+      <Filter>소스 파일\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

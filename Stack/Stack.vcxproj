@@ -158,8 +158,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ConstVars.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="InputClass.cpp" />
+    <ClCompile Include="MainScene.cpp" />
     <ClCompile Include="MyVertex.cpp" />
     <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -176,6 +178,7 @@
     <ClInclude Include="ConstVars.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="InputClass.h" />
+    <ClInclude Include="MainScene.h" />
     <ClInclude Include="MyVertex.h" />
     <ClInclude Include="ModelClass.h" />
     <ClInclude Include="Object.h" />
