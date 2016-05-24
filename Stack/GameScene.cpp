@@ -1,18 +1,26 @@
-#include "GameScene.h"
+ï»¿#include "GameScene.h"
 #include "VanishingBlock.h"
 #include "MainScene.h"
 #include "ConstVars.h"
 #include <Model.h>
 #include <time.h>
 #include "UIModel.h"
+#include "Logger.h"
 
 const XMFLOAT3 GameScene::DEFAULT_BOXSIZE = { 4, 1.0, 4 };
 
 void GameScene::ShutDown()
 {
+
 	for (auto& file : m_scaleSounds)
 	{
 		SystemClass::GetInstance()->CloseSoundFile(file);
+	}
+
+	if (m_logger != nullptr)
+	{
+		delete m_logger;
+		m_logger = nullptr;
 	}
 }
 
@@ -25,20 +33,23 @@ void GameScene::Start(Camera& camera)
 	m_randomSeed = rand();
 	XMFLOAT4 rgba = MakeCircularRGB(m_randomSeed);
 
+	m_logger = new Logger();
+	m_maxCount = m_logger->LoadRecord();
+
 	m_color = { rgba.x , rgba.y, rgba.z };
 
-	//Ä«¿îÆ® ÃÊ±âÈ­
+	//ì¹´ìš´íŠ¸ ì´ˆê¸°í™”
 	m_currentHeight = m_curPos.y + m_boxSize.y;
 	m_countAccumulation = 0;
 
-	//Ä«¸Ş¶ó À§Ä¡¹× ¹æÇâ ÁöÁ¤.
+	//ì¹´ë©”ë¼ ìœ„ì¹˜ë° ë°©í–¥ ì§€ì •.
 	float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH;
 	float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT;
 	camera.SetProjection(viewWidth, viewHeight);
 	camera.SetCameraPos(8.0f, 10.0f, -8.0f);
 	camera.SetCameraTarget(0.0f, 0.0f, 0.0f);
 
-	//¹è°æ ÃÊ±âÈ­
+	//ë°°ê²½ ì´ˆê¸°í™”
 	m_backGround = new ModelClass();
 	auto dir = camera.GetVewDir();
 	m_backGround->SetPosition(camera.GetPosition().x + dir.x *10, camera.GetPosition().y + dir.y * 10, camera.GetPosition().z + dir.z * 10);
@@ -47,17 +58,17 @@ void GameScene::Start(Camera& camera)
 	m_backGround->RotationToCamera(camera);
 	AddModel(m_backGround);
 	
-	//ÃÊ±â¿¡ ÇÏ³ª ÀÖ´Â ºí·Ï »ı¼º
+	//ì´ˆê¸°ì— í•˜ë‚˜ ìˆëŠ” ë¸”ë¡ ìƒì„±
 	m_lastBlock = MakeNewBlock(m_curPos, m_boxSize);
 	AddModel(m_lastBlock);
 
 	m_curPos.y += m_boxSize.y;
 
-	//Ã³À½Àº zÃàÀ¸·Î ºí·Ï ÀÌµ¿
+	//ì²˜ìŒì€ zì¶•ìœ¼ë¡œ ë¸”ë¡ ì´ë™
 	m_curMoveDir = { 0, 0, 4 };
 
 	
-	//ÇöÀç ºí·Ï »ı¼º
+	//í˜„ì¬ ë¸”ë¡ ìƒì„±
 	XMFLOAT3 newPosition = { 
 		m_curPos.x + m_curMoveDir.x, 
 		m_curPos.y + m_curMoveDir.y, 
@@ -90,11 +101,11 @@ void GameScene::SetSounds()
 	}
 }
 
-//false¸¦ ¹İÈ¯ÇÏ¸é ÀÌ ¾ÀÀ» ´õÀÌ»ó ½ÇÇà ÇÏÁö ¾ÊÀ½.
+//falseë¥¼ ë°˜í™˜í•˜ë©´ ì´ ì”¬ì„ ë”ì´ìƒ ì‹¤í–‰ í•˜ì§€ ì•ŠìŒ.
 bool GameScene::Update(float dt, InputClass& input, Camera& camera)
 {
 	bool result;
-	//¹è°æ »ç°¢Çü ¼³Á¤
+	//ë°°ê²½ ì‚¬ê°í˜• ì„¤ì •
 	switch (m_playState)
 	{
 	case GameScene::isPlaying:
@@ -136,6 +147,17 @@ void GameScene::LoadUI()
 	}
 }
 
+void GameScene::UpdateRecord(float dy)
+{
+	m_currentHeight += dy;
+	m_countAccumulation++;
+
+	if (m_countAccumulation >= m_maxCount)
+		m_maxCount = m_countAccumulation;
+	if (m_currentHeight > m_maxHeight)
+		m_maxHeight = m_currentHeight;
+}
+
 void GameScene::UpdateUIString(Camera & camera)
 {
 	Scene::UpdateUIString(camera); //clear
@@ -143,7 +165,7 @@ void GameScene::UpdateUIString(Camera & camera)
 	char showString[20];
 	sprintf_s(showString, "%d", m_countAccumulation);
 	float scale = camera.GetViewSizeWidth() / ConstVars::DEFAULT_VIEW_WIDTH;
-	float startPosX = camera.GetViewSizeWidth() / 2 - (strlen(showString) - 0.5) * UIModel::LETTERWIDTH * scale/ 2.0f;
+	float startPosX = camera.GetViewSizeWidth() / 2 - (strlen(showString) - 0.5f) * UIModel::LETTERWIDTH * scale/ 2.0f;
 
 
 	for (int i = 0; i < strlen(showString); i++)
@@ -153,10 +175,27 @@ void GameScene::UpdateUIString(Camera & camera)
 		numberModel->SetUIXY((startPosX + i * UIModel::LETTERWIDTH * scale) / camera.GetViewSizeWidth(), 0.9f);
 		numberModel->LoadFromPreLoadedData(m_uiPool[number]);
 		numberModel->SetRGB(3.0f, 3.0f, 3.0f);
-		numberModel->SetScale(scale * 0.05, scale * 0.05, scale * 0.05);
+		numberModel->SetScale(scale * 0.05f, scale * 0.05f, scale * 0.05f);
 		numberModel->RotationToCamera(camera);
 		AddUIModel(numberModel);
 	}
+
+	char maxString[20];
+	sprintf_s(maxString, "%d", m_maxCount);
+	float posx = 9.0f;
+	float posy = 0.9f;
+	for (int i = 0; i < strlen(maxString); i++)
+	{
+		int number = maxString[i] - '0';
+		auto numberModel = new UIModel();
+		numberModel->SetUIXY((posx + i * UIModel::LETTERWIDTH * scale) / camera.GetViewSizeWidth(), posy);
+		numberModel->LoadFromPreLoadedData(m_uiPool[number]);
+		numberModel->SetRGB(3.0f, 3.0f, 3.0f);
+		numberModel->SetScale(scale * 0.05f, scale * 0.05f, scale * 0.05f);
+		numberModel->RotationToCamera(camera);
+		AddUIModel(numberModel);
+	}
+
 }
 
 void GameScene::UpdateUIPos(Camera & camera)
@@ -209,7 +248,7 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 {
 	float dy = m_boxSize.y;
 
-	if (!m_currentBlock->IsOnMove()) { //¹İº¹ÇØ¼­ »óÀÚ°¡ ¿Ô´Ù°¬´Ù ÇÏ°Ô ÇÔ.
+	if (!m_currentBlock->IsOnMove()) { //ë°˜ë³µí•´ì„œ ìƒìê°€ ì™”ë‹¤ê°”ë‹¤ í•˜ê²Œ í•¨.
 		//m_curMoveDir = { 0, 0, 4 };
 		//m_curMoveDir = { 4, 0, 0 };
 		m_currentBlock->AddLinearMoveToScheduler(m_curMoveDir.x * -2, m_curMoveDir.y, m_curMoveDir.z * -2, 1.0f);
@@ -222,7 +261,7 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 		{
 			std::string sound = m_scaleSounds[m_exactFitCount++ % 8];
 			SystemClass::GetInstance()->PlaySoundFile(sound);
-			//ÇöÀçºí·° ¸ØÃã.
+			//í˜„ì¬ë¸”ëŸ­ ë©ˆì¶¤.
 			m_currentBlock->StopMove();
 
 			m_currentBlock->SetPosition(
@@ -230,20 +269,20 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 				m_lastBlock->GetPosition().y + dy,
 				m_lastBlock->GetPosition().z);
 
-			//»ö»ó º¯°æ.
+			//ìƒ‰ìƒ ë³€ê²½.
 			auto newRGBA = MakeCircularRGB(m_randomSeed + m_countAccumulation);
 			m_color = { newRGBA.x, newRGBA.y, newRGBA.z };
 
-			//»õ ºí·Ï ¿òÁ÷ÀÌ´Â ¹æÇâ ¼³Á¤
+			//ìƒˆ ë¸”ë¡ ì›€ì§ì´ëŠ” ë°©í–¥ ì„¤ì •
 			ChangeDirection();
 
-			//¹Ø´Ü ºí·°À» Àß¸° º¸ÀÌ´Â ºí·ÏÀ¸·Î ÁöÁ¤.
+			//ë°‘ë‹¨ ë¸”ëŸ­ì„ ì˜ë¦° ë³´ì´ëŠ” ë¸”ë¡ìœ¼ë¡œ ì§€ì •.
 			m_lastBlock = m_currentBlock;;
 
-			//»õ·Î ¸¸µå´Â ¹Ú½º ³ôÀÌ¸¦ ÇÑ´Ü°èÁõ°¡.
+			//ìƒˆë¡œ ë§Œë“œëŠ” ë°•ìŠ¤ ë†’ì´ë¥¼ í•œë‹¨ê³„ì¦ê°€.
 			m_curPos.y += dy;
 
-			//»õ ºí·Ï »ı¼º.
+			//ìƒˆ ë¸”ë¡ ìƒì„±.
 			XMFLOAT3 newPosition = {
 				m_curPos.x + m_curMoveDir.x,
 				m_curPos.y + m_curMoveDir.y,
@@ -256,8 +295,7 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 			//background & camera move
 			MoveCameraAndBackground(camera, dy);
 
-			m_currentHeight += dy;
-			m_countAccumulation++;
+			UpdateRecord(dy);
 			UpdateUIString(camera);
 		}
 		else if (IsOn(m_currentBlock, m_lastBlock))
@@ -272,10 +310,10 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 			if (deltaPositionX < 0)
 				lengthX = -deltaPositionX;
 
-			//ÇöÀçºí·° ¸ØÃã.
+			//í˜„ì¬ë¸”ëŸ­ ë©ˆì¶¤.
 			m_currentBlock->StopMove();
 
-			//Àß¸° ÈÄ µÎ ºí·°ÀÇ Å©±â, À§Ä¡ ÁöÁ¤.
+			//ì˜ë¦° í›„ ë‘ ë¸”ëŸ­ì˜ í¬ê¸°, ìœ„ì¹˜ ì§€ì •.
 			XMFLOAT3 visibleBlockSize = { m_boxSize.x - lengthX, m_boxSize.y, m_boxSize.z - lengthZ };
 			XMFLOAT3 visibleBlockPos = {
 				m_lastBlock->GetPosition().x + (deltaPositionX) / 2 ,
@@ -309,16 +347,16 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 
 			
 
-			//»õ·Î ¸¸µå´Â ¹Ú½º Å©±â¸¦ Àß¸° º¸ÀÌ´Â ºí·Ï°ú °°°Ô ÁöÁ¤.
+			//ìƒˆë¡œ ë§Œë“œëŠ” ë°•ìŠ¤ í¬ê¸°ë¥¼ ì˜ë¦° ë³´ì´ëŠ” ë¸”ë¡ê³¼ ê°™ê²Œ ì§€ì •.
 			m_boxSize = visibleBlockSize;
 
-			//Àß¸°º¸ÀÌ´Â ºí·° »ı¼º
+			//ì˜ë¦°ë³´ì´ëŠ” ë¸”ëŸ­ ìƒì„±
 			ModelClass* splicedBlock = MakeNewBlock(visibleBlockPos, visibleBlockSize);
 			AddModel(splicedBlock);
-			//¹Ø´Ü ºí·°À» Àß¸°ºí·ÏÀ¸·Î ÁöÁ¤.
+			//ë°‘ë‹¨ ë¸”ëŸ­ì„ ì˜ë¦°ë¸”ë¡ìœ¼ë¡œ ì§€ì •.
 			m_lastBlock = splicedBlock;
 
-			//Àß¸° »ç¶óÁö´Â ºí·° »ı¼º
+			//ì˜ë¦° ì‚¬ë¼ì§€ëŠ” ë¸”ëŸ­ ìƒì„±
 			ModelClass* transModel = new VanishingBlock();
 			transModel->SetToCube(vanishingBlockSize);
 			transModel->SetPosition(vanishingBlockPos);
@@ -327,18 +365,18 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 			transModel->AddGravityMoveToScheduler({ deltaPositionX * 3, 0.0f, deltaPositionZ * 3}, 2.0f);
 			AddModel(transModel);
 
-			//»õ·Î ¸¸µå´Â ¹Ú½º ³ôÀÌ¸¦ ÇÑ´Ü°èÁõ°¡.
+			//ìƒˆë¡œ ë§Œë“œëŠ” ë°•ìŠ¤ ë†’ì´ë¥¼ í•œë‹¨ê³„ì¦ê°€.
 			m_curPos.y += dy;
 			m_curPos.x = visibleBlockPos.x;
 			m_curPos.z = visibleBlockPos.z;
 
-			//»ö»ó º¯°æ.
+			//ìƒ‰ìƒ ë³€ê²½.
 			auto newRGBA = MakeCircularRGB(m_randomSeed + m_countAccumulation);
 			m_color = { newRGBA.x, newRGBA.y, newRGBA.z };
-			//»õ ºí·Ï ¿òÁ÷ÀÌ´Â ¹æÇâ ¼³Á¤
+			//ìƒˆ ë¸”ë¡ ì›€ì§ì´ëŠ” ë°©í–¥ ì„¤ì •
 			ChangeDirection();
 
-			//ÇöÀç ºí·Ï, Åõ¸íºí·Ï Áö¿ì±â.
+			//í˜„ì¬ ë¸”ë¡, íˆ¬ëª…ë¸”ë¡ ì§€ìš°ê¸°.
 			RemoveModel([=](ModelClass* model) -> bool {
 				bool curBlock = (model == m_currentBlock);
 				if (curBlock)
@@ -349,7 +387,7 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 				return curBlock || vaniBlock;
 			});
 
-			//»õ ºí·Ï »ı¼º.
+			//ìƒˆ ë¸”ë¡ ìƒì„±.
 			XMFLOAT3 newPosition = { m_curPos.x + m_curMoveDir.x, m_curPos.y + m_curMoveDir.y, m_curPos.z + m_curMoveDir.z };
 			m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
 			AddModel(m_currentBlock);
@@ -357,8 +395,8 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 			//background & camera move
 			MoveCameraAndBackground(camera, dy);
 
-			m_currentHeight += dy;
-			m_countAccumulation++;
+
+			UpdateRecord(dy);
 			UpdateUIString(camera);
 			//UpdateUIPos(camera);
 		}
@@ -375,9 +413,13 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 				return model == m_currentBlock;
 			});
 
+			m_logger->SavePlayLog(m_countAccumulation, m_currentHeight);
+			m_logger->SaveRecord(m_maxCount);
+
 			m_isEnd = true;
 			m_playState = isEnding;
 		}
+
 	}
 	return DONTKILL;
 }
@@ -426,7 +468,7 @@ bool GameScene::UpdateRestarting(float dt, InputClass & input, Camera & camera)
 	{
 		elapsedTime = 0.0f;
 		SystemClass::GetInstance()->SetScene(new MainScene());
-		//¾ÀÀ» Á¾·á.
+		//ì”¬ì„ ì¢…ë£Œ.
 		return KILLME;
 	}
 	return DONTKILL;
