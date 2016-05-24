@@ -19,6 +19,8 @@ void GameScene::ShutDown()
 
 void GameScene::Start(Camera& camera)
 {
+	int width = 1024;
+	int height = 768;
 	srand(time(NULL));
 	m_randomSeed = rand();
 	XMFLOAT4 rgba = MakeCircularRGB(m_randomSeed);
@@ -177,7 +179,7 @@ void GameScene::MoveCameraAndBackground(Camera & camera, float dy)
 	m_backGround->MoveBy(-v.x * r, -v.y * r, -v.z * r);
 	m_backGround->AddLinearMoveToScheduler(0.0f, dy, 0.0f, 0.3f);
 	m_backGround->SetRGB(m_color.x - 0.2f, m_color.y - 0.2f, m_color.z - 0.2f);
-	m_backGround->SetToRectangle(camera.GetViewSizeWidth(), camera.GetViewSizeHeight(), { 0.0f, 1.0f, 0.0f });
+	m_backGround->SetToBackground(camera.GetViewSizeWidth(), camera.GetViewSizeHeight(), { 0.0f, 1.0f, 0.0f });
 }
 
 ModelClass * GameScene::MakeNewBlock(XMFLOAT3 Position, XMFLOAT3 boxSize)
@@ -392,9 +394,10 @@ bool GameScene::UpdateEndingState(float dt, InputClass & input, Camera & camera)
 	}
 	else 
 	{
-		float viewSize = 10.0f + elapsedTime * m_currentHeight * 1.5f;
-		m_backGround->SetScale(viewSize / 10, viewSize / 10, viewSize / 10);
-		camera.SetProjection(viewSize, viewSize);
+		float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH + elapsedTime * m_currentHeight * 2.5f;
+		float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT + elapsedTime * m_currentHeight * 2.5f;
+		m_backGround->SetScale(viewWidth / ConstVars::DEFAULT_VIEW_WIDTH, viewHeight / ConstVars::DEFAULT_VIEW_HEIGHT, 1);
+		camera.SetProjection(viewWidth, viewHeight);
 		UpdateUIPos(camera);
 	}
 	return DONTKILL;
