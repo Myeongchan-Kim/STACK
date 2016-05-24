@@ -2,7 +2,6 @@
 #include "SystemClass.h"
 #include "Camera.h"
 #include "VanishingBlock.h"
-#include "ConstVars.h"
 #include "Scene.h"
 #include "Renderer.h"
 #include "InputClass.h"
@@ -180,8 +179,10 @@ void SystemClass::StopSound(std::string fileName)
 //This function cannot play same file simutaneously, but not for different file.
 void SystemClass::PlaySoundFile(std::string fileName)
 {
-	std::string playCmd = "play " + fileName;
-	mciSendStringA(playCmd.c_str(), NULL, 0, 0);
+	std::string playCmd = "play mp3" + fileName +" from 0";
+	auto msg = mciSendStringA(playCmd.c_str(), NULL, 0, 0);
+	WCHAR tmp[128];
+	mciGetErrorString(msg, tmp, 128);
 
 }
 
@@ -193,9 +194,12 @@ void SystemClass::CloseSoundFile(std::string fileName) {
 void SystemClass::PreLoadSoundFile(std::string fileName)
 {
 	//fileName.substr(3, )
-	std::string openCmd = "open " + fileName + " type mpegvideo alias mp3";
+	std::string openCmd = "open " + fileName + " type mpegvideo alias mp3"+fileName;
+	WCHAR tmp[128];
 
-	mciSendStringA(openCmd.c_str(), NULL, 0, 0);
+	auto msg = mciSendStringA(openCmd.c_str(), NULL, 128, 0);
+	mciGetErrorString(msg, tmp, 128);
+
 }
 
 /*

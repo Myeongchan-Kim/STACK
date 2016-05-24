@@ -189,7 +189,7 @@ ModelClass * GameScene::MakeNewBlock(XMFLOAT3 Position, XMFLOAT3 boxSize)
 	newBlock->SetToCube(boxSize);
 	newBlock->SetPosition(Position);
 	newBlock->SetRGB(m_color.x, m_color.y, m_color.z);
-	newBlock->SetTextureName(ConstVars::BLUE_TILE_TEX_FILE);
+	newBlock->SetTextureName(ConstVars::VISIBLE_TEX_FILE);
 	return newBlock;
 }
 
@@ -324,7 +324,7 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 			transModel->SetToCube(vanishingBlockSize);
 			transModel->SetPosition(vanishingBlockPos);
 			transModel->SetRGB(m_color.x, m_color.y, m_color.z);
-			transModel->SetTextureName(ConstVars::BLUE_TILE_TEX_FILE);
+			transModel->SetTextureName(ConstVars::VANISHING_TEX_FILE);
 			transModel->AddGravityMoveToScheduler({ deltaPositionX * 3, 0.0f, deltaPositionZ * 3}, 2.0f);
 			AddModel(transModel);
 
@@ -370,7 +370,7 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 			transModel->SetToCube(m_boxSize);
 			transModel->SetPosition(m_currentBlock->GetPosition().x, m_curPos.y, m_currentBlock->GetPosition().z);
 			transModel->SetRGB(m_color.x, m_color.y, m_color.z);
-			transModel->SetTextureName(ConstVars::BLUE_TILE_TEX_FILE);
+			transModel->SetTextureName(ConstVars::VANISHING_TEX_FILE);
 			AddModel(transModel);
 			RemoveModel([=](ModelClass* model) -> bool {
 				return model == m_currentBlock;
@@ -448,7 +448,7 @@ bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
 
 bool GameScene::IsExactFit(ModelClass * ubox, ModelClass * dbox)
 {
-	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 30.0f;
+	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 20.0f;
 	if (
 		ubox->GetPosition().x > dbox->GetPosition().x - allowDelta &&
 		ubox->GetPosition().x < dbox->GetPosition().x + allowDelta &&

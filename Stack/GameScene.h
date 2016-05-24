@@ -21,6 +21,7 @@ public:
 
 	static const float DEFAULT_VIEW_WIDTH;
 	static const float DEFAULT_VIEW_HEIGHT;
+	static const XMFLOAT3 DEFAULT_BOXSIZE;
 
 private:
 	void ChangeDirection();
@@ -49,7 +50,6 @@ private:
 
 	ModelClass* m_backGround = nullptr;
 	XMFLOAT3 m_color;
-	static const XMFLOAT3 DEFAULT_BOXSIZE;
 	XMFLOAT3 m_boxSize = DEFAULT_BOXSIZE;
 
 
