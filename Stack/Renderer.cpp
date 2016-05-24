@@ -36,6 +36,7 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	LoadTexture(ConstVars::PLANE_TEX_FILE);
 	LoadTexture(ConstVars::BLUE_TILE_TEX_FILE);
 	LoadTexture(ConstVars::COLORFUL_TILE_TEX_FILE);
+	LoadTexture(ConstVars::MAIN_MENU_TEX_FILE);
 
 	return true;
 }
@@ -388,7 +389,6 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 
 	//model position °è»ê
 	float ClearColor[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
-	static float lastTime = 0;
 	m_immediateContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 	m_immediateContext->ClearDepthStencilView(
 		m_depthStencilView,		//clear target

@@ -1,25 +1,21 @@
 #include "GameScene.h"
-#include "Renderer.h"
-#include "InputClass.h"
-#include "ModelClass.h"
 #include "VanishingBlock.h"
-#include "Camera.h"
+#include "MainScene.h"
 #include "ConstVars.h"
 #include <Model.h>
 #include <time.h>
 #include "UIModel.h"
 
-const float GameScene::DEFAULT_VIEW_WIDTH = 10.0f;
-const float GameScene::DEFAULT_VIEW_HEIGHT = 10.0f;
 const XMFLOAT3 GameScene::DEFAULT_BOXSIZE = { 4, 1.0, 4 };
 
-GameScene::~GameScene()
+void GameScene::ShutDown()
 {
 	for (auto& file : m_scaleSounds)
 	{
 		SystemClass::GetInstance()->CloseSoundFile(file);
 	}
 }
+
 
 void GameScene::Start(Camera& camera)
 {
@@ -34,8 +30,8 @@ void GameScene::Start(Camera& camera)
 	m_countAccumulation = 0;
 
 	//카메라 위치및 방향 지정.
-	float viewWidth = DEFAULT_VIEW_WIDTH;
-	float viewHeight = DEFAULT_VIEW_HEIGHT;
+	float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH;
+	float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT;
 	camera.SetProjection(viewWidth, viewHeight);
 	camera.SetCameraPos(8.0f, 10.0f, -8.0f);
 	camera.SetCameraTarget(0.0f, 0.0f, 0.0f);
@@ -92,6 +88,7 @@ void GameScene::SetSounds()
 	}
 }
 
+//false를 반환하면 이 씬을 더이상 실행 하지 않음.
 bool GameScene::Update(float dt, InputClass& input, Camera& camera)
 {
 	bool result;
@@ -143,7 +140,7 @@ void GameScene::UpdateUIString(Camera & camera)
 
 	char showString[20];
 	sprintf_s(showString, "%d", m_countAccumulation);
-	float scale = camera.GetViewSizeWidth() / DEFAULT_VIEW_WIDTH;
+	float scale = camera.GetViewSizeWidth() / ConstVars::DEFAULT_VIEW_WIDTH;
 	float startPosX = camera.GetViewSizeWidth() / 2 - (strlen(showString) - 0.5) * UIModel::LETTERWIDTH * scale/ 2.0f;
 
 
@@ -162,7 +159,7 @@ void GameScene::UpdateUIString(Camera & camera)
 
 void GameScene::UpdateUIPos(Camera & camera)
 {
-	float scale = camera.GetViewSizeWidth() / DEFAULT_VIEW_WIDTH;
+	float scale = camera.GetViewSizeWidth() / ConstVars::DEFAULT_VIEW_WIDTH;
 	for (auto& model : m_UImodel)
 	{
 		model->RotationToCamera(camera);
@@ -425,6 +422,8 @@ bool GameScene::UpdateRestarting(float dt, InputClass & input, Camera & camera)
 	if (elapsedTime > destructionTime)
 	{
 		elapsedTime = 0.0f;
+		SystemClass::GetInstance()->SetScene(new MainScene());
+		//씬을 종료.
 		return KILLME;
 	}
 	return DONTKILL;

@@ -1,11 +1,9 @@
 #pragma once
 #include "Scene.h"
-#include "ModelClass.h"
 class GameScene :
 	public Scene
 {
 public:
-	~GameScene();
 	virtual void Start(Camera& camera) override;
 	void SetSounds();
 	virtual bool Update(float dt, InputClass& input, Camera& camera) override;
@@ -19,9 +17,10 @@ public:
 	ModelClass* MakeNewBlock(XMFLOAT3 positoin , XMFLOAT3 boxSize);
 
 
-	static const float DEFAULT_VIEW_WIDTH;
-	static const float DEFAULT_VIEW_HEIGHT;
 	static const XMFLOAT3 DEFAULT_BOXSIZE;
+
+
+	virtual void ShutDown() override;
 
 private:
 	void ChangeDirection();

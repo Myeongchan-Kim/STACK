@@ -43,7 +43,10 @@ SystemClass::~SystemClass()
 void SystemClass::SetScene(Scene* scene)
 {
 	if (m_currentScene)
+	{
+		scene->ShutDown();
 		delete m_currentScene;
+	}
 	m_currentScene = scene;
 }
 
@@ -107,6 +110,7 @@ void SystemClass::Shutdown()
 
 	if (m_currentScene)
 	{
+		m_currentScene->ShutDown();
 		delete m_currentScene;
 		m_currentScene = nullptr;
 	}
@@ -193,7 +197,6 @@ void SystemClass::CloseSoundFile(std::string fileName) {
 
 void SystemClass::PreLoadSoundFile(std::string fileName)
 {
-	//fileName.substr(3, )
 	std::string openCmd = "open " + fileName + " type mpegvideo alias mp3"+fileName;
 	WCHAR tmp[128];
 
@@ -228,9 +231,10 @@ bool SystemClass::Frame()
 	deltaTime = m_timer.GetElapsedTime();
 	
 	//Scene obj Play...
-	bool kill = m_currentScene->Play(deltaTime, *m_input,m_renderer->GetCamera());
-	if (kill == true) {
-		SetScene(new GameScene());
+	bool isOnPlay = m_currentScene->Play(deltaTime, *m_input,m_renderer->GetCamera());
+	if (isOnPlay == false) {
+
+		return true;
 	}
 
 	result = m_renderer->Frame(deltaTime, m_currentScene);
