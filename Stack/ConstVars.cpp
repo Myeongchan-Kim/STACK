@@ -11,3 +11,4 @@
 	WCHAR* ConstVars::VISIBLE_TEX_FILE = ConstVars::CONCREAT_TEX_FILE;
 	WCHAR* ConstVars::VANISHING_TEX_FILE = ConstVars::CONCREAT_TEX_FILE;
 	WCHAR* ConstVars::MAIN_MENU_TEX_FILE = L"Texture/start.png";
+	WCHAR* ConstVars::LOG_FILENAME = L"data.db";
