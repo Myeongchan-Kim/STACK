@@ -12,6 +12,8 @@ public:
 	Logger();
 	~Logger();
 
+	void ShutDown();
+
 	int LoadRecord();
 	void SaveRecord(int maxCount);
 	void SavePlayLog(int Count, float Height);
