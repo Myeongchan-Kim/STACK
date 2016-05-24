@@ -448,7 +448,7 @@ bool GameScene::IsOn(ModelClass* b1, ModelClass* b2)
 
 bool GameScene::IsExactFit(ModelClass * ubox, ModelClass * dbox)
 {
-	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 30.0f;
+	float allowDelta = GameScene::DEFAULT_BOXSIZE.x / 20.0f;
 	if (
 		ubox->GetPosition().x > dbox->GetPosition().x - allowDelta &&
 		ubox->GetPosition().x < dbox->GetPosition().x + allowDelta &&
