@@ -81,6 +81,12 @@
     <ClCompile Include="MainScene.cpp">
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>소스 파일\Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="unqlite.c">
+      <Filter>소스 파일\Engine\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -127,6 +133,12 @@
     </ClInclude>
     <ClInclude Include="MainScene.h">
       <Filter>소스 파일\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>소스 파일\Engine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="unqlite.h">
+      <Filter>소스 파일\Engine\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

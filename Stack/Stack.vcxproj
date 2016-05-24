@@ -76,6 +76,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(ProjectDir)Common;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)Common;$(LibraryPath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -161,6 +162,7 @@
     <ClCompile Include="ConstVars.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="InputClass.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="MainScene.cpp" />
     <ClCompile Include="MyVertex.cpp" />
     <ClCompile Include="ModelClass.cpp" />
@@ -170,6 +172,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SystemClass.cpp" />
     <ClCompile Include="UIModel.cpp" />
+    <ClCompile Include="unqlite.c" />
     <ClCompile Include="VanishingBlock.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
@@ -178,6 +181,7 @@
     <ClInclude Include="ConstVars.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="InputClass.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="MainScene.h" />
     <ClInclude Include="MyVertex.h" />
     <ClInclude Include="ModelClass.h" />
@@ -187,6 +191,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SystemClass.h" />
     <ClInclude Include="UIModel.h" />
+    <ClInclude Include="unqlite.h" />
     <ClInclude Include="VanishingBlock.h" />
   </ItemGroup>
   <ItemGroup>
