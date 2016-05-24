@@ -1,24 +1,24 @@
 #include <windows.h>
 #include "Scene.h"
-#include "Renderer.h"
-#include "InputClass.h"
-#include "ModelClass.h"
-#include "UIModel.h"
 #include "VanishingBlock.h"
-#include "Camera.h"
-#include <algorithm>    // std::remove_if
+#include <algorithm> 
+#include "ConstVars.h"
 
 
 //Only SystemClass calls this function
 bool Scene::Play(float deltaTime, InputClass& input, Camera& camera)
 {
-	bool kill;
+	bool isOnPlay;
 	if (!m_started)
 	{
 		Start(camera);
 		m_started = true;
 	}
-	kill = Update(deltaTime, input, camera);
+	isOnPlay = Update(deltaTime, input, camera);
+	if (!isOnPlay)
+	{
+		return false;
+	}
 
 	for (auto& model : m_modelsToBeRendered)
 	{
@@ -30,7 +30,7 @@ bool Scene::Play(float deltaTime, InputClass& input, Camera& camera)
 		model->SetUIPosition(camera);
 	}
 
-	return kill;
+	return true;
 }
 
 
@@ -78,6 +78,21 @@ void Scene::UpdateUIString(Camera& camera)
 	//Set UI string
 	m_UImodel.clear();
 }
+
+void Scene::ShutDownAll()
+{
+	for (auto model : m_modelsToBeRendered)
+		delete model;
+	m_modelsToBeRendered.clear();
+
+	for (auto model : m_UImodel)
+		delete model;
+	m_UImodel.clear();
+
+	//사용자 정의 ShutDown
+	ShutDown();
+}
+
 
 XMFLOAT4 Scene::MakeCircularRGB(int seed)
 {
