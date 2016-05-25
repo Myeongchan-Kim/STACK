@@ -31,12 +31,6 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	CreateDepthStencilState();
 	CreateBlendState();
 	
-	LoadTexture(ConstVars::CONCREAT_TEX_FILE);
-	LoadTexture(ConstVars::FEBRIC_TEX_FILE);
-	LoadTexture(ConstVars::PLANE_TEX_FILE);
-	LoadTexture(ConstVars::BLUE_TILE_TEX_FILE);
-	LoadTexture(ConstVars::COLORFUL_TILE_TEX_FILE);
-	LoadTexture(ConstVars::MAIN_MENU_TEX_FILE);
 
 	return true;
 }
@@ -353,7 +347,7 @@ void Renderer::SetBuffers(ModelClass* model, float deltaTime)
 	CalculateMatrixForBox(deltaTime, model);
 
 	//ºû °è»ê
-	m_lightDir->SetFloatVector((float*)&lightDirection);
+	m_lightDir->SetFloatVector((float*)&m_lightDirection);
 	m_lightColor->SetFloatVector((float*)&lightColor);
 
 	D3DX11_TECHNIQUE_DESC techDesc;
@@ -481,4 +475,9 @@ void Renderer::ShutDown()
 		if (texture.second != nullptr) texture.second->Release();
 	}
 
+}
+
+void Renderer::SetLightDirection(XMFLOAT4 lightDirection)
+{
+	m_lightDirection = lightDirection;
 }

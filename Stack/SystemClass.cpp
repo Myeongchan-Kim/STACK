@@ -190,6 +190,16 @@ void SystemClass::PlaySoundFile(std::string fileName)
 
 }
 
+void SystemClass::LoadTexture(WCHAR* fileName)
+{
+	m_renderer->LoadTexture(fileName);
+}
+
+void SystemClass::SetLightDirection(XMFLOAT4 lightDirection)
+{
+	m_renderer->SetLightDirection(lightDirection);
+}
+
 void SystemClass::CloseSoundFile(std::string fileName) {
 	std::string closeCmd = "close " + fileName;
 	mciSendStringA(closeCmd.c_str(), NULL, 0, 0);
@@ -203,6 +213,30 @@ void SystemClass::PreLoadSoundFile(std::string fileName)
 	auto msg = mciSendStringA(openCmd.c_str(), NULL, 128, 0);
 	mciGetErrorString(msg, tmp, 128);
 
+}
+
+void SystemClass::StoreIntVariable(std::string name, int value)
+{
+	m_intStorage.emplace(name, value);
+
+}
+
+
+bool SystemClass::HasIntVariable(std::string name)
+{
+	if (m_intStorage.find(name) == m_intStorage.end())
+		return false;
+	return true;
+}
+
+int SystemClass::GetIntVariable(std::string name)
+{
+	return m_intStorage[name];
+}
+
+void SystemClass::SetIntVariable(std::string name, int value)
+{
+	m_intStorage[name] = value;
 }
 
 /*
