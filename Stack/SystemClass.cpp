@@ -215,26 +215,26 @@ void SystemClass::PreLoadSoundFile(std::string fileName)
 
 }
 
-void SystemClass::StoreIntVariable(std::string name, int value)
+void SystemClass::StoreBoolVariable(std::string name, bool value)
 {
 	m_intStorage.emplace(name, value);
 
 }
 
 
-bool SystemClass::HasIntVariable(std::string name)
+bool SystemClass::HasBoolVariable(std::string name)
 {
 	if (m_intStorage.find(name) == m_intStorage.end())
 		return false;
 	return true;
 }
 
-int SystemClass::GetIntVariable(std::string name)
+bool SystemClass::GetBoolVariable(std::string name)
 {
 	return m_intStorage[name];
 }
 
-void SystemClass::SetIntVariable(std::string name, int value)
+void SystemClass::SetBoolVariable(std::string name, bool value)
 {
 	m_intStorage[name] = value;
 }

@@ -17,6 +17,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 
 	// Initialize and run the system object.
 	result = System->Initialize();
+
+	SystemClass::GetInstance()->SetBoolVariable("started", false);
+
 	Scene* scene = new MainScene();
 	System->SetScene(scene);
 	if (result)
