@@ -479,7 +479,7 @@ void ModelClass::SetSample()
 {
 	m_vertices.clear();
 
-	MyVertex	vertices[] =
+	MyVertex vertices[] =
 	{
 		{ XMFLOAT3(-1.0f, 0.5f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(-0.33f, 0.33f, -0.33f), XMFLOAT2(1.0f, 1.0f) },
 		{ XMFLOAT3(1.0f, 0.5f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(0.33f, 0.33f, -0.33f), XMFLOAT2(0.0f, 1.0f) },
@@ -559,10 +559,10 @@ void ModelClass::SetToCube(XMFLOAT3 boxSize)
 	++seed;
 	seed %= 5;
 	//top area
-	auto v1 = MyVertex({ pos[0 + 2 + 1] , m_rgba, up,{ 0.0f + seed / 1.0f, 0.0f + seed / 1.0f } });
-	auto v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, up,{ boxSize.x / GameScene::DEFAULT_BOXSIZE.x + seed / 1.0f, 0.0f + seed / 1.0f } });
-	auto v3 = MyVertex({ pos[4 + 2 + 0] , m_rgba, up,{ boxSize.x / GameScene::DEFAULT_BOXSIZE.x + seed / 1.0f, boxSize.z / GameScene::DEFAULT_BOXSIZE.x + seed / 1.0f } });
-	auto v4 = MyVertex({ pos[0 + 2 + 0] , m_rgba, up,{ 0.0f + seed / 1.0f, boxSize.z / GameScene::DEFAULT_BOXSIZE.x + seed / 1.0f } });
+	auto v1 = MyVertex({ pos[0 + 2 + 1] , m_rgba, up,{ 0.0f + seed / 5.0f, 0.0f + seed / 5.0f } });
+	auto v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, up,{ boxSize.x / GameScene::DEFAULT_BOXSIZE.x + seed / 5.0f, 0.0f + seed / 5.0f } });
+	auto v3 = MyVertex({ pos[4 + 2 + 0] , m_rgba, up,{ boxSize.x / GameScene::DEFAULT_BOXSIZE.x + seed / 5.0f, boxSize.z / GameScene::DEFAULT_BOXSIZE.x + seed / 5.0f } });
+	auto v4 = MyVertex({ pos[0 + 2 + 0] , m_rgba, up,{ 0.0f + seed / 5.0f, boxSize.z / GameScene::DEFAULT_BOXSIZE.x + seed / 5.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//bottom area
@@ -573,10 +573,10 @@ void ModelClass::SetToCube(XMFLOAT3 boxSize)
 	AddRectangle(v1, v2, v3, v4);
 
 	//right area
-	v1 = MyVertex({ pos[4 + 2 + 0] , m_rgba, right,{ 0.0f + seed / 1.0f, 0.0f + seed / 1.0f } });
-	v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, right,{ boxSize.z / GameScene::DEFAULT_BOXSIZE.x + seed / 1.0f, 0.0f + seed / 1.0f } });
-	v3 = MyVertex({ pos[4 + 0 + 1] , m_rgba, right,{ boxSize.z / GameScene::DEFAULT_BOXSIZE.x + seed / 1.0f, boxSize.y / GameScene::DEFAULT_BOXSIZE.x + seed / 1.0f } });
-	v4 = MyVertex({ pos[4 + 0 + 0] , m_rgba, right,{ 0.0f + seed / 1.0f, boxSize.y / GameScene::DEFAULT_BOXSIZE.x + seed / 1.0f } });
+	v1 = MyVertex({ pos[4 + 2 + 0] , m_rgba, right,{ 0.0f + seed / 5.0f, 0.0f + seed / 5.0f } });
+	v2 = MyVertex({ pos[4 + 2 + 1] , m_rgba, right,{ boxSize.z / GameScene::DEFAULT_BOXSIZE.x + seed / 5.0f, 0.0f + seed / 5.0f } });
+	v3 = MyVertex({ pos[4 + 0 + 1] , m_rgba, right,{ boxSize.z / GameScene::DEFAULT_BOXSIZE.x + seed / 5.0f, boxSize.y / GameScene::DEFAULT_BOXSIZE.x + seed / 5.0f } });
+	v4 = MyVertex({ pos[4 + 0 + 0] , m_rgba, right,{ 0.0f + seed / 5.0f, boxSize.y / GameScene::DEFAULT_BOXSIZE.x + seed / 5.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//left area
@@ -587,10 +587,10 @@ void ModelClass::SetToCube(XMFLOAT3 boxSize)
 	AddRectangle(v1, v2, v3, v4);
 
 	//front area
-	v1 = MyVertex({ pos[0 + 2 + 0] , m_rgba, front,{ 0.0f + seed / 1.0f, 0.0f + seed / 1.0f } });
-	v2 = MyVertex({ pos[4 + 2 + 0] , m_rgba, front,{ boxSize.x / GameScene::DEFAULT_BOXSIZE.x + seed / 1.0f, 0.0f + seed / 1.0f } });
-	v3 = MyVertex({ pos[4 + 0 + 0] , m_rgba, front,{ boxSize.x / GameScene::DEFAULT_BOXSIZE.x + seed / 1.0f, boxSize.y / GameScene::DEFAULT_BOXSIZE.x + seed / 1.0f } });
-	v4 = MyVertex({ pos[0 + 0 + 0] , m_rgba, front,{ 0.0f + seed / 1.0f, boxSize.y / GameScene::DEFAULT_BOXSIZE.x + seed / 1.0f } });
+	v1 = MyVertex({ pos[0 + 2 + 0] , m_rgba, front,{ 0.0f + seed / 5.0f, 0.0f + seed / 5.0f } });
+	v2 = MyVertex({ pos[4 + 2 + 0] , m_rgba, front,{ boxSize.x / GameScene::DEFAULT_BOXSIZE.x + seed / 5.0f, 0.0f + seed / 5.0f } });
+	v3 = MyVertex({ pos[4 + 0 + 0] , m_rgba, front,{ boxSize.x / GameScene::DEFAULT_BOXSIZE.x + seed / 5.0f, boxSize.y / GameScene::DEFAULT_BOXSIZE.x + seed / 5.0f } });
+	v4 = MyVertex({ pos[0 + 0 + 0] , m_rgba, front,{ 0.0f + seed / 5.0f, boxSize.y / GameScene::DEFAULT_BOXSIZE.x + seed / 5.0f } });
 	AddRectangle(v1, v2, v3, v4);
 
 	//back area
@@ -613,19 +613,6 @@ void ModelClass::SetToBackground(float width, float height, XMFLOAT3 normal)
 	pos[2] = { +width / 2 , -height / 2, 0.0f };
 	pos[3] = { -width / 2 , -height / 2, 0.0f, };
 	
-	//XMFLOAT3 standardNormal = { 0.0f, 1.0f, 0.0f };
-	//auto dot = [](XMFLOAT3 v1, XMFLOAT3 v2)
-	//{
-	//	return (v1.x * v2.x + v1.y*v2.y + v1.z*v2.z);
-	//};
-	//auto rotation = [&](float& x, float &y, float rad)
-	//{
-	//	x = x * cosf(rad) + y * sinf(rad);
-	//	y = -x * sinf(rad) + y * cosf(rad);
-	//};
-	//auto radAxisY = acosf(dot({ normal.x, 0.0f, normal.z }, standardNormal) / sqrt(normal.x * normal.x + normal.z * normal.z)); // Y축으로의 회전량
-	//auto radAxisZ = acosf(dot({ normal.x, normal.y, 0.0f }, standardNormal) / sqrt(normal.x * normal.x + normal.y * normal.y)); // Z축으로의 회전량
-
 	MyVertex v1 = { pos[0],{ m_rgba.x - 0.3f,m_rgba.y - 0.3f,m_rgba.z - 0.3f, 1.0f }, normal,{ 0.0f, 0.0f } };
 	MyVertex v2 = { pos[1], m_rgba, normal,{ 1.0f, 0.0f } };
 	MyVertex v3 = { pos[2],{ m_rgba.x - 0.3f,m_rgba.y - 0.3f,m_rgba.z - 0.3f, 1.0f }, normal,{ 1.0f, 1.0f } };
