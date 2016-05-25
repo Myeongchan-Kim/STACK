@@ -86,14 +86,14 @@ void GameScene::Start(Camera& camera)
 
 void GameScene::SetSounds()
 {
-	m_scaleSounds[0] = "sound/do.mp3";
-	m_scaleSounds[1] = "sound/re.mp3";
-	m_scaleSounds[2] = "sound/mi.mp3";
-	m_scaleSounds[3] = "sound/fa.mp3";
-	m_scaleSounds[4] = "sound/sol.mp3";
-	m_scaleSounds[5] = "sound/la.mp3";
-	m_scaleSounds[6] = "sound/ti.mp3";
-	m_scaleSounds[7] = "sound/do2.mp3";
+	m_scaleSounds[0] = ConstVars::SOUND_FILE1;
+	m_scaleSounds[1] = ConstVars::SOUND_FILE2;
+	m_scaleSounds[2] = ConstVars::SOUND_FILE3;
+	m_scaleSounds[3] = ConstVars::SOUND_FILE4;
+	m_scaleSounds[4] = ConstVars::SOUND_FILE5;
+	m_scaleSounds[5] = ConstVars::SOUND_FILE6;
+	m_scaleSounds[6] = ConstVars::SOUND_FILE7;
+	m_scaleSounds[7] = ConstVars::SOUND_FILE8;
 
 	for (auto file : m_scaleSounds)
 	{

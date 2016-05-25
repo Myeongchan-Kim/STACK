@@ -8,6 +8,8 @@ void MainScene::Start(Camera& camera)
 {
 
 
+
+
 	camera.InitCamera();
 	float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH;
 	float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT;
