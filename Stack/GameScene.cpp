@@ -96,10 +96,6 @@ void GameScene::SetSounds()
 	m_scaleSounds[6] = ConstVars::SOUND_FILE7;
 	m_scaleSounds[7] = ConstVars::SOUND_FILE8;
 
-	for (auto file : m_scaleSounds)
-	{
-		SystemClass::GetInstance()->PreLoadSoundFile(file);
-	}
 }
 
 //false를 반환하면 이 씬을 더이상 실행 하지 않음.

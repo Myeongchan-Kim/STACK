@@ -7,6 +7,7 @@ class InputClass;
 class Renderer;
 #include <string>
 #include "MyTime.h"
+#include <unordered_map>
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
@@ -28,6 +29,10 @@ public:
 	void SetLightDirection(XMFLOAT4 lightDirection);
 	void CloseSoundFile(std::string fileName);
 	void PreLoadSoundFile(std::string fileName);
+	void StoreIntVariable(std::string name, int value);
+	bool HasIntVariable(std::string name);
+	int GetIntVariable(std::string name);
+	void SetIntVariable(std::string name, int value);
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
 private:
@@ -46,6 +51,8 @@ private:
 	CMyTime m_timer;
 	Renderer* m_renderer;
 	Scene* m_currentScene = nullptr;
+
+	std::unordered_map<std::string, int> m_intStorage;
 	
 };
 

@@ -22,12 +22,12 @@ namespace ConstVars
 	extern WCHAR* MAIN_MENU_TEX_FILE;
 	extern WCHAR* LOG_FILENAME;
 
-	extern std::string ConstVars::SOUND_FILE1;
-	extern std::string ConstVars::SOUND_FILE2;
-	extern std::string ConstVars::SOUND_FILE3;
-	extern std::string ConstVars::SOUND_FILE4;
-	extern std::string ConstVars::SOUND_FILE5;
-	extern std::string ConstVars::SOUND_FILE6;
-	extern std::string ConstVars::SOUND_FILE7;
-	extern std::string ConstVars::SOUND_FILE8;
+	extern std::string SOUND_FILE1;
+	extern std::string SOUND_FILE2;
+	extern std::string SOUND_FILE3;
+	extern std::string SOUND_FILE4;
+	extern std::string SOUND_FILE5;
+	extern std::string SOUND_FILE6;
+	extern std::string SOUND_FILE7;
+	extern std::string SOUND_FILE8;
 }	

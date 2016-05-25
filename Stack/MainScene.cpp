@@ -7,7 +7,26 @@
 void MainScene::Start(Camera& camera)
 {
 
+	if (!SystemClass::GetInstance()->HasIntVariable("started"))
+	{
+		SystemClass::GetInstance()->SetIntVariable("started", 1);
 
+		SystemClass::GetInstance()->LoadTexture(ConstVars::CONCREAT_TEX_FILE);
+		SystemClass::GetInstance()->LoadTexture(ConstVars::FEBRIC_TEX_FILE);
+		SystemClass::GetInstance()->LoadTexture(ConstVars::PLANE_TEX_FILE);
+		SystemClass::GetInstance()->LoadTexture(ConstVars::BLUE_TILE_TEX_FILE);
+		SystemClass::GetInstance()->LoadTexture(ConstVars::COLORFUL_TILE_TEX_FILE);
+		SystemClass::GetInstance()->LoadTexture(ConstVars::MAIN_MENU_TEX_FILE);
+
+		SystemClass::GetInstance()->PreLoadSoundFile(ConstVars::SOUND_FILE1);
+		SystemClass::GetInstance()->PreLoadSoundFile(ConstVars::SOUND_FILE2);
+		SystemClass::GetInstance()->PreLoadSoundFile(ConstVars::SOUND_FILE3);
+		SystemClass::GetInstance()->PreLoadSoundFile(ConstVars::SOUND_FILE4);
+		SystemClass::GetInstance()->PreLoadSoundFile(ConstVars::SOUND_FILE5);
+		SystemClass::GetInstance()->PreLoadSoundFile(ConstVars::SOUND_FILE6);
+		SystemClass::GetInstance()->PreLoadSoundFile(ConstVars::SOUND_FILE7);
+		SystemClass::GetInstance()->PreLoadSoundFile(ConstVars::SOUND_FILE8);
+	}
 
 
 	camera.InitCamera();

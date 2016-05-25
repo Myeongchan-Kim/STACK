@@ -215,6 +215,30 @@ void SystemClass::PreLoadSoundFile(std::string fileName)
 
 }
 
+void SystemClass::StoreIntVariable(std::string name, int value)
+{
+	m_intStorage.emplace(name, value);
+
+}
+
+
+bool SystemClass::HasIntVariable(std::string name)
+{
+	if (m_intStorage.find(name) == m_intStorage.end())
+		return false;
+	return true;
+}
+
+int SystemClass::GetIntVariable(std::string name)
+{
+	return m_intStorage[name];
+}
+
+void SystemClass::SetIntVariable(std::string name, int value)
+{
+	m_intStorage[name] = value;
+}
+
 /*
 	The following Frame function is where all the processing for our application is done.
 	So far it is fairly simple, we check the input object to see if the user has pressed escape and wants to quit.
