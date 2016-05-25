@@ -2,7 +2,6 @@
 #include "Scene.h"
 #include "MainScene.h"
 
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
 	SystemClass* System;
@@ -11,8 +10,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 
 	// Create the system object.
 	System = SystemClass::GetInstance();
-	Scene* scene = new MainScene();
-	System->SetScene(scene);
 	if (!System)
 	{
 		return 0;
@@ -20,6 +17,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 
 	// Initialize and run the system object.
 	result = System->Initialize();
+	Scene* scene = new MainScene();
+	System->SetScene(scene);
 	if (result)
 	{
 		System->Run();

@@ -16,4 +16,12 @@ WCHAR* ConstVars::VANISHING_TEX_FILE = ConstVars::CONCREAT_TEX_FILE;
 WCHAR* ConstVars::MAIN_MENU_TEX_FILE = L"Texture/start.png";
 WCHAR* ConstVars::CHAR_TEX_FILE = L"Texture/letters.png";
 
-WCHAR* ConstVars::LOG_FILENAME = L"data.db";
+std::string ConstVars::SOUND_FILE1 = "sound/do.mp3";
+std::string ConstVars::SOUND_FILE2 = "sound/re.mp3";
+std::string ConstVars::SOUND_FILE3 = "sound/mi.mp3";
+std::string ConstVars::SOUND_FILE4 = "sound/fa.mp3";
+std::string ConstVars::SOUND_FILE5 = "sound/sol.mp3";
+std::string ConstVars::SOUND_FILE6 = "sound/la.mp3";
+std::string ConstVars::SOUND_FILE7 = "sound/ti.mp3";
+std::string ConstVars::SOUND_FILE8 = "sound/do2.mp3";
+
