@@ -250,8 +250,8 @@ void Renderer::CreateDepthStencilState()
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;	//Depth 쓰기 기능 비활성화.
 	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateForTransparentModel);
 
-	//depthStencilDesc.DepthEnable = false;
-	//depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthEnable = false;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateForUI);
 }
 
@@ -388,14 +388,14 @@ void Renderer::SetUIBuffers(ModelClass* model, float deltaTime)
 	m_samLinear->SetSampler(0, m_samplerLinear);
 	
 	// 계산 및 그리기
-	XMMATRIX world = XMMatrixIdentity();
-	XMMATRIX wvp = XMMatrixIdentity();
-	m_wvp->SetMatrix((float*)&wvp);
-	m_world->SetMatrix((float*)&world);
+	//XMMATRIX world = XMMatrixIdentity();
+	//XMMATRIX wvp = XMMatrixIdentity();
+	//m_wvp->SetMatrix((float*)&wvp);
+	//m_world->SetMatrix((float*)&world);
 	
 	//빛 계산
-	m_lightDir->SetFloatVector((float*)&lightDirection);
-	m_lightColor->SetFloatVector((float*)&lightColor);
+	//m_lightDir->SetFloatVector((float*)&lightDirection);
+	//m_lightColor->SetFloatVector((float*)&lightColor);
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	m_colorTech->GetDesc(&techDesc);
@@ -479,7 +479,7 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 		m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForUI, 0);
 		m_immediateContext->OMSetBlendState(m_blendState, 0, 0xffffffff);
 
-		SetBuffers(UI, deltaTime);
+		SetUIBuffers(UI, deltaTime);
 		m_colorTech->GetPassByIndex(2)->Apply(0, m_immediateContext);
 
 		m_immediateContext->DrawIndexed(UI->indexSize(), 0, 0);

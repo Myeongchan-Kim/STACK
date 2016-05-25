@@ -1,6 +1,6 @@
 #include "SystemClass.h"
 #include "Scene.h"
-#include "GameScene.h"
+#include "MainScene.h"
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
@@ -11,7 +11,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 
 	// Create the system object.
 	System = SystemClass::GetInstance();
-	Scene* scene = new GameScene();
+	Scene* scene = new MainScene();
 	System->SetScene(scene);
 	if (!System)
 	{

@@ -1,10 +1,10 @@
 #include "UISprite.h"
 #include "MyVertex.h"
 
-const float UISprite::LETTERWIDTH = 0.1f;
-const float UISprite::LETTERHEIGHT = 0.2f;
+const float UISprite::LETTERWIDTH = 0.10f;
+const float UISprite::LETTERHEIGHT = 0.15f;
 
-UISprite::UISprite() : m_width(LETTERHEIGHT), m_height(LETTERHEIGHT), m_uiPosx(0.0f), m_uiPosy(0.0f)
+UISprite::UISprite() : m_width(UISprite::LETTERWIDTH), m_height(UISprite::LETTERHEIGHT), m_uiPosx(0.0f), m_uiPosy(0.0f)
 {
 }
 
@@ -20,62 +20,17 @@ void UISprite::SetToNumber(int n)
 
 	XMFLOAT3 standardNormal = { 0.0f, 1.0f, 0.0f };
 	XMFLOAT3 pos[4];
-	pos[0] = { -m_width / 2 , +m_height / 2, 0.0f, };
-	pos[1] = { +m_width / 2 , +m_height / 2, 0.0f, };
-	pos[2] = { +m_width / 2 , -m_height / 2, 0.0f, };
-	pos[3] = { -m_width / 2 , -m_height / 2, 0.0f, };
+	pos[0] = { m_uiPosx - m_width / 2 , m_uiPosy + m_height / 2, 0.0f, };
+	pos[1] = { m_uiPosx + m_width / 2 , m_uiPosy + m_height / 2, 0.0f, };
+	pos[2] = { m_uiPosx + m_width / 2 , m_uiPosy - m_height / 2, 0.0f, };
+	pos[3] = { m_uiPosx - m_width / 2 , m_uiPosy - m_height / 2, 0.0f, };
 
 	XMFLOAT3 normal = { 0.0f, 1.0f, 0.0f };
 
-	XMFLOAT4 rgba;
-	switch (n)
-	{
-	case 0:
-		//red
-		rgba = { 1.0f, 0.0f, 0.0f, 1.0f };
-		break;
-	case 1:
-		//orange
-		rgba = { 1.0f, 165.0f / 255.0f, 0.0f, 1.0f };
-		break;
-	case 2:
-		//yellow
-		rgba = { 1.0f, 1.0f, 0.0f, 1.0f };
-		break;
-	case 3:
-		//green
-		rgba = { 0.0f, 1.0f, 0.0f, 1.0f };
-		break;
-	case 4:
-		//skyblue
-		rgba = { 0.0f, 1.0f, 1.0f, 1.0f };
-		break;
-	case 5:
-		//blue
-		rgba = { 0.0f, 0.0f, 1.0f, 1.0f };
-		break;
-	case 6:
-		//dark blue
-		rgba = { 0.0f, 0.0f, 0.6f, 1.0f };
-		break;
-	case 7:
-		//purple
-		rgba = { 0.3f, 0.1f, 0.6f, 1.0f };
-		break;
-	case 8:
-		//black
-		rgba = { 0.0f, 0.0f, 0.0f, 1.0f };
-		break;
-	case 9:
-		//white
-		rgba = { 1.0f, 1.0f, 1.0f, 1.0f };
-		break;
-	default:
-		break;
-	}
+	XMFLOAT4 rgba = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-	float startTexPos = (float)n / 14.0f;
-	float finishTexPos = (float)(n + 1) / 14.0f;
+	float startTexPos = (float)n / 37.0f;
+	float finishTexPos = (float)(n + 1) / 37.0f;
 	MyVertex v1 = { pos[0], rgba, normal,{ startTexPos, 0.0f } };
 	MyVertex v2 = { pos[1], rgba, normal,{ finishTexPos, 0.0f } };
 	MyVertex v3 = { pos[2], rgba, normal,{ finishTexPos, 1.0f } };

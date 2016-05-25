@@ -77,6 +77,14 @@ void Scene::UpdateUIString(Camera& camera)
 	}
 	//Set UI string
 	m_UImodel.clear();
+
+	for (auto model : m_UISprites)
+	{
+		delete model;
+		model = nullptr;
+	}
+	//Set UI string
+	m_UISprites.clear();
 }
 
 void Scene::ShutDownAll()
