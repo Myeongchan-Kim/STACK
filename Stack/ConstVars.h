@@ -6,6 +6,8 @@
 
 namespace ConstVars
 {
+	extern const int WINDOW_WIDTH;
+	extern const int WINDOW_HEIGHT;
 	extern const float DEFAULT_VIEW_WIDTH;
 	extern const float DEFAULT_VIEW_HEIGHT;
 	extern WCHAR* CONCREAT_TEX_FILE;

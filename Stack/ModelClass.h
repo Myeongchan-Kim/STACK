@@ -7,16 +7,6 @@
 
 class MyVertex;
 using namespace DirectX;
-struct Vector3 {
-	float x;
-	float y;
-	float z;
-};
-
-struct Vector2 {
-	float x;
-	float y;
-};
 
 struct PreLoadedData {
 	std::vector<MyVertex>		vertices;
@@ -44,6 +34,7 @@ public:
 
 	void SetSample();
 	void SetToCube(XMFLOAT3 boxSize);
+	void SetToBackground(float width, float height, XMFLOAT3 normal);
 	void SetToRectangle(float width, float height, XMFLOAT3 normal);
 	void SetTextureName(WCHAR* textureName);
 	void SetColor(float r, float g, float b, float a);
