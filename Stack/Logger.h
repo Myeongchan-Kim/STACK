@@ -3,7 +3,7 @@
 #include <time.h>
 extern "C"
 {
-#include <unqlite.h>
+#include "unqlite.h"
 }
 
 class Logger

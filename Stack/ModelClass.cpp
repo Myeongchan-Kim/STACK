@@ -601,7 +601,7 @@ void ModelClass::SetToCube(XMFLOAT3 boxSize)
 	AddRectangle(v1, v2, v3, v4);
 }
 
-void ModelClass::SetToRectangle(float width, float height, XMFLOAT3 normal)
+void ModelClass::SetToBackground(float width, float height, XMFLOAT3 normal)
 {
 	m_vertices.clear();
 	m_indices.clear();
@@ -630,6 +630,29 @@ void ModelClass::SetToRectangle(float width, float height, XMFLOAT3 normal)
 	MyVertex v2 = { pos[1], m_rgba, normal,{ 1.0f, 0.0f } };
 	MyVertex v3 = { pos[2],{ m_rgba.x - 0.3f,m_rgba.y - 0.3f,m_rgba.z - 0.3f, 1.0f }, normal,{ 1.0f, 1.0f } };
 	MyVertex v4 = { pos[3],{ m_rgba.x - 0.8f,m_rgba.y - 0.8f,m_rgba.z - 0.8f, 1.0f }, normal,{ 0.0f, 1.0f } };
+
+	AddRectangle(v1, v2, v3, v4);
+
+}
+
+
+void ModelClass::SetToRectangle(float width, float height, XMFLOAT3 normal)
+{
+	m_vertices.clear();
+	m_indices.clear();
+
+	XMFLOAT3 pos[4];
+	XMFLOAT4 rgba;
+	pos[0] = { -width / 2 , +height / 2, 0.0f };
+	pos[1] = { +width / 2 , +height / 2, 0.0f };
+	pos[2] = { +width / 2 , -height / 2, 0.0f };
+	pos[3] = { -width / 2 , -height / 2, 0.0f, };
+
+
+	MyVertex v1 = { pos[0], m_rgba, normal,{ 0.0f, 0.0f } };
+	MyVertex v2 = { pos[1], m_rgba, normal,{ 1.0f, 0.0f } };
+	MyVertex v3 = { pos[2], m_rgba, normal,{ 1.0f, 1.0f } };
+	MyVertex v4 = { pos[3], m_rgba, normal,{ 0.0f, 1.0f } };
 
 	AddRectangle(v1, v2, v3, v4);
 
