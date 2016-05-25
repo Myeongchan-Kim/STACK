@@ -77,6 +77,14 @@ void Scene::UpdateUIString(Camera& camera)
 	}
 	//Set UI string
 	m_UImodel.clear();
+
+	for (auto model : m_UISprites)
+	{
+		delete model;
+		model = nullptr;
+	}
+	//Set UI string
+	m_UISprites.clear();
 }
 
 void Scene::ShutDownAll()
@@ -97,8 +105,8 @@ void Scene::ShutDownAll()
 XMFLOAT4 Scene::MakeCircularRGB(int seed)
 {
 	const float seed_max = 100.0f;
-	float r = sinf(float(seed % 100) / seed_max * 3.141592 * 2.0f) * 0.4f + 1.0f;
-	float g = sinf(float((seed + 33) % 100) / seed_max * 3.141592 * 2.0f) * 0.4f + 1.0f;
-	float b = sinf(float((seed + 66) % 100) / seed_max * 3.141592 * 2.0f) * 0.4f + 1.0f;
+	float r = sinf(float(seed % 100) / seed_max * 3.141592 * 5.0f) * 0.4f + 1.0f;
+	float g = sinf(float((seed + 33) % 100) / seed_max * 3.141592 * 5.0f) * 0.4f + 1.0f;
+	float b = sinf(float((seed + 66) % 100) / seed_max * 3.141592 * 5.0f) * 0.4f + 1.0f;
 	return XMFLOAT4({ r, g, b, 1.0f });
 }

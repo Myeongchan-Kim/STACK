@@ -5,15 +5,6 @@
 
 Logger::Logger()
 {
-	//char* pStr;
-	//int strSize = WideCharToMultiByte(CP_ACP, 0, "data.db", -1, NULL, 0, NULL, NULL);
-	////char* 메모리 할당
-	//pStr = new char[strSize];
-
-	////형 변환 
-	//WideCharToMultiByte(CP_ACP, 0, fileName, -1, pStr, strSize, 0, 0);
-	//
-	//delete pStr;
 	int rc = unqlite_open(&m_db, "data.db", UNQLITE_OPEN_CREATE);
 }
 

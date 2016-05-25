@@ -33,6 +33,7 @@ void GameScene::Start(Camera& camera)
 	srand(time(NULL));
 	m_randomSeed = rand();
 	XMFLOAT4 rgba = MakeCircularRGB(m_randomSeed);
+	m_color = {rgba.x, rgba.y, rgba.z};
 
 	m_logger = new Logger();
 	m_maxCount = m_logger->LoadRecord();
@@ -47,22 +48,22 @@ void GameScene::Start(Camera& camera)
 	float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH;
 	float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT;
 	camera.SetProjection(viewWidth, viewHeight);
-	camera.SetCameraPos(8.0f, 14.0f, -8.0f);
-	camera.SetCameraTarget(0.0f, 4.0f, 0.0f);
+	camera.SetCameraPos(8.0f, 9.0f, -8.0f);
+	camera.SetCameraTarget(0.0f, -1.0f, 0.0f);
 
 	//배경 초기화
 	m_backGround = new ModelClass();
-	auto dir = camera.GetVewDir();
-	m_backGround->SetPosition(camera.GetPosition().x + dir.x *10, camera.GetPosition().y + dir.y * 10, camera.GetPosition().z + dir.z * 10);
-	m_backGround->SetRGB(m_color.x, m_color.y, m_color.z);
+	auto dir = camera.GetVewDir(); 
+	m_backGround->SetPosition(camera.GetPosition().x + dir.x * 10, camera.GetPosition().y + dir.y * 10, camera.GetPosition().z + dir.z * 10);
+	m_backGround->SetRGB(m_color.x, m_color.y, m_color.z); 
 	m_backGround->SetToRectangle(viewWidth, viewHeight, { 0.0f, 1.0f, 0.0f });
 	m_backGround->RotationToCamera(camera);
 	AddModel(m_backGround);
-	
+
 	//초기에 하나 있는 블록 생성
 	m_lastBlock = MakeNewBlock(m_curPos, m_boxSize);
 	AddModel(m_lastBlock);
-
+	
 	m_curPos.y += m_boxSize.y;
 
 	//처음은 z축으로 블록 이동
@@ -162,35 +163,34 @@ void GameScene::UpdateUIString(Camera & camera)
 	char showString[20];
 	sprintf_s(showString, "%d", m_countAccumulation);
 	float scale = camera.GetViewSizeWidth() / ConstVars::DEFAULT_VIEW_WIDTH;
-	float startPosX = camera.GetViewSizeWidth() / 2 - (strlen(showString) - 0.5f) * UIModel::LETTERWIDTH * scale/ 2.0f;
-
+	float letterInvterval = 0.00f;
 
 	for (int i = 0; i < strlen(showString); i++)
 	{
 		int number = showString[i] - '0';
-		auto numberModel = new UIModel();
-		numberModel->SetUIXY((startPosX + i * UIModel::LETTERWIDTH * scale) / camera.GetViewSizeWidth(), 0.9f);
-		numberModel->LoadFromPreLoadedData(m_uiPool[number]);
-		numberModel->SetRGB(3.0f, 3.0f, 3.0f);
-		numberModel->SetScale(scale * 0.05f, scale * 0.05f, scale * 0.05f);
-		numberModel->RotationToCamera(camera);
-		AddUIModel(numberModel);
+		float startPosX = -((int)strlen(showString) - 1) * (UISprite::LETTERWIDTH + letterInvterval) / 2.0f;
+
+		// UI sprite
+		auto uiCharacter = new UISprite();
+		uiCharacter->SetUIXY(startPosX + (UISprite::LETTERWIDTH + letterInvterval) * i, 0.85f);
+		uiCharacter->SetToNumber(number);
+		uiCharacter->SetTextureName(ConstVars::CHAR_TEX_FILE);
+		m_UISprites.emplace_back(uiCharacter);
 	}
 
 	char maxString[20];
 	sprintf_s(maxString, "%d", m_maxCount);
-	float posx = 9.0f;
-	float posy = 0.9f;
 	for (int i = 0; i < strlen(maxString); i++)
 	{
 		int number = maxString[i] - '0';
-		auto numberModel = new UIModel();
-		numberModel->SetUIXY((posx + i * UIModel::LETTERWIDTH * scale) / camera.GetViewSizeWidth(), posy);
-		numberModel->LoadFromPreLoadedData(m_uiPool[number]);
-		numberModel->SetRGB(3.0f, 3.0f, 3.0f);
-		numberModel->SetScale(scale * 0.05f, scale * 0.05f, scale * 0.05f);
-		numberModel->RotationToCamera(camera);
-		AddUIModel(numberModel);
+		float startPosX = 0.8f -((int)strlen(maxString) - 1) * (UISprite::LETTERWIDTH + letterInvterval) / 2.0f;
+
+		// UI sprite
+		auto uiCharacter = new UISprite();
+		uiCharacter->SetUIXY(startPosX + (UISprite::LETTERWIDTH + letterInvterval) * i, 0.85f);
+		uiCharacter->SetToNumber(number);
+		uiCharacter->SetTextureName(ConstVars::CHAR_TEX_FILE);
+		m_UISprites.emplace_back(uiCharacter);
 	}
 
 }
@@ -433,8 +433,8 @@ bool GameScene::UpdateEndingState(float dt, InputClass & input, Camera & camera)
 	}
 	else 
 	{
-		float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH + elapsedTime * m_currentHeight * 1.5f;
-		float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT + elapsedTime * m_currentHeight * 1.5f;
+		float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH + elapsedTime * m_currentHeight * 1.3f;
+		float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT + elapsedTime * m_currentHeight * 1.3f;
 		m_backGround->SetScale(viewWidth / ConstVars::DEFAULT_VIEW_WIDTH, viewHeight / ConstVars::DEFAULT_VIEW_HEIGHT, 1);
 		camera.SetProjection(viewWidth, viewHeight);
 		UpdateUIPos(camera);

@@ -19,7 +19,10 @@ namespace ConstVars
 	
 	extern WCHAR* VISIBLE_TEX_FILE;
 	extern WCHAR* VANISHING_TEX_FILE;
+	
 	extern WCHAR* MAIN_MENU_TEX_FILE;
+	extern WCHAR* CHAR_TEX_FILE;
+
 	extern WCHAR* LOG_FILENAME;
 
 	extern std::string SOUND_FILE1;

@@ -1,5 +1,7 @@
 #pragma once
 #include "Scene.h"
+class UISprite;
+
 class MainScene :
 	public Scene
 {
@@ -14,7 +16,7 @@ public:
 
 private:
 	float m_elasedTime;
-	ModelClass* m_background = nullptr;
+	UISprite* m_background = nullptr;
 
 };
 

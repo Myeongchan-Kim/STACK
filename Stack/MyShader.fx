@@ -56,7 +56,7 @@ float4 PS(VertexOut vOut) : SV_TARGET
 	return result;
 };
 
-float4 TransparentPS(VertexOut vOut): SV_TARGET
+float4 TransparentPS(VertexOut vOut) : SV_TARGET
 {
 	float4 finalColor = 0;
 	float bright = saturate(dot((float4) - lightDir, vOut.normal) * 0.7 + 0.3);
@@ -66,12 +66,28 @@ float4 TransparentPS(VertexOut vOut): SV_TARGET
 	float4 texColor = texDiffuse.Sample(samLinear, vOut.tex);
 
 	float4 result;
-	result = 0.3*texColor + 0.7*finalColor;
+	result = 0.2*texColor + 0.8*finalColor;
 	result.a = finalColor.a;
 	return result;
 };
 
+VertexOut UiVS(VertexIn vIn)
+{
+	VertexOut vOut;
 
+	vOut.pos = float4(vIn.pos, 1.0f);
+	vOut.normal = float4(vIn.normal, 0.0f);
+	vOut.color = vIn.color;
+	vOut.tex = vIn.tex;
+
+	return vOut;
+};
+
+float4 UiPS(VertexOut vOut) : SV_TARGET
+{
+	float4 texColor = texDiffuse.Sample(samLinear, vOut.tex);
+	return texColor;
+};
 
 RasterizerState WireframeRS
 {
@@ -79,7 +95,6 @@ RasterizerState WireframeRS
 	CullMode = Back;
 	FrontCounterClockwise = false;
 };
-
 
 technique11 ColorTech
 {
@@ -94,5 +109,11 @@ technique11 ColorTech
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetPixelShader(CompileShader(ps_5_0, TransparentPS()));
+	}
+
+	pass P2
+	{
+		SetVertexShader(CompileShader(vs_5_0, UiVS()));
+		SetPixelShader(CompileShader(ps_5_0, UiPS()));
 	}
 };

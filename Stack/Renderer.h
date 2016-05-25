@@ -7,6 +7,7 @@
 #include "Common\d3dx11effect.h"
 #include "Camera.h"
 #include "SystemClass.h"
+#include "UISprite.h"
 
 using namespace DirectX;
 
@@ -20,6 +21,7 @@ public:
 
 	void AddModel(ModelClass* model);
 	void AddTransparentModel(ModelClass* model);
+	void AddUISprite(UISprite* sprite);
 	void ShutDown();
 	Camera& GetCamera() { return m_camera; };
 	void SetLightDirection(XMFLOAT4 lightDirection);
@@ -36,6 +38,7 @@ private:
 	HRESULT LoadTexture(WCHAR* fileName);
 
 	void SetBuffers(ModelClass* model, float deltaTime);
+	void SetUIBuffers(ModelClass* model, float deltaTime);
 	void CreateRenderState();
 
 	XMFLOAT4 m_lightDirection = { -0.3f, -1.0f, -0.2f, 1.0f };
@@ -53,6 +56,7 @@ private:
 	ID3D11Texture2D*								m_depthStencil = nullptr;
 	ID3D11DepthStencilView*							m_depthStencilView = nullptr;
 	ID3D11DepthStencilState*						m_depthStencilStateForNormalModel = nullptr;
+	ID3D11DepthStencilState*						m_depthStencilStateForUI = nullptr;
 	ID3D11DepthStencilState*						m_depthStencilStateForTransparentModel = nullptr;
 	ID3D11BlendState*								m_blendState = nullptr;
 
@@ -68,19 +72,20 @@ private:
 	ID3DX11Effect*									m_effect = nullptr;
 	ID3DX11EffectTechnique*							m_colorTech = nullptr;
 	
-	ID3DX11EffectSamplerVariable*					m_samLinear = nullptr;
-	ID3DX11EffectShaderResourceVariable*			m_texDiffuse = nullptr;
-	ID3DX11EffectMatrixVariable*					m_wvp;
-	ID3DX11EffectMatrixVariable*					m_world;
-	ID3DX11EffectVectorVariable*					m_lightDir;
-	ID3DX11EffectVectorVariable*					m_lightColor;
+	ID3DX11EffectSamplerVariable*			m_samLinear = nullptr;
+	ID3DX11EffectShaderResourceVariable*	m_texDiffuse = nullptr;
+	ID3DX11EffectMatrixVariable*			m_wvp;
+	ID3DX11EffectMatrixVariable*			m_world;
+	ID3DX11EffectVectorVariable*			m_lightDir;
+	ID3DX11EffectVectorVariable*			m_lightColor;
 
-	ID3D11Resource*									m_texture = nullptr;
-	ID3D11SamplerState*								m_samplerLinear = nullptr;
+	ID3D11Resource*							m_texture = nullptr;
+	ID3D11SamplerState*						m_samplerLinear = nullptr;
 
-	std::map<WCHAR*, ID3D11ShaderResourceView*>		m_textureRVList;
-	std::vector<ModelClass*>						m_modelList;
-	std::vector<ModelClass*>						m_transparentModelList;
+	std::map<WCHAR*, ID3D11ShaderResourceView*>	m_textureRVList;
+	std::vector<ModelClass*>				m_modelList;
+	std::vector<ModelClass*>				m_transparentModelList;
+	std::vector<UISprite*>					m_UIList;
 
 	friend class SystemClass;
 };

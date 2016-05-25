@@ -8,6 +8,7 @@
 #include "SystemClass.h"
 
 class UIModel;
+class UISprite;
 class ModelClass;
 class InputClass;
 class Camera;
@@ -31,6 +32,7 @@ public:
 protected:
 	std::list<ModelClass*> m_modelsToBeRendered;
 	std::list<UIModel*> m_UImodel;
+	std::list<UISprite*> m_UISprites;
 
 private:
 

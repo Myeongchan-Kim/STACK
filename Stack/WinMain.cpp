@@ -1,8 +1,6 @@
 #include "SystemClass.h"
 #include "Scene.h"
 #include "MainScene.h"
-#include "ConstVars.h"
-
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {

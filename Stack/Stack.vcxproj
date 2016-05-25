@@ -23,7 +23,6 @@
     <ProjectGuid>{894FF5DD-563B-4238-95F7-AFB4488B781C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Stack</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -172,6 +171,7 @@
     <ClCompile Include="MyTime.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SystemClass.cpp" />
+    <ClCompile Include="UISprite.cpp" />
     <ClCompile Include="UIModel.cpp" />
     <ClCompile Include="unqlite.c" />
     <ClCompile Include="VanishingBlock.cpp" />
@@ -191,6 +191,7 @@
     <ClInclude Include="MyTime.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SystemClass.h" />
+    <ClInclude Include="UISprite.h" />
     <ClInclude Include="UIModel.h" />
     <ClInclude Include="unqlite.h" />
     <ClInclude Include="VanishingBlock.h" />
