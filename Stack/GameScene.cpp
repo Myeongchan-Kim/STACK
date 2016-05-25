@@ -19,6 +19,7 @@ void GameScene::ShutDown()
 
 	if (m_logger != nullptr)
 	{
+		m_logger->ShutDown();
 		delete m_logger;
 		m_logger = nullptr;
 	}
@@ -413,8 +414,8 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 				return model == m_currentBlock;
 			});
 
-			m_logger->SavePlayLog(m_countAccumulation, m_currentHeight);
 			m_logger->SaveRecord(m_maxCount);
+			m_logger->SavePlayLog(m_countAccumulation, m_currentHeight);
 
 			m_isEnd = true;
 			m_playState = isEnding;
