@@ -7,6 +7,7 @@
 #include "Common\d3dx11effect.h"
 #include "Camera.h"
 #include "SystemClass.h"
+#include "UISprite.h"
 
 using namespace DirectX;
 
@@ -20,6 +21,7 @@ public:
 
 	void AddModel(ModelClass* model);
 	void AddTransparentModel(ModelClass* model);
+	void AddUISprite(UISprite* sprite);
 	void ShutDown();
 	Camera& GetCamera() { return m_camera; };
 
@@ -34,6 +36,7 @@ private:
 	HRESULT CreateBlendState();
 	HRESULT LoadTexture(WCHAR* fileName);
 	void SetBuffers(ModelClass* model, float deltaTime);
+	void SetUIBuffers(ModelClass* model, float deltaTime);
 	void CreateRenderState();
 
 	XMFLOAT4 lightDirection = { -0.3f, -1.0f, -0.2f, 1.0f };
@@ -50,7 +53,8 @@ private:
 	D3D_FEATURE_LEVEL						m_featureLevel = D3D_FEATURE_LEVEL_11_0;
 	ID3D11Texture2D*						m_depthStencil = nullptr;
 	ID3D11DepthStencilView*					m_depthStencilView = nullptr;
-	ID3D11DepthStencilState*				m_depthStencilStateForNormalModel = nullptr;
+	ID3D11DepthStencilState*				m_depthStencilStateForNormalModel = nullptr; 
+	ID3D11DepthStencilState*				m_depthStencilStateForUI = nullptr;
 	ID3D11DepthStencilState*				m_depthStencilStateForTransparentModel = nullptr;
 	ID3D11BlendState*						m_blendState = nullptr;
 
@@ -79,6 +83,7 @@ private:
 	std::map<WCHAR*, ID3D11ShaderResourceView*>	m_textureRVList;
 	std::vector<ModelClass*>				m_modelList;
 	std::vector<ModelClass*>				m_transparentModelList;
+	std::vector<UISprite*>					m_UIList;
 
 	friend class SystemClass;
 };

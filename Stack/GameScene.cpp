@@ -63,6 +63,12 @@ void GameScene::Start(Camera& camera)
 	m_lastBlock = MakeNewBlock(m_curPos, m_boxSize);
 	AddModel(m_lastBlock);
 
+	// UI sprite Test
+	auto ui_test = new UISprite();
+	ui_test->SetToNumber(8);
+	ui_test->SetTextureName(ConstVars::CHAR_TEX_FILE);
+	m_UISprites.emplace_back(ui_test);
+	
 	m_curPos.y += m_boxSize.y;
 
 	//처음은 z축으로 블록 이동
@@ -437,8 +443,8 @@ bool GameScene::UpdateEndingState(float dt, InputClass & input, Camera & camera)
 	}
 	else 
 	{
-		float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH + elapsedTime * m_currentHeight * 1.5f;
-		float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT + elapsedTime * m_currentHeight * 1.5f;
+		float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH + elapsedTime * m_currentHeight * 1.3f;
+		float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT + elapsedTime * m_currentHeight * 1.3f;
 		m_backGround->SetScale(viewWidth / ConstVars::DEFAULT_VIEW_WIDTH, viewHeight / ConstVars::DEFAULT_VIEW_HEIGHT, 1);
 		camera.SetProjection(viewWidth, viewHeight);
 		UpdateUIPos(camera);

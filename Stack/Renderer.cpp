@@ -37,6 +37,7 @@ bool Renderer::Initialize(int winWidth, int winHeight, HWND hwnd)
 	LoadTexture(ConstVars::BLUE_TILE_TEX_FILE);
 	LoadTexture(ConstVars::COLORFUL_TILE_TEX_FILE);
 	LoadTexture(ConstVars::MAIN_MENU_TEX_FILE);
+	LoadTexture(ConstVars::CHAR_TEX_FILE);
 
 	return true;
 }
@@ -56,6 +57,15 @@ void Renderer::AddTransparentModel(ModelClass* model)
 	model->CreateIndexBuffer(m_device);
 
 	m_transparentModelList.emplace_back(model);
+}
+
+void Renderer::AddUISprite(UISprite* sprite)
+{
+
+	sprite->CreateVertexBuffer(m_device);
+	sprite->CreateIndexBuffer(m_device);
+
+	m_UIList.emplace_back(sprite);
 }
 
 HRESULT Renderer::InitDevice(HWND hwnd)
@@ -239,6 +249,10 @@ void Renderer::CreateDepthStencilState()
 
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;	//Depth 쓰기 기능 비활성화.
 	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateForTransparentModel);
+
+	//depthStencilDesc.DepthEnable = false;
+	//depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateForUI);
 }
 
 
@@ -360,6 +374,34 @@ void Renderer::SetBuffers(ModelClass* model, float deltaTime)
 	m_colorTech->GetDesc(&techDesc);
 }
 
+void Renderer::SetUIBuffers(ModelClass* model, float deltaTime)
+{
+	UINT stride = sizeof(MyVertex);
+	UINT offset = 0;
+
+	m_immediateContext->IASetVertexBuffers(0, 1, &model->GetVB(), &stride, &offset);
+	m_immediateContext->IASetIndexBuffer(model->GetIB(), DXGI_FORMAT_R16_UINT, 0);
+
+	auto textureName = model->GetTextureName();
+	auto texture = m_textureRVList.at(textureName);
+	m_texDiffuse->SetResource(texture);
+	m_samLinear->SetSampler(0, m_samplerLinear);
+	
+	// 계산 및 그리기
+	XMMATRIX world = XMMatrixIdentity();
+	XMMATRIX wvp = XMMatrixIdentity();
+	m_wvp->SetMatrix((float*)&wvp);
+	m_world->SetMatrix((float*)&world);
+	
+	//빛 계산
+	m_lightDir->SetFloatVector((float*)&lightDirection);
+	m_lightColor->SetFloatVector((float*)&lightColor);
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	m_colorTech->GetDesc(&techDesc);
+}
+
+
 
 bool Renderer::Frame(float deltaTime, Scene* curScene)
 {
@@ -369,6 +411,7 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 	//modelList 생성
 	m_modelList.clear();
 	m_transparentModelList.clear();
+	m_UIList.clear();
 
 	float dy = 1.0f;
 	for (auto model : curScene->m_modelsToBeRendered)
@@ -385,6 +428,14 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 			AddModel(model);
 		else
 			AddTransparentModel(model);
+	}
+
+	for (auto model : curScene->m_UISprites)
+	{
+		model->CreateVertexBuffer(m_device);
+		model->CreateIndexBuffer(m_device);
+
+		m_UIList.push_back(model);
 	}
 
 	//model position 계산
@@ -421,6 +472,17 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 		m_colorTech->GetPassByIndex(1)->Apply(0, m_immediateContext);
 		
 		m_immediateContext->DrawIndexed(model->indexSize(), 0, 0);
+	}
+
+	for (auto& UI : m_UIList)
+	{
+		m_immediateContext->OMSetDepthStencilState(m_depthStencilStateForUI, 0);
+		m_immediateContext->OMSetBlendState(m_blendState, 0, 0xffffffff);
+
+		SetBuffers(UI, deltaTime);
+		m_colorTech->GetPassByIndex(2)->Apply(0, m_immediateContext);
+
+		m_immediateContext->DrawIndexed(UI->indexSize(), 0, 0);
 	}
 
 	m_swapChain->Present(0, 0);

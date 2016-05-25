@@ -72,9 +72,6 @@
     <ClCompile Include="Scene.cpp">
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="UIModel.cpp">
-      <Filter>소스 파일\Engine\Graphic\Object</Filter>
-    </ClCompile>
     <ClCompile Include="ConstVars.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -86,6 +83,12 @@
     </ClCompile>
     <ClCompile Include="unqlite.c">
       <Filter>소스 파일\Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="UIModel.cpp">
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="UISprite.cpp">
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -128,9 +131,6 @@
     <ClInclude Include="Scene.h">
       <Filter>소스 파일\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="UIModel.h">
-      <Filter>소스 파일\Engine\Graphic\Object</Filter>
-    </ClInclude>
     <ClInclude Include="MainScene.h">
       <Filter>소스 파일\Scene</Filter>
     </ClInclude>
@@ -139,6 +139,12 @@
     </ClInclude>
     <ClInclude Include="unqlite.h">
       <Filter>소스 파일\Engine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="UIModel.h">
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="UISprite.h">
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
