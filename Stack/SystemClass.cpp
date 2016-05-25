@@ -190,6 +190,16 @@ void SystemClass::PlaySoundFile(std::string fileName)
 
 }
 
+void SystemClass::LoadTexture(WCHAR* fileName)
+{
+	m_renderer->LoadTexture(fileName);
+}
+
+void SystemClass::SetLightDirection(XMFLOAT4 lightDirection)
+{
+	m_renderer->SetLightDirection(lightDirection);
+}
+
 void SystemClass::CloseSoundFile(std::string fileName) {
 	std::string closeCmd = "close " + fileName;
 	mciSendStringA(closeCmd.c_str(), NULL, 0, 0);

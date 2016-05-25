@@ -1,6 +1,7 @@
 #pragma once
 
 #include <windows.h>
+#include "ModelClass.h"
 class Scene;
 class InputClass;
 class Renderer;
@@ -23,7 +24,8 @@ public:
 	void Run();
 	void StopSound(std::string fileName);
 	void PlaySoundFile(std::string fileName);
-
+	void LoadTexture(WCHAR* fileName);
+	void SetLightDirection(XMFLOAT4 lightDirection);
 	void CloseSoundFile(std::string fileName);
 	void PreLoadSoundFile(std::string fileName);
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
