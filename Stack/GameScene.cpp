@@ -19,6 +19,7 @@ void GameScene::ShutDown()
 
 	if (m_logger != nullptr)
 	{
+		m_logger->ShutDown();
 		delete m_logger;
 		m_logger = nullptr;
 	}
@@ -46,8 +47,8 @@ void GameScene::Start(Camera& camera)
 	float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH;
 	float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT;
 	camera.SetProjection(viewWidth, viewHeight);
-	camera.SetCameraPos(8.0f, 10.0f, -8.0f);
-	camera.SetCameraTarget(0.0f, 0.0f, 0.0f);
+	camera.SetCameraPos(8.0f, 14.0f, -8.0f);
+	camera.SetCameraTarget(0.0f, 4.0f, 0.0f);
 
 	//배경 초기화
 	m_backGround = new ModelClass();
@@ -413,8 +414,8 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 				return model == m_currentBlock;
 			});
 
-			m_logger->SavePlayLog(m_countAccumulation, m_currentHeight);
 			m_logger->SaveRecord(m_maxCount);
+			m_logger->SavePlayLog(m_countAccumulation, m_currentHeight);
 
 			m_isEnd = true;
 			m_playState = isEnding;
@@ -436,8 +437,8 @@ bool GameScene::UpdateEndingState(float dt, InputClass & input, Camera & camera)
 	}
 	else 
 	{
-		float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH + elapsedTime * m_currentHeight * 2.5f;
-		float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT + elapsedTime * m_currentHeight * 2.5f;
+		float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH + elapsedTime * m_currentHeight * 1.5f;
+		float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT + elapsedTime * m_currentHeight * 1.5f;
 		m_backGround->SetScale(viewWidth / ConstVars::DEFAULT_VIEW_WIDTH, viewHeight / ConstVars::DEFAULT_VIEW_HEIGHT, 1);
 		camera.SetProjection(viewWidth, viewHeight);
 		UpdateUIPos(camera);
