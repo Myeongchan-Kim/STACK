@@ -53,7 +53,6 @@ void Renderer::AddTransparentModel(ModelClass* model)
 
 void Renderer::AddUISprite(UISprite* sprite)
 {
-
 	sprite->CreateVertexBuffer(m_device);
 	sprite->CreateIndexBuffer(m_device);
 
@@ -422,12 +421,9 @@ bool Renderer::Frame(float deltaTime, Scene* curScene)
 			AddTransparentModel(model);
 	}
 
-	for (auto model : curScene->m_UISprites)
+	for (auto spr : curScene->m_UISprites)
 	{
-		model->CreateVertexBuffer(m_device);
-		model->CreateIndexBuffer(m_device);
-
-		m_UIList.push_back(model);
+		AddUISprite(spr);
 	}
 
 	//model position °è»ê

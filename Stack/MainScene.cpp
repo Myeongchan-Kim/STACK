@@ -2,7 +2,7 @@
 #include "InputClass.h"
 #include "GameScene.h"
 #include "ConstVars.h"
-
+#include "UISprite.h"
 
 void MainScene::Start(Camera& camera)
 {
@@ -34,12 +34,13 @@ void MainScene::Start(Camera& camera)
 	float viewWidth = ConstVars::DEFAULT_VIEW_WIDTH;
 	float viewHeight = ConstVars::DEFAULT_VIEW_HEIGHT;
 	camera.SetProjection(viewWidth, viewHeight);
-	m_background = new ModelClass();
-	m_background->SetPosition(0,0,0);
+	m_background = new UISprite();
+	m_background->SetPosition(0.0f, 0.0f, 0.0f);
+	m_background->SetUISize(2.0f, 2.0f);
 	m_background->SetRGB(1, 1, 1);
-	m_background->SetToBackground(camera.GetViewSizeWidth(), camera.GetViewSizeHeight(), { 0.0f, 0.0f, -1.0f });
+	m_background->SetToRect();
 	m_background->SetTextureName(ConstVars::MAIN_MENU_TEX_FILE);
-	AddModel(m_background);
+	m_UISprites.emplace_back(m_background);
 }
 
 bool MainScene::Update(float dt, InputClass& input, Camera& camera)
@@ -55,4 +56,5 @@ bool MainScene::Update(float dt, InputClass& input, Camera& camera)
 
 void MainScene::ShutDown()
 {
+	delete m_background;
 }

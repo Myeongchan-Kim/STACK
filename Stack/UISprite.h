@@ -7,6 +7,8 @@ public:
 	UISprite();
 	~UISprite();
 
+	void SetToRect();
+
 	void SetToNumber(int number);
 	void SetUIXY(float x, float y);
 	float GetUIX() { return m_uiPosx; };
@@ -15,6 +17,8 @@ public:
 	void SetUIPosition(float x, float y) {
 		SetUIXY(x, y);
 	};
+
+	void SetUISize(float width, float height) { m_width = width; m_height = height; };
 	
 	static const float LETTERWIDTH;
 	static const float LETTERHEIGHT;
