@@ -7,9 +7,12 @@
 void MainScene::Start(Camera& camera)
 {
 
-	if (!SystemClass::GetInstance()->HasIntVariable("started"))
+	if (!SystemClass::GetInstance()->GetBoolVariable("started"))
 	{
-		SystemClass::GetInstance()->SetIntVariable("started", 1);
+		SystemClass::GetInstance()->SetBoolVariable("started", true);
+
+		//사용 예시.
+		SystemClass::GetInstance()->SetBoolVariable("isEnd", false);
 
 		SystemClass::GetInstance()->LoadTexture(ConstVars::CONCREAT_TEX_FILE);
 		SystemClass::GetInstance()->LoadTexture(ConstVars::FEBRIC_TEX_FILE);

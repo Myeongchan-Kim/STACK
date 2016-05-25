@@ -29,10 +29,10 @@ public:
 	void SetLightDirection(XMFLOAT4 lightDirection);
 	void CloseSoundFile(std::string fileName);
 	void PreLoadSoundFile(std::string fileName);
-	void StoreIntVariable(std::string name, int value);
-	bool HasIntVariable(std::string name);
-	int GetIntVariable(std::string name);
-	void SetIntVariable(std::string name, int value);
+	void StoreBoolVariable(std::string name, bool value);
+	bool HasBoolVariable(std::string name);
+	bool GetBoolVariable(std::string name);
+	void SetBoolVariable(std::string name, bool value);
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
 private:
