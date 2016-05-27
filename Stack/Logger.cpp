@@ -32,7 +32,15 @@ int Logger::LoadRecord()
 	//Allocate a buffer big enough to hold the record content
 	char* zBuf = (char *)malloc(nBytes);
 	if (zBuf == NULL) { return 0; }
+	
+	
 	rc = unqlite_kv_fetch(m_db, "max", -1, zBuf, &nBytes);
+	while (rc == UNQLITE_BUSY)
+	{
+		Sleep(20);
+		rc = unqlite_kv_fetch(m_db, "max", -1, zBuf, &nBytes);
+	}
+
 	int result = std::stoi(std::string(zBuf));
 	
 	delete zBuf;
@@ -46,11 +54,18 @@ void Logger::SaveRecord(int maxCount)
 	std::string score = std::to_string(maxCount);
 	
 	int old_record = LoadRecord();
-	if (old_record > maxCount)
+   	if (old_record >= maxCount)
 		return;
 
 	int len = score.size();
 	rc = unqlite_kv_store(m_db, "max", -1, score.c_str(), len);
+
+	while (rc == UNQLITE_BUSY)
+	{
+		Sleep(20);
+		rc = unqlite_kv_store(m_db, "max", -1, score.c_str(), len);
+	}
+
 	return;
 }
 
@@ -69,7 +84,12 @@ void Logger::SavePlayLog(int Count, float Height)
 	int len = result.size();
 	
 	rc = unqlite_kv_append(m_db, "PLAYLOG", -1, result.c_str(), len);;
-	
+	while (rc == UNQLITE_BUSY)
+	{
+		Sleep(20);
+		rc = unqlite_kv_append(m_db, "PLAYLOG", -1, result.c_str(), len);;
+	}
+
 	unqlite_commit(m_db);
 	delete timeinfo;
 
