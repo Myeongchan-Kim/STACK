@@ -25,9 +25,9 @@ public:
 	void ShutDown();
 	Camera& GetCamera() { return m_camera; };
 	void SetLightDirection(XMFLOAT4 lightDirection);
+	HRESULT LoadTexture(WCHAR* fileName);
 
 private:
-
 
 	HRESULT InitDevice(HWND hwnd);
 	void CreateShader();
@@ -35,7 +35,6 @@ private:
 	void CreateDepthStencilState();
 	void CreateDepthStencilTexture();
 	HRESULT CreateBlendState();
-	HRESULT LoadTexture(WCHAR* fileName);
 
 	void SetBuffers(ModelClass* model, float deltaTime);
 	void SetUIBuffers(ModelClass* model, float deltaTime);
@@ -87,6 +86,6 @@ private:
 	std::vector<ModelClass*>				m_transparentModelList;
 	std::vector<UISprite*>					m_UIList;
 
-	friend class SystemClass;
+	//friend class SystemClass;
 };
 

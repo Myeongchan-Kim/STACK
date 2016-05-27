@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ConstVars.cpp" />
+    <ClCompile Include="ExactFitEffect.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="InputClass.cpp" />
     <ClCompile Include="Logger.cpp" />
@@ -180,6 +181,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstVars.h" />
+    <ClInclude Include="ExactFitEffect.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="Logger.h" />

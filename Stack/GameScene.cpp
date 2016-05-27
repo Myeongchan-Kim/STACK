@@ -6,6 +6,7 @@
 #include <time.h>
 #include "UIModel.h"
 #include "Logger.h"
+#include "ExactFitEffect.h"
 
 const XMFLOAT3 GameScene::DEFAULT_BOXSIZE = { 4, 1.0, 4 };
 
@@ -205,8 +206,6 @@ void GameScene::UpdateUIPos(Camera & camera)
 	}
 }
 
-
-
 void GameScene::MoveCameraAndBackground(Camera & camera, float dy)
 {
 	camera.MoveCameraFor(0.0f, dy, 0.0f, 0.3f);
@@ -288,6 +287,21 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 
 			m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
 			AddModel(m_currentBlock);
+
+			//딱맞을때 이펙트 생성.
+			XMFLOAT3 effectBlockSize = { m_boxSize.x, m_boxSize.y, m_boxSize.z };
+			XMFLOAT3 effectBlockPos = {
+				m_lastBlock->GetPosition().x,
+				m_currentBlock->GetPosition().y - m_boxSize.y * 3 / 2,
+				m_lastBlock->GetPosition().z };
+
+			ExactFitEffect* effect = new ExactFitEffect();
+			effect->SetPosition(effectBlockPos);
+			effect->SetRGB(m_color.x ,m_color.y, m_color.z);
+			effect->SetToRectangle(m_boxSize.x, m_boxSize.z, { 0, 1, 0 });
+			effect->SetRotation(3.14 / 2, 0, 0);
+			effect->SetTextureName(ConstVars::VANISHING_TEX_FILE);
+			AddModel(effect);
 
 			//background & camera move
 			MoveCameraAndBackground(camera, dy);
@@ -391,7 +405,6 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 
 			//background & camera move
 			MoveCameraAndBackground(camera, dy);
-
 
 			UpdateRecord(dy);
 			UpdateUIString(camera);
