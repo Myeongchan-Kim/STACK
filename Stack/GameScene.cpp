@@ -8,7 +8,7 @@
 #include "Logger.h"
 #include "ExactFitEffect.h"
 
-const XMFLOAT3 GameScene::DEFAULT_BOXSIZE = { 4, 1.0, 4 };
+const XMFLOAT3 GameScene::DEFAULT_BOXSIZE = { 4, 0.75f, 4 };
 
 void GameScene::ShutDown()
 {
@@ -79,7 +79,6 @@ void GameScene::Start(Camera& camera)
 	};
 	m_currentBlock = MakeNewBlock(newPosition, m_boxSize);
 	AddModel(m_currentBlock);
-
 
 	LoadUI();
 	UpdateUIString(camera);
@@ -161,12 +160,10 @@ void GameScene::UpdateUIString(Camera & camera)
 {
 	Scene::UpdateUIString(camera); //clear
 
+	////////////////////////////////////// current count
 	char showString[20];
 	sprintf_s(showString, "%d", m_countAccumulation);
-	float scale = camera.GetViewSizeWidth() / ConstVars::DEFAULT_VIEW_WIDTH;
-	float letterInvterval = 0.00f;
-
-	float startPosX = 0.0f;	
+	float startPosX = 0.1f;	
 	std::vector<UISprite*> scoreStr;
 	//전체 문자열 길이 계산 및 생성
 	for (int i = 0; i < strlen(showString); i++)
@@ -186,13 +183,13 @@ void GameScene::UpdateUIString(Camera & camera)
 			curPos += scoreStr[j]->GetWidth();
 		}
 		auto& scoreChar = scoreStr[i];
-		scoreChar->SetUIXY(curPos, 0.85f);
+		scoreChar->SetUIXY(curPos, 0.60f);
 		scoreChar->SetToChar(showString[i]);
 		scoreChar->SetTextureName(ConstVars::CHAR_TEX_FILE);
 		m_UISprites.push_back(scoreChar);
 	}
 
-
+	////////////////////////max record
 	char maxString[20];
 	sprintf_s(maxString, "%d", m_maxCount);
 
@@ -221,6 +218,38 @@ void GameScene::UpdateUIString(Camera & camera)
 		scoreChar->SetTextureName(ConstVars::CHAR_TEX_FILE);
 		m_UISprites.push_back(scoreChar);
 	}
+
+
+
+	char heightString[20];
+	sprintf_s(heightString, "%.2fM", m_currentHeight);
+	
+	startPosX = -0.5f;
+	std::vector<UISprite*> heightStr;
+	//전체 문자열 길이 계산 및 생성
+	for (int i = 0; i < strlen(heightString); i++)
+	{
+		// UI sprite
+		auto uiCharacter = new UISprite();
+		uiCharacter->SetToChar(heightString[i]);
+		startPosX -= uiCharacter->GetWidth() / 2.0f;
+		heightStr.push_back(uiCharacter);
+	}
+
+	for (int i = 0; i < heightStr.size(); i++)
+	{
+		float curPos = startPosX;
+		for (int j = 0; j < i; j++)
+		{
+			curPos += heightStr[j]->GetWidth();
+		}
+		auto& heightChar = heightStr[i];
+		heightChar->SetUIXY(curPos, 0.85f);
+		heightChar->SetToChar(heightString[i]);
+		heightChar->SetTextureName(ConstVars::CHAR_TEX_FILE);
+		m_UISprites.push_back(heightChar);
+	}
+
 
 }
 
@@ -283,6 +312,7 @@ bool GameScene::UpdatePlayState(float dt, InputClass & input, Camera & camera)
 	{
 		if (IsExactFit(m_currentBlock, m_lastBlock))
 		{
+
 			std::string sound = m_scaleSounds[m_exactFitCount++ % 8];
 			SystemClass::GetInstance()->PlaySoundFile(sound);
 			//현재블럭 멈춤.
