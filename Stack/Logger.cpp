@@ -49,7 +49,7 @@ int Logger::LoadRecord()
 	//delete zBuf;
 
 	int result;
-	std::ifstream ifs("highScore.bin", std::ios::binary);
+	std::ifstream ifs("highScore.bin", std::ios::in);
 
 	if (ifs.good()) 
 	{
@@ -87,7 +87,7 @@ void Logger::SaveRecord(int maxCount)
 
 	if (maxCount > oldRecord)
 	{
-		std::ofstream ofs("highScore.bin", std::ios::binary);
+		std::ofstream ofs("highScore.bin", std::ios::trunc);
 		ofs << maxCount;
 	}
 	return;
