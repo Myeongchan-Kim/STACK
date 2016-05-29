@@ -166,32 +166,60 @@ void GameScene::UpdateUIString(Camera & camera)
 	float scale = camera.GetViewSizeWidth() / ConstVars::DEFAULT_VIEW_WIDTH;
 	float letterInvterval = 0.00f;
 
+	float startPosX = 0.0f;	
+	std::vector<UISprite*> scoreStr;
+	//전체 문자열 길이 계산 및 생성
 	for (int i = 0; i < strlen(showString); i++)
 	{
-		int number = showString[i] - '0';
-		float startPosX = -((int)strlen(showString) - 1) * (UISprite::LETTERWIDTH + letterInvterval) / 2.0f;
-
 		// UI sprite
 		auto uiCharacter = new UISprite();
-		uiCharacter->SetUIXY(startPosX + (UISprite::LETTERWIDTH + letterInvterval) * i, 0.85f);
-		uiCharacter->SetToNumber(number);
-		uiCharacter->SetTextureName(ConstVars::CHAR_TEX_FILE);
-		m_UISprites.emplace_back(uiCharacter);
+		uiCharacter->SetToChar(showString[i]);
+		startPosX -= uiCharacter->GetWidth() / 2.0f;
+		scoreStr.push_back(uiCharacter);
 	}
+
+	for (int i = 0; i < scoreStr.size(); i++)
+	{
+		float curPos = startPosX;
+		for (int j = 0; j < i; j++)
+		{
+			curPos += scoreStr[j]->GetWidth();
+		}
+		auto& scoreChar = scoreStr[i];
+		scoreChar->SetUIXY(curPos, 0.85f);
+		scoreChar->SetToChar(showString[i]);
+		scoreChar->SetTextureName(ConstVars::CHAR_TEX_FILE);
+		m_UISprites.push_back(scoreChar);
+	}
+
 
 	char maxString[20];
 	sprintf_s(maxString, "%d", m_maxCount);
+
+	startPosX = 0.8f;
+	std::vector<UISprite*> maxStr;
+	//전체 문자열 길이 계산 및 생성
 	for (int i = 0; i < strlen(maxString); i++)
 	{
-		int number = maxString[i] - '0';
-		float startPosX = 0.8f -((int)strlen(maxString) - 1) * (UISprite::LETTERWIDTH + letterInvterval) / 2.0f;
-
 		// UI sprite
 		auto uiCharacter = new UISprite();
-		uiCharacter->SetUIXY(startPosX + (UISprite::LETTERWIDTH + letterInvterval) * i, 0.85f);
-		uiCharacter->SetToNumber(number);
-		uiCharacter->SetTextureName(ConstVars::CHAR_TEX_FILE);
-		m_UISprites.emplace_back(uiCharacter);
+		uiCharacter->SetToChar(maxString[i]);
+		startPosX -= uiCharacter->GetWidth() / 2.0f;
+		maxStr.push_back(uiCharacter);
+	}
+
+	for (int i = 0; i < maxStr.size(); i++)
+	{
+		float curPos = startPosX;
+		for (int j = 0; j < i; j++)
+		{
+			curPos += maxStr[j]->GetWidth();
+		}
+		auto& scoreChar = maxStr[i];
+		scoreChar->SetUIXY(curPos, 0.85f);
+		scoreChar->SetToChar(maxString[i]);
+		scoreChar->SetTextureName(ConstVars::CHAR_TEX_FILE);
+		m_UISprites.push_back(scoreChar);
 	}
 
 }

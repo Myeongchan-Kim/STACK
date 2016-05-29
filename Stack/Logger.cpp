@@ -51,7 +51,8 @@ int Logger::LoadRecord()
 	int result;
 	std::ifstream ifs("highScore.bin", std::ios::binary);
 
-	if (ifs.good()) {
+	if (ifs.good()) 
+	{
 		ifs >> result;
 	}
 	else
