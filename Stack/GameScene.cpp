@@ -161,7 +161,7 @@ void GameScene::UpdateUIString(Camera & camera)
 	Scene::UpdateUIString(camera); //clear
 
 	////////////////////////////////////// current count
-	char showString[20];
+	char showString[20] = {0,};
 	sprintf_s(showString, "%d", m_countAccumulation);
 	float startPosX = 0.1f;	
 	std::vector<UISprite*> scoreStr;
@@ -190,7 +190,7 @@ void GameScene::UpdateUIString(Camera & camera)
 	}
 
 	////////////////////////max record
-	char maxString[20];
+	char maxString[20] = { 0, };
 	sprintf_s(maxString, "%d", m_maxCount);
 
 	startPosX = 0.8f;
