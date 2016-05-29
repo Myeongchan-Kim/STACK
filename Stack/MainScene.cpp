@@ -17,10 +17,10 @@ void MainScene::Start(Camera& camera)
 		SystemClass::GetInstance()->LoadTexture(ConstVars::CONCREAT_TEX_FILE);
 		SystemClass::GetInstance()->LoadTexture(ConstVars::FEBRIC_TEX_FILE);
 		SystemClass::GetInstance()->LoadTexture(ConstVars::PLANE_TEX_FILE);
-		SystemClass::GetInstance()->LoadTexture(ConstVars::BLUE_TILE_TEX_FILE);
 		SystemClass::GetInstance()->LoadTexture(ConstVars::COLORFUL_TILE_TEX_FILE);
 		SystemClass::GetInstance()->LoadTexture(ConstVars::MAIN_MENU_TEX_FILE);
 		SystemClass::GetInstance()->LoadTexture(ConstVars::CHAR_TEX_FILE);
+		SystemClass::GetInstance()->LoadTexture(ConstVars::ITALIAN_TILE_TEX_FILE);
 
 		SystemClass::GetInstance()->PreLoadSoundFile(ConstVars::SOUND_FILE1);
 		SystemClass::GetInstance()->PreLoadSoundFile(ConstVars::SOUND_FILE2);

@@ -90,6 +90,9 @@
     <ClCompile Include="UISprite.cpp">
       <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClCompile>
+    <ClCompile Include="ExactFitEffect.cpp">
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -144,6 +147,9 @@
       <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClInclude>
     <ClInclude Include="UISprite.h">
+      <Filter>소스 파일\Engine\Graphic\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ExactFitEffect.h">
       <Filter>소스 파일\Engine\Graphic\Object</Filter>
     </ClInclude>
   </ItemGroup>
