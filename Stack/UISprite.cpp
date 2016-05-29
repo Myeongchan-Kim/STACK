@@ -15,6 +15,8 @@ std::map<char, UISprite::LetterWidth> UISprite::DEFAULT_LETTER_WIDTH =
 	{ '7', { 634.0f / 2000.0f , 720.0f / 2000.0f} },
 	{ '8', { 720.0f / 2000.0f , 810.0f / 2000.0f} },
 	{ '9', { 810.0f / 2000.0f , 906.0f / 2000.0f} },
+	{ '.',{ 1250.f / 2000.0f , 1300.f / 2000.0f } },
+	{ 'M',{ 906.f / 2000.0f , 1036.f / 2000.0f } },
 };
 
 UISprite::UISprite() : m_width(LETTERWIDTH), m_height(LETTERHEIGHT), m_uiPosx(0.0f), m_uiPosy(0.0f)
