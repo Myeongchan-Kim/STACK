@@ -1,7 +1,7 @@
 # DirectX11_Project
 
-youtube 영상: https://youtu.be/SWV2LY4ZHpo  
-https://trello.com/b/vvWjFuK5/2016-cpp-adv-stack
+youtube 영상: https://www.youtube.com/watch?v=tILvwj5kjTI 
+트렐로: https://trello.com/b/vvWjFuK5/2016-cpp-adv-stack
 
 ##코딩 규칙
 * 절대 마스터에 푸시하지 않기
