@@ -5,9 +5,7 @@ youtube 영상: https://www.youtube.com/watch?v=tILvwj5kjTI
 
 ## How to play  
 Download Ultimate-Stack.zip  (need windows 8.1 or above)  
-윈도우 8.1 이상에서만 실행됩니다.   
-Ultimate-Stack.zip  
-다운로드 후 압축해제, 실행.  
+Ultimate-Stack.zip 다운로드 후 압축해제, 실행.  (윈도우 8.1 이상에서만 실행됩니다.)
   
 
 ##코딩 규칙
