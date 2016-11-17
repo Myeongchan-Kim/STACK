@@ -4,10 +4,11 @@ youtube 영상: https://www.youtube.com/watch?v=tILvwj5kjTI
 트렐로: https://trello.com/b/vvWjFuK5/2016-cpp-adv-stack
 
 ## 실행 방법  
-윈도우 8.1 이상에서만 실행됩니다. 
-Ultimate-Stack.zip
-다운로드 후 압축해제, 실행.
-
+Download Ultimate-Stack.zip  (need windows 8.1 or above)  
+윈도우 8.1 이상에서만 실행됩니다.   
+Ultimate-Stack.zip  
+다운로드 후 압축해제, 실행.  
+  
 
 ##코딩 규칙
 * 절대 마스터에 푸시하지 않기
